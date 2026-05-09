@@ -60,6 +60,396 @@ body::before {
   pointer-events: none;
 }
 
+.cinematic-loader {
+  isolation: isolate;
+}
+
+.cinematic-loader__image {
+  object-position: 50% 50%;
+  filter: saturate(1.08) contrast(1.04);
+  will-change: transform, opacity;
+}
+
+.cinematic-loader__shade {
+  z-index: 1;
+  background:
+    radial-gradient(circle at 50% 49%, rgba(8, 47, 39, 0.01), rgba(0, 0, 0, 0.18) 42%, rgba(0, 0, 0, 0.42) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.02), transparent 38%, transparent 66%, rgba(0, 0, 0, 0.1));
+}
+
+.cinematic-loader__scan {
+  z-index: 2;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(203, 255, 156, 0.12) 49%, transparent 51%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 4px);
+  background-size: 100% 34%, 100% 4px;
+  background-position: 0 -40%, 0 0;
+  mix-blend-mode: screen;
+  opacity: 0.24;
+  animation: cinematic-scan 4.8s ease-in-out infinite;
+}
+
+.cinematic-loader__sparks {
+  z-index: 3;
+  background-image:
+    radial-gradient(circle, rgba(203, 255, 156, 0.95) 0 1px, transparent 1.7px),
+    radial-gradient(circle, rgba(142, 255, 231, 0.65) 0 1px, transparent 1.6px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.45) 0 1px, transparent 1.5px);
+  background-size: 120px 170px, 180px 220px, 94px 150px;
+  background-position: 12px 40px, 80px 0, 0 110px;
+  mix-blend-mode: screen;
+  opacity: 0.28;
+  animation: cinematic-sparks 12s linear infinite;
+}
+
+.cinematic-loader__film {
+  z-index: 4;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 42%, rgba(0, 0, 0, 0.18) 100%);
+  opacity: 0.72;
+}
+
+.cinematic-scroll-capture {
+  position: absolute;
+  inset: 0;
+  z-index: 19;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  pointer-events: none;
+  scrollbar-width: none;
+}
+
+.cinematic-scroll-capture.is-ready {
+  pointer-events: auto;
+}
+
+.cinematic-scroll-capture::-webkit-scrollbar {
+  display: none;
+}
+
+.cinematic-scroll-capture > div {
+  min-height: 150vh;
+}
+
+.cinematic-core {
+  width: clamp(220px, 28vw, 430px);
+  aspect-ratio: 1;
+  filter: drop-shadow(0 0 32px rgba(203, 255, 156, 0.22));
+}
+
+.cinematic-core__ring,
+.cinematic-core__pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.cinematic-core__ring--outer {
+  border: 1px solid rgba(203, 255, 156, 0.28);
+  background:
+    conic-gradient(from 0deg, transparent 0 18deg, rgba(203, 255, 156, 0.5) 18deg 20deg, transparent 20deg 88deg, rgba(142, 255, 231, 0.35) 88deg 90deg, transparent 90deg 360deg);
+  -webkit-mask: radial-gradient(circle, transparent 57%, black 58%, black 62%, transparent 63%);
+  mask: radial-gradient(circle, transparent 57%, black 58%, black 62%, transparent 63%);
+  animation: cinematic-spin 10s linear infinite;
+}
+
+.cinematic-core__ring--inner {
+  inset: 13%;
+  border: 1px dashed rgba(203, 255, 156, 0.34);
+  animation: cinematic-spin 16s linear infinite reverse;
+}
+
+.cinematic-core__ring--blade {
+  inset: 23%;
+  border: 1px solid transparent;
+  background:
+    conic-gradient(from 140deg, transparent 0 72deg, rgba(203, 255, 156, 0.68) 76deg 84deg, transparent 88deg 360deg);
+  -webkit-mask: radial-gradient(circle, transparent 49%, black 51%, black 56%, transparent 58%);
+  mask: radial-gradient(circle, transparent 49%, black 51%, black 56%, transparent 58%);
+  animation: cinematic-spin 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.cinematic-core__pulse {
+  inset: 24%;
+  background: radial-gradient(circle, rgba(203, 255, 156, 0.16), transparent 64%);
+  animation: cinematic-pulse 1.8s ease-in-out infinite;
+}
+
+.cinematic-swipe::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent, rgba(203, 255, 156, 0.16), transparent);
+  transform: translateX(-70%);
+  animation: cinematic-swipe-light 1.8s ease-in-out infinite;
+}
+
+@keyframes cinematic-scan {
+  0%, 100% {
+    background-position: 0 -45%, 0 0;
+    opacity: 0.13;
+  }
+  45%, 55% {
+    opacity: 0.32;
+  }
+  100% {
+    background-position: 0 145%, 0 0;
+  }
+}
+
+@keyframes cinematic-sparks {
+  0% {
+    transform: translate3d(0, 24px, 0);
+    background-position: 12px 40px, 80px 0, 0 110px;
+  }
+  100% {
+    transform: translate3d(0, -34px, 0);
+    background-position: 80px -260px, 20px -330px, 42px -230px;
+  }
+}
+
+@keyframes cinematic-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cinematic-pulse {
+  0%, 100% {
+    transform: scale(0.92);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.9;
+  }
+}
+
+@keyframes cinematic-swipe-light {
+  0% {
+    transform: translateX(-78%);
+    opacity: 0;
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(78%);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .cinematic-loader__image {
+    object-position: 48% 50%;
+  }
+
+  .cinematic-core {
+    width: min(58vw, 280px);
+    transform: translate(-50%, -38%);
+  }
+
+  .cinematic-center-control {
+    transform: translate(-50%, 128px);
+  }
+}
+
+@media (max-width: 560px) {
+  .cinematic-center-control {
+    transform: translate(-50%, 116px);
+  }
+}
+
+.mechanical-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--accent);
+}
+
+.mechanical-bg::before {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  background-image:
+    linear-gradient(to right, rgba(142, 255, 231, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(142, 255, 231, 0.045) 1px, transparent 1px),
+    linear-gradient(135deg, transparent 49%, rgba(203, 255, 156, 0.04) 50%, transparent 51%);
+  background-size: 84px 84px, 84px 84px, 240px 240px;
+  mask-image: radial-gradient(circle at 50% 42%, black 12%, transparent 78%);
+  -webkit-mask-image: radial-gradient(circle at 50% 42%, black 12%, transparent 78%);
+  opacity: 0.9;
+  transform: rotate(-4deg);
+  animation: blueprint-pan 34s linear infinite;
+}
+
+.mechanical-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 24%, rgba(203, 255, 156, 0.13), transparent 22%),
+    radial-gradient(circle at 82% 64%, rgba(142, 255, 231, 0.1), transparent 24%),
+    linear-gradient(120deg, transparent 18%, rgba(255, 255, 255, 0.035), transparent 34%);
+  opacity: 0.75;
+}
+
+.mechanical-blueprint {
+  position: absolute;
+  width: clamp(240px, 34vw, 520px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(203, 255, 156, 0.16);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 32%, rgba(203, 255, 156, 0.1) 33%, transparent 34%),
+    radial-gradient(circle, transparent 58%, rgba(142, 255, 231, 0.08) 59%, transparent 60%),
+    conic-gradient(from 30deg, transparent 0 16deg, rgba(203, 255, 156, 0.15) 16deg 18deg, transparent 18deg 60deg);
+  opacity: 0.42;
+  filter: blur(0.2px) drop-shadow(0 0 18px rgba(142, 255, 231, 0.12));
+  animation: blueprint-orbit 28s ease-in-out infinite;
+}
+
+.mechanical-blueprint--left {
+  top: 8%;
+  left: -12%;
+}
+
+.mechanical-blueprint--right {
+  right: -10%;
+  bottom: 2%;
+  animation-duration: 36s;
+  animation-direction: reverse;
+}
+
+.mechanical-scanline {
+  position: absolute;
+  top: 18%;
+  left: -20%;
+  width: 140%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(142, 255, 231, 0.24), rgba(203, 255, 156, 0.18), transparent);
+  opacity: 0.65;
+  transform: rotate(-18deg);
+  animation: scanline-drift 18s ease-in-out infinite;
+}
+
+.mechanical-particle {
+  position: absolute;
+  top: var(--particle-top);
+  left: var(--particle-left);
+  width: var(--particle-size);
+  height: var(--particle-size);
+  color: var(--particle-color);
+  opacity: 0;
+  transform-origin: 50% 50%;
+  animation: mechanical-float var(--particle-duration) ease-in-out infinite;
+  animation-delay: var(--particle-delay);
+  filter: drop-shadow(0 0 12px rgba(203, 255, 156, 0.2));
+  will-change: transform, opacity;
+}
+
+.mechanical-particle::before {
+  content: "";
+  position: absolute;
+  inset: -18%;
+  border-radius: 50%;
+  background: radial-gradient(circle, currentColor 0%, transparent 58%);
+  opacity: 0.08;
+}
+
+.mechanical-particle__icon {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mechanical-particle--gear .mechanical-particle__icon,
+.mechanical-particle--bearing .mechanical-particle__icon,
+.mechanical-particle--nut .mechanical-particle__icon {
+  animation: gear-spin 12s linear infinite;
+}
+
+.mechanical-particle--bearing .mechanical-particle__icon {
+  animation-duration: 18s;
+  animation-direction: reverse;
+}
+
+.mechanical-particle--wrench {
+  filter: drop-shadow(0 0 10px rgba(247, 248, 255, 0.14));
+}
+
+@keyframes mechanical-float {
+  0% {
+    opacity: calc(var(--particle-opacity) * 0.42);
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  35% {
+    opacity: var(--particle-opacity);
+    transform: translate3d(var(--particle-drift-x), -18px, 0) rotate(120deg);
+  }
+  70% {
+    opacity: calc(var(--particle-opacity) * 0.78);
+    transform: translate3d(-18px, var(--particle-drift-y), 0) rotate(245deg);
+  }
+  100% {
+    opacity: calc(var(--particle-opacity) * 0.5);
+    transform: translate3d(0, 0, 0) rotate(var(--particle-spin));
+  }
+}
+
+@keyframes gear-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes blueprint-pan {
+  0% {
+    transform: rotate(-4deg) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: rotate(-4deg) translate3d(84px, 84px, 0);
+  }
+}
+
+@keyframes blueprint-orbit {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate3d(28px, -24px, 0) rotate(18deg) scale(1.04);
+  }
+}
+
+@keyframes scanline-drift {
+  0%, 100% {
+    transform: translateY(-30px) rotate(-18deg);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translateY(42vh) rotate(-18deg);
+    opacity: 0.65;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mechanical-bg::before,
+  .mechanical-blueprint,
+  .mechanical-scanline,
+  .mechanical-particle,
+  .mechanical-particle__icon {
+    animation: none;
+  }
+
+  .mechanical-particle {
+    opacity: calc(var(--particle-opacity) * 0.72);
+  }
+}
+
 .glass-card {
   background: var(--glass);
   border: 1px solid var(--glass-border);

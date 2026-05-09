@@ -12,10 +12,38 @@ import {
   BookOpen, Layout, Zap, Award, ArrowUp,
   GraduationCap, Briefcase, Target, MousePointer2,
   Sparkles, Layers, Fingerprint, ArrowDown, ExternalLink,
-  Code2, Palette, Globe, Linkedin, Youtube
+  Code2, Palette, Globe, Linkedin, Youtube,
+  Cog, Wrench, Gauge
 } from 'lucide-react';
 
 // --- Data ---
+
+type MechanicalParticleKind = 'gear' | 'wrench' | 'gauge' | 'bolt' | 'bearing' | 'nut';
+
+const mechanicalParticles: Array<{
+  kind: MechanicalParticleKind;
+  size: number;
+  top: string;
+  left: string;
+  duration: number;
+  delay: number;
+  driftX: string;
+  driftY: string;
+  opacity: number;
+  spin: string;
+  color: string;
+}> = [
+  { kind: 'gear', size: 88, top: '12%', left: '7%', duration: 26, delay: -6, driftX: '46px', driftY: '34px', opacity: 0.18, spin: '360deg', color: 'rgba(203,255,156,0.76)' },
+  { kind: 'bearing', size: 56, top: '21%', left: '81%', duration: 22, delay: -10, driftX: '-38px', driftY: '28px', opacity: 0.16, spin: '-360deg', color: 'rgba(142,255,231,0.7)' },
+  { kind: 'wrench', size: 64, top: '38%', left: '12%', duration: 30, delay: -14, driftX: '34px', driftY: '-48px', opacity: 0.12, spin: '-180deg', color: 'rgba(247,248,255,0.62)' },
+  { kind: 'nut', size: 46, top: '54%', left: '88%', duration: 24, delay: -3, driftX: '-54px', driftY: '-26px', opacity: 0.14, spin: '360deg', color: 'rgba(203,255,156,0.62)' },
+  { kind: 'bolt', size: 34, top: '72%', left: '16%', duration: 20, delay: -8, driftX: '50px', driftY: '22px', opacity: 0.16, spin: '180deg', color: 'rgba(255,211,120,0.58)' },
+  { kind: 'gauge', size: 74, top: '77%', left: '72%', duration: 28, delay: -16, driftX: '-32px', driftY: '-44px', opacity: 0.12, spin: '220deg', color: 'rgba(142,255,231,0.56)' },
+  { kind: 'gear', size: 42, top: '33%', left: '58%', duration: 18, delay: -5, driftX: '26px', driftY: '36px', opacity: 0.13, spin: '-360deg', color: 'rgba(203,255,156,0.6)' },
+  { kind: 'bolt', size: 28, top: '14%', left: '48%', duration: 16, delay: -1, driftX: '-24px', driftY: '42px', opacity: 0.14, spin: '-180deg', color: 'rgba(247,248,255,0.46)' },
+  { kind: 'nut', size: 62, top: '86%', left: '43%', duration: 32, delay: -19, driftX: '42px', driftY: '-34px', opacity: 0.1, spin: '360deg', color: 'rgba(142,255,231,0.54)' },
+  { kind: 'bearing', size: 38, top: '48%', left: '33%', duration: 19, delay: -12, driftX: '-28px', driftY: '30px', opacity: 0.13, spin: '360deg', color: 'rgba(203,255,156,0.52)' }
+];
 
 const showcaseData = [
   {
@@ -67,6 +95,78 @@ const showcaseData = [
 ];
 
 // --- Components ---
+
+const MechanicalGlyph = ({ kind }: { kind: MechanicalParticleKind }) => {
+  const iconClass = "mechanical-particle__icon";
+
+  switch (kind) {
+    case 'gear':
+      return <Cog className={iconClass} strokeWidth={1.25} />;
+    case 'wrench':
+      return <Wrench className={iconClass} strokeWidth={1.35} />;
+    case 'gauge':
+      return <Gauge className={iconClass} strokeWidth={1.25} />;
+    case 'bolt':
+      return (
+        <svg className={iconClass} viewBox="0 0 24 24" role="presentation">
+          <path d="M13.8 1.8 4.9 13.1h5.8l-1.2 9.1 8.9-11.5h-5.7l1.1-8.9Z" fill="currentColor" />
+        </svg>
+      );
+    case 'bearing':
+      return (
+        <svg className={iconClass} viewBox="0 0 64 64" role="presentation">
+          <circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" strokeWidth="4" />
+          <circle cx="32" cy="32" r="9" fill="none" stroke="currentColor" strokeWidth="3" />
+          {[0, 60, 120, 180, 240, 300].map((angle) => (
+            <circle
+              key={angle}
+              cx={32 + Math.cos((angle * Math.PI) / 180) * 16}
+              cy={32 + Math.sin((angle * Math.PI) / 180) * 16}
+              r="3"
+              fill="currentColor"
+            />
+          ))}
+        </svg>
+      );
+    case 'nut':
+      return (
+        <svg className={iconClass} viewBox="0 0 64 64" role="presentation">
+          <path d="M32 5 55 18.5v27L32 59 9 45.5v-27L32 5Z" fill="none" stroke="currentColor" strokeWidth="4" strokeLinejoin="round" />
+          <circle cx="32" cy="32" r="10" fill="none" stroke="currentColor" strokeWidth="4" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+};
+
+const MechanicalParticleField = () => (
+  <div className="mechanical-bg" aria-hidden="true">
+    <div className="mechanical-blueprint mechanical-blueprint--left" />
+    <div className="mechanical-blueprint mechanical-blueprint--right" />
+    <div className="mechanical-scanline" />
+    {mechanicalParticles.map((particle, index) => (
+      <div
+        key={`${particle.kind}-${index}`}
+        className={`mechanical-particle mechanical-particle--${particle.kind}`}
+        style={{
+          '--particle-size': `${particle.size}px`,
+          '--particle-top': particle.top,
+          '--particle-left': particle.left,
+          '--particle-duration': `${particle.duration}s`,
+          '--particle-delay': `${particle.delay}s`,
+          '--particle-drift-x': particle.driftX,
+          '--particle-drift-y': particle.driftY,
+          '--particle-opacity': particle.opacity,
+          '--particle-spin': particle.spin,
+          '--particle-color': particle.color
+        } as React.CSSProperties}
+      >
+        <MechanicalGlyph kind={particle.kind} />
+      </div>
+    ))}
+  </div>
+);
 
 const Reveal = ({ children, delay = 0, direction = "up", cascade = false, className = "", parallax = 0 }: { children: React.ReactNode, delay?: number, direction?: "up" | "down" | "left" | "right" | "none", cascade?: boolean, className?: string, parallax?: number, key?: any }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -406,36 +506,156 @@ const Counter = ({ target }: { target: number }) => {
 };
 
 const CoolLoader = ({ onComplete }: { onComplete: () => void, key?: any }) => {
+  const [isReady, setIsReady] = useState(false);
+  const [swipeOffset, setSwipeOffset] = useState(0);
+  const pointerStartY = useRef<number | null>(null);
+  const swipeOffsetRef = useRef(0);
+  const hasEntered = useRef(false);
+
+  const enterSite = () => {
+    if (!isReady || hasEntered.current) return;
+    hasEntered.current = true;
+    swipeOffsetRef.current = -96;
+    setSwipeOffset(-96);
+    setTimeout(onComplete, 180);
+  };
+
+  useEffect(() => {
+    if (!isReady) return;
+
+    const handleWheel = (event: WheelEvent) => {
+      if (event.deltaY > 12) enterSite();
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: true });
+    return () => window.removeEventListener('wheel', handleWheel);
+  }, [isReady]);
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!isReady) return;
+    pointerStartY.current = event.clientY;
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!isReady || pointerStartY.current === null) return;
+    const dragDistance = pointerStartY.current - event.clientY;
+    const nextOffset = -Math.min(Math.max(dragDistance, 0), 96);
+    swipeOffsetRef.current = nextOffset;
+    setSwipeOffset(nextOffset);
+  };
+
+  const handlePointerEnd = () => {
+    if (!isReady || pointerStartY.current === null) return;
+    if (Math.abs(swipeOffsetRef.current) > 58) {
+      enterSite();
+    } else {
+      swipeOffsetRef.current = 0;
+      setSwipeOffset(0);
+    }
+    pointerStartY.current = null;
+  };
+
+  const handleScrollCapture = (event: React.UIEvent<HTMLDivElement>) => {
+    if (event.currentTarget.scrollTop > 18) enterSite();
+  };
+
   return (
     <motion.div 
       key="loader"
       initial={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.1, filter: "blur(20px)" }}
-      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-brand-night"
+      exit={{ opacity: 0, y: "-100%", scale: 1.04, filter: "blur(16px)" }}
+      transition={{ duration: 1.05, ease: [0.76, 0, 0.24, 1] }}
+      className="cinematic-loader fixed inset-0 z-[100] overflow-hidden bg-brand-night text-white"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-accent/5 via-brand-night to-brand-night" />
-      
-      <div className="text-center w-full max-w-md px-6 relative z-10 flex flex-col items-center">
-         <motion.h1 
-           initial={{ opacity: 0, y: 10 }}
-           animate={{ opacity: 1, y: 0 }}
-           transition={{ delay: 0.2 }}
-           className="text-xl md:text-2xl font-bold tracking-[0.2em] text-accent/90 mb-8 uppercase"
-         >
-           PPG PRAJABATAN 2026
-         </motion.h1>
+      <motion.img
+        src={publicAsset('loader-cinematic.png')}
+        alt=""
+        initial={{ scale: 1.1, opacity: 0 }}
+        animate={{ scale: isReady ? 1.02 : 1.055, opacity: 1 }}
+        transition={{ duration: 3.8, ease: [0.16, 1, 0.3, 1] }}
+        className="cinematic-loader__image absolute inset-0 h-full w-full object-cover"
+        draggable={false}
+      />
 
-         {/* Loading Bar */}
-         <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-            <motion.div 
-              className="h-full origin-left bg-accent shadow-[0_0_15px_rgba(203,255,156,0.6)] will-change-transform"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 2.2, ease: [0.22, 1, 0.36, 1] }}
-              onAnimationComplete={() => setTimeout(onComplete, 300)}
-            />
-         </div>
+      <div className="cinematic-loader__shade absolute inset-0" />
+      <div className="cinematic-loader__scan absolute inset-0" />
+      <div className="cinematic-loader__sparks absolute inset-0" />
+      <div className="cinematic-loader__film absolute inset-0" />
+      <div
+        className={`cinematic-scroll-capture ${isReady ? 'is-ready' : ''}`}
+        onScroll={handleScrollCapture}
+        aria-hidden="true"
+      >
+        <div />
+      </div>
+
+      <div className="cinematic-core pointer-events-none absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center">
+        <div className="cinematic-core__ring cinematic-core__ring--outer" />
+        <div className="cinematic-core__ring cinematic-core__ring--inner" />
+        <div className="cinematic-core__ring cinematic-core__ring--blade" />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.78 }}
+          animate={{ opacity: isReady ? 1 : 0.76, scale: isReady ? 1 : 0.92 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="cinematic-core__pulse"
+        />
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.45, duration: 0.65 }}
+          className="relative z-10 text-center"
+        >
+          <div className="font-mono text-[10px] font-bold uppercase tracking-[0.38em] text-accent/85">
+            {isReady ? 'READY' : 'INITIALIZING'}
+          </div>
+          <div className="mt-2 font-mono text-3xl font-bold text-white drop-shadow-[0_0_18px_rgba(203,255,156,0.55)] md:text-5xl">
+            {isReady ? '100%' : 'PPG'}
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="cinematic-center-control absolute left-1/2 top-1/2 z-20 w-[min(82vw,390px)] -translate-x-1/2 translate-y-[160px] md:translate-y-[210px]">
+        <div className="h-1.5 overflow-hidden rounded-full border border-accent/20 bg-brand-night/24 shadow-[0_0_22px_rgba(203,255,156,0.16)] backdrop-blur-md">
+          <motion.div
+            className="h-full origin-left bg-accent shadow-[0_0_22px_rgba(203,255,156,0.85)]"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 3.4, ease: [0.22, 1, 0.36, 1] }}
+            onAnimationComplete={() => setTimeout(() => setIsReady(true), 260)}
+          />
+        </div>
+
+        <motion.div
+          initial={false}
+          animate={{ opacity: isReady ? 1 : 0, y: isReady ? 0 : 12 }}
+          transition={{ duration: 0.45, ease: "easeOut" }}
+          className="mt-5 flex justify-center"
+        >
+          <div
+            role="button"
+            tabIndex={0}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerEnd}
+            onPointerCancel={handlePointerEnd}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') enterSite();
+            }}
+            className="cinematic-swipe relative flex h-14 w-[min(80vw,340px)] cursor-grab touch-none select-none items-center justify-center rounded-full border border-accent/25 bg-brand-night/38 text-white shadow-[0_18px_70px_rgba(0,0,0,0.38)] backdrop-blur-xl active:cursor-grabbing"
+          >
+            <motion.div
+              className="absolute left-3 flex h-9 w-9 items-center justify-center rounded-full bg-accent text-brand-night shadow-[0_0_24px_rgba(203,255,156,0.55)]"
+              animate={{ y: swipeOffset }}
+              transition={{ type: "spring", stiffness: 320, damping: 26 }}
+            >
+              <ArrowUp size={17} />
+            </motion.div>
+            <span className="font-mono text-[9px] font-bold uppercase tracking-[0.24em] text-white/76">
+              Swipe Untuk Masuk
+            </span>
+          </div>
+        </motion.div>
       </div>
     </motion.div>
   );
@@ -792,6 +1012,11 @@ const profileDetails = [
     title: 'Latar Belakang',
     shortDesc: 'Lahir dan besar dengan ketertarikan pada inovasi dan pengajaran. Berfokus pada integrasi teknologi dalam pendidikan untuk menciptakan pengalaman belajar yang relevan di era digital.',
     fullDesc: 'Saya Satriya Nugraha, berasal dari Boyolali dan kini berdomisili di Klaten. Nilai-nilai budaya Jawa seperti gotong royong, tepa selira, andhap asor, dan kesederhanaan membentuk saya menjadi pribadi yang peduli, menghargai kebersamaan, dan menjunjung etika.\n\nPengalaman belajar, menjadi asisten dosen di Universitas Sebelas Maret, aktif berorganisasi, serta mengajar di Wonogiri menguatkan tekad saya untuk menjadi guru. Saya menyadari bahwa guru bukan hanya penyampai materi, tetapi juga pembimbing dan inspirator bagi peserta didik.\n\nMelalui Program PPG, saya ingin menjadi guru profesional yang mampu menciptakan pembelajaran bermakna, adaptif, dan berpusat pada peserta didik, sehingga dapat membantu mereka berkembang sesuai potensi dan karakternya.',
+    icon: <BookOpen size={24} />,
+    largeIcon: <BookOpen className="w-9 h-9 md:w-11 md:h-11" />,
+    meta: '3 Narasi',
+    cta: 'Buka Cerita',
+    previewItems: ['Asal & nilai hidup', 'Pengalaman mengajar', 'Tujuan PPG'],
     iconBgClass: 'bg-accent/10 border-accent/20 text-accent',
     textColorClass: 'text-accent',
     image: publicAsset('latarbelakang.svg'),
@@ -801,6 +1026,11 @@ const profileDetails = [
     shortDesc: 'Hobi bukan hanya tentang kesenangan, tetapi juga tentang proses menjadi lebih baik. Dari hal kecil yang kita sukai, bisa tumbuh kemampuan besar yang bermanfaat di masa depan.',
     fullDesc: 'Hobi bukan hanya tentang kesenangan, tetapi juga tentang proses menjadi lebih baik. Dari hal kecil yang kita sukai, bisa tumbuh kemampuan besar yang bermanfaat di masa depan.',
     listItems: ['Hiking', 'Traveling', 'Fotografi'],
+    icon: <Sparkles size={24} />,
+    largeIcon: <Sparkles className="w-9 h-9 md:w-11 md:h-11" />,
+    meta: '3 Hobi',
+    cta: 'Lihat Hobi',
+    previewItems: ['Hiking', 'Traveling', 'Fotografi'],
     iconBgClass: 'bg-[#cbff9c]/10 border-[#cbff9c]/20 text-[#cbff9c]',
     textColorClass: 'text-[#cbff9c]',
   },
@@ -808,6 +1038,11 @@ const profileDetails = [
     title: 'Motivasi',
     shortDesc: 'Menjadi pendidik inspiratif yang melahirkan generasi cerdas dan berkarakter. Bertujuan membangun ekosistem pendidikan modern, inklusif, dan adaptif.',
     fullDesc: 'Motivasi jangka panjang saya adalah menjadi lebih dari sekadar pengajar—saya ingin menjadi sosok pendidik yang mampu menginspirasi dan memantik rasa ingin tahu siswa. Saya bermimpi suatu hari dapat berkontribusi secara signifikan dalam merumuskan kurikulum atau ekosistem pendidikan modern yang tidak hanya fokus pada kecerdasan akademis, tetapi juga ketangguhan karakter. Ekosistem yang inklusif, adaptif terhadap perubahan global, dan memerdekakan cara belajar setiap anak.',
+    icon: <Target size={24} />,
+    largeIcon: <Target className="w-9 h-9 md:w-11 md:h-11" />,
+    meta: '1 Visi',
+    cta: 'Buka Visi',
+    previewItems: ['Pendidik inspiratif', 'Karakter siswa', 'Ekosistem adaptif'],
     iconBgClass: 'bg-blue-400/10 border-blue-400/20 text-blue-400',
     textColorClass: 'text-blue-400',
   }
@@ -845,11 +1080,9 @@ export default function App() {
   const [activeHobbyPopup, setActiveHobbyPopup] = useState<number | null>(null);
   const [activeShowcasePopup, setActiveShowcasePopup] = useState<number | null>(null);
   const [activePage, setActivePage] = useState<'home' | 'rpp' | 'media'>('home');
-  const [openDocGallery, setOpenDocGallery] = useState<number | null>(null);
+  const [openDocGallery, setOpenDocGallery] = useState<number | null>(0);
   const [activeDocGallery, setActiveDocGallery] = useState(0);
   const docGalleryDragStart = useRef<number | null>(null);
-  const journeyRef = useRef<HTMLDivElement>(null);
-  const [journeyProgress, setJourneyProgress] = useState(0);
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -919,14 +1152,6 @@ export default function App() {
         return false;
       });
       if (current) setActiveSection(current);
-
-      if (journeyRef.current) {
-        const rect = journeyRef.current.getBoundingClientRect();
-        const viewportCenter = window.innerHeight / 2;
-        const total = rect.height || 1;
-        const progress = (viewportCenter - rect.top) / total;
-        setJourneyProgress(Math.max(0, Math.min(1, progress)));
-      }
     };
 
     handleScroll();
@@ -962,6 +1187,7 @@ export default function App() {
           <rect width="100%" height="100%" fill="url(#elegant-pattern)" className="text-accent" />
         </svg>
       </div>
+      <MechanicalParticleField />
 
       <AnimatePresence mode="wait">
         {isLoading ? (
@@ -1287,190 +1513,213 @@ export default function App() {
 
         {/* Profile Section */}
         <section id="profil" className="relative scroll-mt-16 pt-12 min-h-screen flex flex-col justify-center pb-24">
-          <Reveal direction="up" className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl lg:text-[72px] font-bold tracking-tight text-white mb-6">Profile</h2>
+          <Reveal direction="up" className="text-center mb-14">
+            <SectionKicker>Identitas Personal</SectionKicker>
+            <h2 className="text-4xl md:text-5xl lg:text-[72px] font-bold tracking-tight text-white mb-6">Profil</h2>
             <div className="w-24 h-1 bg-accent mx-auto rounded-full" />
           </Reveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10 w-full">
             {profileDetails.map((item, i) => (
               <Reveal key={i} direction={i === 0 ? "right" : i === 1 ? "up" : "left"} delay={0.1 * (i + 1)} className="h-full">
-                <div 
+                <motion.button
+                  type="button"
                   onClick={() => setActiveProfilePopup(i)}
-                  className="glass-card p-6 md:p-8 flex flex-col items-center text-center hover:border-accent/30 transition-all h-full group bg-white/[0.02] cursor-pointer"
+                  whileHover={{ y: -8 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="glass-card group relative flex h-full w-full flex-col overflow-hidden border-white/10 bg-white/[0.035] p-6 text-left transition-all hover:border-accent/40 hover:bg-white/[0.055] md:p-7"
                 >
-                  {item.icon && (
-                    <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full border flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 ${item.iconBgClass}`}>
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/45 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  <div className="mb-7 flex items-start justify-between gap-4">
+                    <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border transition-transform duration-500 group-hover:scale-110 ${item.iconBgClass}`}>
                       {item.icon}
                     </div>
-                  )}
-                  <h3 className="text-xl md:text-2xl font-bold mb-3 text-white">{item.title}</h3>
-                  <p className="text-muted text-xs md:text-sm leading-relaxed">
+                    <div className="rounded-full border border-white/10 bg-white/[0.045] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-white/50">
+                      {item.meta}
+                    </div>
+                  </div>
+
+                  <h3 className="mb-3 text-2xl font-bold text-white transition-colors group-hover:text-accent">{item.title}</h3>
+                  <p className="mb-6 min-h-[84px] text-sm leading-relaxed text-white/62">
                     {item.shortDesc}
                   </p>
-                </div>
+
+                  <div className="mt-auto space-y-3">
+                    <div className="flex flex-wrap gap-2">
+                      {item.previewItems.map((preview) => (
+                        <span key={preview} className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-white/62">
+                          {preview}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-between border-t border-white/10 pt-4">
+                      <span className="text-sm font-bold text-accent">{item.cta}</span>
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-brand-night transition-transform group-hover:translate-x-1">
+                        <ArrowRight size={17} />
+                      </span>
+                    </div>
+                  </div>
+                </motion.button>
               </Reveal>
             ))}
           </div>
         </section>
 
-        {/* Journey Section */}
+        {/* Documentation Gallery Section */}
         <section id="perjalanan" className="relative scroll-mt-16 pt-12 min-h-screen flex flex-col justify-center pb-24">
-          <div className="max-w-4xl mx-auto">
-            <Reveal direction="up" className="text-center mb-24" parallax={-30}>
+          <div className="max-w-6xl mx-auto w-full">
+            <Reveal direction="up" className="text-center mb-14" parallax={-30}>
               <SectionKicker>Artefak</SectionKicker>
               <h2 className="text-gradient">Dokumentasi</h2>
               <p className="text-muted max-w-xl mx-auto mt-6">Kumpulan dokumentasi pembelajaran, pengalaman, dan bukti kegiatan yang menggambarkan perjalanan profesional saya.</p>
             </Reveal>
 
-            <div ref={journeyRef} className="relative space-y-24">
-              <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-white/5 hidden md:block">
-                <motion.div 
-                  style={{ scaleY: journeyProgress, originY: 0 }}
-                  className="absolute inset-0 bg-accent shadow-[0_0_15px_rgba(203,255,156,0.3)]" 
-                />
-              </div>
-              
-              {[
-                ...documentationPhotos,
-                { step: '04', side: 'right', title: 'Siklus Reflektif', desc: 'Mengevaluasi hasil dan merancang langkah perbaikan yang berkelanjutan.', icon: <Target className="w-5 h-5" />, isPhoto: false }
-              ].map((item, i) => (
-                <div key={i}>
-                  <Reveal direction={item.side === 'left' ? 'right' : 'left'} delay={i * 0.1} parallax={item.side === 'left' ? -20 : 20}>
-                    <div className={`flex flex-col md:flex-row items-center gap-8 ${item.side === 'right' ? 'md:flex-row-reverse' : ''}`}>
-                    <div className="md:w-1/2">
-                      {item.isPhoto ? (
-                        <div className="glass-card border-accent/20 bg-accent/5 hover:border-accent/50 transition-all shadow-lg shadow-accent/5 relative overflow-hidden rounded-2xl">
-                          <div className="pointer-events-none absolute -inset-1 bg-gradient-to-r from-accent/0 via-accent/10 to-accent/0 opacity-0 hover:opacity-100 transition-opacity duration-700 blur-[2px] z-10" />
-                          
-                          {/* Container dengan Hover State */}
-                          <div>
-                            {/* Foto Area dengan Hover Trigger */}
-                            <div className="relative overflow-hidden rounded-t-2xl">
-                              <img 
-                                src={item.photo} 
-                                alt={item.title}
-                                className="w-full h-[280px] object-cover"
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-brand-night/80 via-brand-night/20 to-transparent" />
-                            </div>
-                          </div>
-                          
-                          <div className="relative z-20 p-6 flex items-center justify-center">
-                            <motion.button
-                              type="button"
-                              whileHover={{ x: 5 }}
-                              onClick={() => {
-                                if (openDocGallery === i) {
-                                  setOpenDocGallery(null);
-                                  return;
-                                }
-                                setOpenDocGallery(i);
-                                setActiveDocGallery(0);
-                              }}
-                              className="inline-flex items-center gap-2 text-accent font-bold text-sm tracking-wide group/link cursor-pointer"
-                            >
-                              <span>{openDocGallery === i ? 'Perkecil' : 'Lihat lebih jauh'}</span>
-                              <ArrowRight size={16} className={`transition-transform ${openDocGallery === i ? 'rotate-90' : 'group-hover/link:translate-x-1'}`} />
-                            </motion.button>
-                          </div>
-                        </div>
-                      ) : (
-                        <TiltCard className={`p-10 border-accent/20 bg-accent/5 hover:border-accent/50 transition-all ${item.side === 'right' ? 'md:text-right' : ''} shadow-lg shadow-accent/5 relative group/journey`}>
-                          <div className="absolute -inset-1 bg-gradient-to-r from-accent/0 via-accent/10 to-accent/0 opacity-0 group-hover/journey:opacity-100 transition-opacity duration-700 blur-[2px]" />
-                          <span className="text-accent font-mono text-sm mb-4 block font-bold tracking-widest">{item.icon} PHASE {item.step}</span>
-                          <h3 className="text-2xl font-bold mb-4">{item.title}</h3>
-                          <p className="text-muted leading-relaxed">{item.desc}</p>
-                        </TiltCard>
-                      )}
-                    </div>
-                    
-                    <div className="relative flex items-center justify-center z-10">
-                      <motion.div 
-                        whileInView={{ scale: [1, 1.2, 1] }}
-                        className="w-14 h-14 rounded-full bg-brand-deep border-4 border-accent flex items-center justify-center shadow-[0_0_30px_rgba(203,255,156,0.3)]"
-                      >
-                        <span className="text-xs font-bold text-accent">{item.step}</span>
-                      </motion.div>
-                    </div>
-                    
-                    <div className="md:w-1/2 hidden md:flex items-center justify-center min-h-[430px] overflow-visible">
-                      <AnimatePresence mode="wait">
-                        {item.isPhoto && openDocGallery === i && (() => {
-                          const galleryPhotos = 'galleryPhotos' in item ? item.galleryPhotos : [item.photo];
+            <Reveal direction="up" className="grid gap-5 md:grid-cols-3" cascade>
+              {documentationPhotos.map((item, i) => {
+                const isSelected = openDocGallery === i;
+                const galleryCount = item.galleryPhotos?.length ?? 1;
 
-                          return (
-                          <motion.div
-                            key={`doc-gallery-${activeDocGallery}`}
-                            initial={{ opacity: 0, x: item.side === 'left' ? 36 : -36, scale: 0.94 }}
-                            animate={{ opacity: 1, x: 0, scale: 1 }}
-                            exit={{ opacity: 0, x: item.side === 'left' ? 24 : -24, scale: 0.96 }}
-                            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                            onPointerDown={(event) => {
-                              docGalleryDragStart.current = event.clientX;
-                            }}
-                            onPointerUp={(event) => {
-                              if (docGalleryDragStart.current === null) return;
-                              handleDocGallerySwipe(event.clientX - docGalleryDragStart.current);
-                              docGalleryDragStart.current = null;
-                            }}
-                            onPointerCancel={() => {
-                              docGalleryDragStart.current = null;
-                            }}
-                            className={`relative ${item.side === 'left' ? 'translate-x-10 lg:translate-x-16' : '-translate-x-10 lg:-translate-x-16'} w-[min(52vw,640px)] max-w-none cursor-grab select-none active:cursor-grabbing`}
-                          >
-                            <div className="absolute -inset-10 rounded-full bg-accent/10 blur-3xl" />
-                            {galleryPhotos.map((photo, photoIndex) => {
-                              const offset = photoIndex - activeDocGallery;
-                              const isActive = offset === 0;
-                              return (
-                                <motion.div
-                                  key={photo}
-                                  animate={{
-                                    x: offset * 20,
-                                    y: Math.abs(offset) * 12,
-                                    rotate: offset * 4,
-                                    scale: isActive ? 1 : 0.92,
-                                    opacity: Math.abs(offset) > 1 ? 0 : isActive ? 1 : 0.38,
-                                    zIndex: isActive ? 3 : 2 - Math.abs(offset)
-                                  }}
-                                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                                  className={`absolute inset-0 ${isActive ? '' : 'pointer-events-none'}`}
-                                >
-                                  <div className="aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-brand-night shadow-[0_26px_70px_rgba(0,0,0,0.45)] ring-1 ring-accent/10">
-                                    <img
-                                      src={photo}
-                                      alt={`${item.title} ${photoIndex + 1}`}
-                                      draggable={false}
-                                      className="h-full w-full select-none object-cover"
-                                    />
-                                  </div>
-                                </motion.div>
-                              );
-                            })}
-                            <div className="relative aspect-[4/3]" />
-                            <div className="relative z-10 mt-4 flex items-center justify-center gap-4">
-                              <div className="flex gap-2">
-                                {galleryPhotos.map((photo, photoIndex) => (
-                                  <button
-                                    key={photo}
-                                    type="button"
-                                    onClick={() => setActiveDocGallery(photoIndex)}
-                                    className={`h-2 rounded-full transition-all ${photoIndex === activeDocGallery ? 'w-5 bg-accent' : 'w-2 bg-white/20 hover:bg-white/40'}`}
-                                  />
-                                ))}
-                              </div>
-                            </div>
-                          </motion.div>
-                          );
-                        })()}
-                      </AnimatePresence>
+                return (
+                  <motion.button
+                    key={item.step}
+                    type="button"
+                    whileHover={{ y: -6 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      setOpenDocGallery(i);
+                      setActiveDocGallery(0);
+                    }}
+                    className={`group relative overflow-hidden rounded-2xl border text-left shadow-[0_24px_70px_rgba(0,0,0,0.28)] transition-colors ${
+                      isSelected
+                        ? 'border-accent/55 bg-accent/10'
+                        : 'border-white/10 bg-white/[0.035] hover:border-accent/35'
+                    }`}
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      <img
+                        src={item.photo}
+                        alt={item.title}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-brand-night via-brand-night/18 to-transparent" />
+                      <div className="absolute left-4 top-4 rounded-full border border-white/15 bg-brand-night/60 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-accent backdrop-blur-md">
+                        {item.step}
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 p-5">
+                        <h3 className="text-xl font-bold text-white">{item.title}</h3>
+                        <div className="mt-3 flex items-center justify-between gap-4">
+                          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/55">
+                            {galleryCount} Foto
+                          </span>
+                          <span className="inline-flex items-center gap-2 text-xs font-bold text-accent">
+                            Galeri <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </Reveal>
-              </div>
-            ))}
-          </div>
+                  </motion.button>
+                );
+              })}
+            </Reveal>
+
+            <AnimatePresence mode="wait">
+              {openDocGallery !== null && (() => {
+                const activeItem = documentationPhotos[openDocGallery];
+                const galleryPhotos = activeItem.galleryPhotos?.length ? activeItem.galleryPhotos : [activeItem.photo];
+                const activePhoto = galleryPhotos[activeDocGallery] ?? galleryPhotos[0];
+                const previousPhoto = () => setActiveDocGallery((prev) => (prev + galleryPhotos.length - 1) % galleryPhotos.length);
+                const nextPhoto = () => setActiveDocGallery((prev) => (prev + 1) % galleryPhotos.length);
+
+                return (
+                  <motion.div
+                    key={`documentation-gallery-${openDocGallery}`}
+                    initial={{ opacity: 0, y: 28, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 18, scale: 0.98 }}
+                    transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                    className="mt-8 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.035] shadow-[0_26px_90px_rgba(0,0,0,0.35)] backdrop-blur-xl"
+                  >
+                    <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_320px]">
+                      <div
+                        className="relative min-h-[280px] select-none bg-brand-night"
+                        onPointerDown={(event) => {
+                          docGalleryDragStart.current = event.clientX;
+                        }}
+                        onPointerUp={(event) => {
+                          if (docGalleryDragStart.current === null) return;
+                          handleDocGallerySwipe(event.clientX - docGalleryDragStart.current);
+                          docGalleryDragStart.current = null;
+                        }}
+                        onPointerCancel={() => {
+                          docGalleryDragStart.current = null;
+                        }}
+                      >
+                        <AnimatePresence mode="wait">
+                          <motion.img
+                            key={activePhoto}
+                            src={activePhoto}
+                            alt={`${activeItem.title} ${activeDocGallery + 1}`}
+                            initial={{ opacity: 0, scale: 1.03 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.985 }}
+                            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                            draggable={false}
+                            className="h-full min-h-[280px] w-full object-cover md:min-h-[520px]"
+                          />
+                        </AnimatePresence>
+                        <div className="absolute inset-0 bg-gradient-to-t from-brand-night/46 via-transparent to-brand-night/20 pointer-events-none" />
+
+                        {galleryPhotos.length > 1 && (
+                          <div className="absolute inset-x-4 top-1/2 z-10 flex -translate-y-1/2 items-center justify-between">
+                            <button
+                              type="button"
+                              onClick={previousPhoto}
+                              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-brand-night/60 text-white backdrop-blur-md transition-colors hover:border-accent/50 hover:text-accent"
+                            >
+                              <ChevronLeft size={20} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={nextPhoto}
+                              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-brand-night/60 text-white backdrop-blur-md transition-colors hover:border-accent/50 hover:text-accent"
+                            >
+                              <ChevronRight size={20} />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col justify-between gap-6 border-t border-white/10 p-5 lg:border-l lg:border-t-0 lg:p-6">
+                        <div>
+                          <SectionKicker>Dokumentasi {activeItem.step}</SectionKicker>
+                          <h3 className="text-2xl font-bold text-white">{activeItem.title}</h3>
+                          <p className="mt-4 text-sm leading-relaxed text-white/58">
+                            Bukti visual kegiatan pada tahap ini ditampilkan dalam format galeri agar setiap momen lebih mudah dilihat.
+                          </p>
+                        </div>
+
+                        <div className="grid grid-cols-4 gap-2 lg:grid-cols-3">
+                          {galleryPhotos.map((photo, photoIndex) => (
+                            <button
+                              key={photo}
+                              type="button"
+                              onClick={() => setActiveDocGallery(photoIndex)}
+                              className={`relative aspect-square overflow-hidden rounded-lg border transition-all ${
+                                photoIndex === activeDocGallery
+                                  ? 'border-accent shadow-[0_0_20px_rgba(203,255,156,0.24)]'
+                                  : 'border-white/10 opacity-55 hover:opacity-100'
+                              }`}
+                            >
+                              <img src={photo} alt="" className="h-full w-full object-cover" />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })()}
+            </AnimatePresence>
         </div>
       </section>
 
