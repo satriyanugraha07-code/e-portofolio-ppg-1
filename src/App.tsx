@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useDeferredValue } from 'react';
 import { 
   motion, AnimatePresence, useScroll, useSpring, useTransform, useInView
 } from 'motion/react';
@@ -11,10 +11,19 @@ import {
   Menu, X, Mail, Instagram, ChevronRight, ChevronLeft, ArrowRight,
   BookOpen, Layout, Zap, Award, ArrowUp,
   GraduationCap, Briefcase, Target, MousePointer2,
-  Sparkles, Layers, Fingerprint, ArrowDown, ExternalLink,
-  Code2, Palette, Globe, Linkedin, Youtube,
+  Sparkles, Layers, Fingerprint, ExternalLink,
+  Code2, Palette, Globe, Linkedin, Youtube, FileText,
   Cog, Wrench, Gauge
 } from 'lucide-react';
+import {
+  artifactCategories,
+  artifactItems,
+  artifactSiklusTabs,
+  type ArtifactAction,
+  type ArtifactCategory,
+  type ArtifactItem,
+  type ArtifactSiklus
+} from './data/artefak';
 
 // --- Data ---
 
@@ -45,7 +54,7 @@ const mechanicalParticles: Array<{
   { kind: 'bearing', size: 38, top: '48%', left: '33%', duration: 19, delay: -12, driftX: '-28px', driftY: '30px', opacity: 0.13, spin: '360deg', color: 'rgba(203,255,156,0.52)' }
 ];
 
-const showcaseData = [
+const showcaseData: any[] = [
   {
     title: "Rencana Pelaksanaan Pembelajaran (RPP)",
     meta: "Perencanaan",
@@ -351,15 +360,24 @@ const TextReveal = ({ text, className = "", delay = 0 }: { text: string, classNa
 };
 
 const NavLink = ({ href, children, isActive, onClick }: { href: string, children: React.ReactNode, isActive: boolean, onClick: () => void }) => (
-  <a 
+  <motion.a 
     href={href} 
     onClick={onClick}
-    className={`px-4 py-2 rounded-full transition-all duration-300 ${
-      isActive ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white'
+    whileHover={{ y: -1 }}
+    whileTap={{ scale: 0.96 }}
+    className={`relative inline-flex items-center rounded-full px-2.5 py-2 text-[11px] font-black transition-colors duration-300 lg:px-3.5 lg:text-xs ${
+      isActive ? 'text-brand-night' : 'text-white/62 hover:text-white'
     }`}
   >
-    {children}
-  </a>
+    {isActive && (
+      <motion.span
+        layoutId="desktop-nav-active"
+        className="absolute inset-0 rounded-full bg-accent shadow-[0_8px_28px_rgba(203,255,156,0.2)]"
+        transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+      />
+    )}
+    <span className="relative z-10 whitespace-nowrap">{children}</span>
+  </motion.a>
 );
 
 const ParallaxText = ({ children, baseHeight = 50 }: { children: React.ReactNode, baseHeight?: number }) => {
@@ -661,347 +679,6 @@ const CoolLoader = ({ onComplete }: { onComplete: () => void, key?: any }) => {
   );
 };
 
-const rppData = {
-  1: {
-    title: "RPP Siklus 1 - Proyeksi Ortogonal",
-    file: "rpp-siklus1.pdf",
-    modul: { fase: "E/10", jp: "8 JP", topik: "Proyeksi", mode: "Praktik" },
-    identitas: [
-      ['Penyusun', 'Satriya Nugraha, S.Pd.'],
-      ['Instansi', 'Universitas Sarjanawiyata Tamansiswa'],
-      ['Tahun Penyusunan', '2026'],
-      ['Jenjang Sekolah', 'Fase E/10 SMK'],
-      ['Mata Pelajaran', 'Dasar-dasar Teknik Mesin (Gambar Teknik)'],
-      ['Alokasi Waktu', '8 x 45 / 8 JP']
-    ],
-    kompetensiAwal: ['Alat gambar manual', 'Satuan alat ukur', 'Aturan garis teknik'],
-    tujuanPembelajaran: [
-      ['1.1', 'Peserta didik mampu memahami konsep proyeksi ortogonal pada sistem proyeksi Amerika dan Eropa dalam gambar teknik dengan benar.'],
-      ['1.2', 'Peserta didik mampu membuat gambar proyeksi benda sederhana menggunakan sistem proyeksi Amerika dan Eropa sesuai kaidah gambar teknik dengan tepat dan rapi. (KKTP)']
-    ],
-    indikator: [
-      ['1.1.1', 'Peserta didik mampu menjelaskan pengertian proyeksi ortogonal dalam gambar teknik dengan benar.'],
-      ['1.1.2', 'Peserta didik mampu membedakan sistem proyeksi Amerika (third angle projection) dan sistem proyeksi Eropa (first angle projection) dengan tepat.'],
-      ['1.2.1', 'Peserta didik mampu menentukan posisi tampak depan, tampak atas, dan tampak samping pada sistem proyeksi Amerika dan Eropa dengan benar.'],
-      ['1.2.2', 'Peserta didik mampu membuat gambar proyeksi benda sederhana menggunakan sistem proyeksi Amerika dan Eropa sesuai standar gambar teknik.']
-    ]
-  },
-  2: {
-    title: "RPP Siklus 2 - Gambar Isometri",
-    file: "rpp-siklus2.pdf",
-    modul: { fase: "E/10", jp: "6 JP", topik: "Isometri", mode: "Praktik" },
-    identitas: [
-      ['Penyusun', 'Satriya Nugraha, S.Pd.'],
-      ['Instansi', 'Universitas Sarjanawiyata Tamansiswa'],
-      ['Tahun Penyusunan', '2026'],
-      ['Jenjang Sekolah', 'Fase E/10 SMK'],
-      ['Mata Pelajaran', 'Dasar-dasar Teknik Mesin (Gambar Teknik)'],
-      ['Alokasi Waktu', '6 x 45 / 6 JP']
-    ],
-    kompetensiAwal: ['Proyeksi ortogonal', 'Sistem proyeksi Amerika/Eropa', 'Penggunaan alat gambar'],
-    tujuanPembelajaran: [
-      ['2.1', 'Peserta didik mampu memahami konsep gambar isometri dan aturan pembuatannya dalam teknik mesin.'],
-      ['2.2', 'Peserta didik mampu membuat gambar isometri benda sederhana dengan proporsi dan sudut yang tepat.']
-    ],
-    indikator: [
-      ['2.1.1', 'Peserta didik mampu menjelaskan pengertian dan karakteristik gambar isometri.'],
-      ['2.1.2', 'Peserta didik mampu membedakan gambar isometri dengan proyeksi ortogonal.'],
-      ['2.2.1', 'Peserta didik mampu menggambar sumbu isometri dengan sudut 30 derajat.'],
-      ['2.2.2', 'Peserta didik mampu membuat gambar isometri benda sederhana dari proyeksi ortogonal.']
-    ]
-  },
-  3: {
-    title: "RPP Siklus 3 - Gambar Perspektif",
-    file: "rpp-siklus3.pdf",
-    modul: { fase: "E/10", jp: "6 JP", topik: "Perspektif", mode: "Praktik" },
-    identitas: [
-      ['Penyusun', 'Satriya Nugraha, S.Pd.'],
-      ['Instansi', 'Universitas Sarjanawiyata Tamansiswa'],
-      ['Tahun Penyusunan', '2026'],
-      ['Jenjang Sekolah', 'Fase E/10 SMK'],
-      ['Mata Pelajaran', 'Dasar-dasar Teknik Mesin (Gambar Teknik)'],
-      ['Alokasi Waktu', '6 x 45 / 6 JP']
-    ],
-    kompetensiAwal: ['Gambar isometri', 'Proyeksi ortogonal', 'Teknik dasar menggambar'],
-    tujuanPembelajaran: [
-      ['3.1', 'Peserta didik mampu memahami konsep gambar perspektif dan titik hilang (vanishing point).'],
-      ['3.2', 'Peserta didik mampu membuat gambar perspektif satu titik dan dua titik hilang.']
-    ],
-    indikator: [
-      ['3.1.1', 'Peserta didik mampu menjelaskan pengertian gambar perspektif dan titik hilang.'],
-      ['3.1.2', 'Peserta didik mampu membedakan perspektif satu titik dan dua titik hilang.'],
-      ['3.2.1', 'Peserta didik mampu membuat gambar perspektif satu titik hilang dengan benar.'],
-      ['3.2.2', 'Peserta didik mampu membuat gambar perspektif dua titik hilang dengan benar.']
-    ]
-  }
-};
-
-const RppPage = ({ onBack }: { onBack: () => void }) => {
-  const [activeSiklus, setActiveSiklus] = useState<1 | 2 | 3>(1);
-  const data = rppData[activeSiklus];
-
-  return (
-    <motion.div
-      key="rpp-page"
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -12 }}
-      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed inset-0 z-[90] overflow-y-auto bg-brand-night text-white"
-    >
-      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(circle_at_18%_8%,rgba(203,255,156,0.14),transparent_34%),radial-gradient(circle_at_84%_16%,rgba(142,255,231,0.08),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_26%)]" />
-      
-      {/* Floating Navigation */}
-      <div className="fixed top-4 left-0 right-0 z-50 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="relative flex items-center justify-between gap-4 px-4 py-3 border border-white/10 rounded-2xl bg-brand-night/80 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
-            <button
-              onClick={onBack}
-              className="inline-flex items-center gap-2 text-white/70 hover:text-accent transition-colors font-mono text-xs uppercase tracking-widest"
-            >
-              <ChevronLeft size={18} /> Kembali
-            </button>
-            
-            {/* Tab Navigation */}
-            <div className="flex items-center gap-1">
-              {[1, 2, 3].map((siklus) => (
-                <button
-                  key={siklus}
-                  onClick={() => setActiveSiklus(siklus as 1 | 2 | 3)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                    activeSiklus === siklus
-                      ? 'bg-accent text-brand-night shadow-[0_4px_20px_rgba(203,255,156,0.3)]'
-                      : 'text-white/60 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  RPP Siklus {siklus}
-                </button>
-              ))}
-            </div>
-            
-            <span className="hidden sm:inline-flex items-center gap-2 text-xs font-medium text-white/60">
-              <BookOpen size={16} className="text-accent" /> Modul
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="relative z-10 max-w-5xl mx-auto px-4 md:px-8 pt-24 pb-8">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeSiklus}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <section className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.035] p-6 md:p-8 shadow-[0_24px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl">
-              <div className="absolute right-0 top-0 h-full w-1/2 bg-[radial-gradient(circle_at_80%_20%,rgba(203,255,156,0.16),transparent_34%)] pointer-events-none" />
-              <div className="relative">
-                <div className="inline-flex items-center px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-[10px] font-semibold mb-4">
-                  Dokumen Perangkat Ajar
-                </div>
-                <h1 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight max-w-3xl mb-4">
-                  {data.title}
-                </h1>
-                <p className="text-white/50 text-xs md:text-sm mb-6">
-                  Rencana Pelaksanaan Pembelajaran (RPP) - Satriya Nugraha, S.Pd.
-                </p>
-                
-                <div className="flex flex-wrap gap-3">
-                  <a
-                    href={`${import.meta.env.BASE_URL}${data.file}`}
-                    download
-                    className="inline-flex items-center gap-2 rounded-full bg-accent text-brand-night px-5 py-2.5 text-xs font-bold hover:bg-accent/90 transition-colors shadow-[0_4px_20px_rgba(203,255,156,0.3)]"
-                  >
-                    <ArrowDown size={15} /> Download PDF
-                  </a>
-                  <a
-                    href={`${import.meta.env.BASE_URL}${data.file}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-xs font-bold text-white hover:bg-white/5 transition-colors"
-                  >
-                    <ExternalLink size={14} /> Buka di Tab Baru
-                  </a>
-                </div>
-              </div>
-            </section>
-
-            <section className="mt-6 pb-8">
-              <div className="flex items-center justify-between gap-4 mb-4">
-                <h2 className="border-l-2 border-accent pl-3 text-base md:text-lg font-black">Preview Dokumen</h2>
-                <a
-                  href={`${import.meta.env.BASE_URL}${data.file}`}
-                  download
-                  className="inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/10 px-4 py-2 text-xs font-bold text-accent hover:bg-accent hover:text-brand-night transition-colors"
-                >
-                  <ArrowDown size={15} /> Download
-                </a>
-              </div>
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.035] shadow-[0_20px_60px_rgba(0,0,0,0.24)] backdrop-blur-xl">
-                <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4">
-                  <div>
-                    <p className="font-bold text-white">{data.title}</p>
-                    <p className="text-xs text-white/45">Letakkan file PDF sebagai public/{data.file} untuk menampilkan preview asli.</p>
-                  </div>
-                  <a
-                    href={`${import.meta.env.BASE_URL}${data.file}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hidden sm:inline-flex items-center gap-2 text-xs font-bold text-white/55 hover:text-accent transition-colors"
-                  >
-                    Buka File <ExternalLink size={14} />
-                  </a>
-                </div>
-                <div className="relative h-[520px] bg-brand-night/45">
-                  <iframe
-                    title={`Preview ${data.title}`}
-                    src={`${import.meta.env.BASE_URL}${data.file}#toolbar=0&navpanes=0`}
-                    className="h-full w-full"
-                  />
-                </div>
-              </div>
-            </section>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </motion.div>
-  );
-};
-
-const MediaPage = ({ onBack }: { onBack: () => void }) => {
-  const [activeTab, setActiveTab] = useState<'bahan' | 'media' | 'lainnya'>('bahan');
-
-  const tabs = [
-    { id: 'bahan', label: 'Bahan Ajar', desc: 'Materi pembelajaran tertulis' },
-    { id: 'media', label: 'Media Ajar', desc: 'Video, animasi, infografis' },
-    { id: 'lainnya', label: 'Lainnya', desc: 'Dokumen pendukung' }
-  ];
-
-  return (
-    <motion.div
-      key="media-page"
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -12 }}
-      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed inset-0 z-[90] overflow-y-auto bg-brand-night text-white"
-    >
-      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(circle_at_18%_8%,rgba(142,255,231,0.14),transparent_34%),radial-gradient(circle_at_84%_16%,rgba(203,255,156,0.08),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_26%)]" />
-      
-      {/* Floating Navigation */}
-      <div className="fixed top-4 left-0 right-0 z-50 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="relative flex items-center justify-between gap-4 px-4 py-3 border border-white/10 rounded-2xl bg-brand-night/80 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
-            <button
-              onClick={onBack}
-              className="inline-flex items-center gap-2 text-white/70 hover:text-accent transition-colors font-mono text-xs uppercase tracking-widest"
-            >
-              <ChevronLeft size={18} /> Kembali
-            </button>
-            
-            {/* Tab Navigation */}
-            <div className="flex items-center gap-1">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as 'bahan' | 'media' | 'lainnya')}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                    activeTab === tab.id
-                      ? 'bg-accent-strong text-brand-night shadow-[0_4px_20px_rgba(142,255,231,0.3)]'
-                      : 'text-white/60 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-            
-            <span className="hidden sm:inline-flex items-center gap-2 text-xs font-medium text-white/60">
-              <Zap size={16} className="text-accent-strong" /> Media
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="relative z-10 max-w-5xl mx-auto px-4 md:px-8 pt-24 pb-8">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <section className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.035] p-6 md:p-8 shadow-[0_24px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl">
-              <div className="absolute right-0 top-0 h-full w-1/2 bg-[radial-gradient(circle_at_80%_20%,rgba(142,255,231,0.16),transparent_34%)] pointer-events-none" />
-              <div className="relative">
-                <div className="inline-flex items-center px-3 py-1 rounded-full bg-accent-strong/10 border border-accent-strong/20 text-accent-strong text-[10px] font-semibold mb-4">
-                  Media Pembelajaran
-                </div>
-                <h1 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-tight max-w-3xl mb-4">
-                  {tabs.find(t => t.id === activeTab)?.label}
-                </h1>
-                <p className="text-white/50 text-xs md:text-sm mb-6">
-                  {tabs.find(t => t.id === activeTab)?.desc} - Satriya Nugraha, S.Pd.
-                </p>
-                
-                <div className="flex flex-wrap gap-3">
-                  <button className="inline-flex items-center gap-2 rounded-full bg-accent-strong text-brand-night px-5 py-2.5 text-xs font-bold hover:bg-accent-strong/90 transition-colors shadow-[0_4px_20px_rgba(142,255,231,0.3)]">
-                    <ArrowDown size={15} /> Download Semua
-                  </button>
-                </div>
-              </div>
-            </section>
-
-            <section className="mt-6">
-              <div className="flex items-center justify-between gap-4 mb-4">
-                <h2 className="border-l-2 border-accent-strong pl-3 text-base md:text-lg font-black">Daftar Dokumen</h2>
-              </div>
-              
-              {/* Placeholder untuk daftar dokumen */}
-              <div className="grid gap-3">
-                {[
-                  { name: 'Bahan Ajar Proyeksi.pdf', size: '2.5 MB', type: 'PDF' },
-                  { name: 'Worksheet Gambar Teknik.docx', size: '1.2 MB', type: 'DOCX' },
-                  { name: 'Modul Pembelajaran Lengkap.pdf', size: '5.8 MB', type: 'PDF' }
-                ].map((doc, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 rounded-xl border border-white/10 bg-white/[0.035] hover:border-accent-strong/30 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-accent-strong/10 flex items-center justify-center text-accent-strong font-bold text-xs">
-                        {doc.type}
-                      </div>
-                      <div>
-                        <p className="font-bold text-sm text-white">{doc.name}</p>
-                        <p className="text-xs text-white/40">{doc.size}</p>
-                      </div>
-                    </div>
-                    <button className="p-2 rounded-lg hover:bg-white/5 text-white/60 hover:text-accent-strong transition-colors">
-                      <ArrowDown size={18} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="mt-6 pb-8">
-              <div className="flex items-center justify-between gap-4 mb-4">
-                <h2 className="border-l-2 border-accent-strong pl-3 text-base md:text-lg font-black">Preview</h2>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-8 text-center">
-                <p className="text-white/40 text-sm">
-                  Preview dokumen akan muncul di sini.\nTaruh file PDF di folder public/media/ untuk menampilkan preview.
-                </p>
-              </div>
-            </section>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </motion.div>
-  );
-};
-
 // --- Sections ---
 
 // --- Data ---
@@ -1011,7 +688,7 @@ const profileDetails = [
   {
     title: 'Latar Belakang',
     shortDesc: 'Lahir dan besar dengan ketertarikan pada inovasi dan pengajaran. Berfokus pada integrasi teknologi dalam pendidikan untuk menciptakan pengalaman belajar yang relevan di era digital.',
-    fullDesc: 'Saya Satriya Nugraha, berasal dari Boyolali dan kini berdomisili di Klaten. Nilai-nilai budaya Jawa seperti gotong royong, tepa selira, andhap asor, dan kesederhanaan membentuk saya menjadi pribadi yang peduli, menghargai kebersamaan, dan menjunjung etika.\n\nPengalaman belajar, menjadi asisten dosen di Universitas Sebelas Maret, aktif berorganisasi, serta mengajar di Wonogiri menguatkan tekad saya untuk menjadi guru. Saya menyadari bahwa guru bukan hanya penyampai materi, tetapi juga pembimbing dan inspirator bagi peserta didik.\n\nMelalui Program PPG, saya ingin menjadi guru profesional yang mampu menciptakan pembelajaran bermakna, adaptif, dan berpusat pada peserta didik, sehingga dapat membantu mereka berkembang sesuai potensi dan karakternya.',
+    fullDesc: 'Saya Satriya Nugraha, berasal dari Boyolali dan saat ini berdomisili di Klaten. Latar belakang budaya Jawa yang lekat dengan nilai gotong royong, tepa selira, andhap asor, dan kesederhanaan turut membentuk karakter saya menjadi pribadi yang peduli, menghargai kebersamaan, serta menjunjung tinggi etika dalam kehidupan sehari-hari.\n\nNilai-nilai tersebut menjadi landasan bagi saya dalam memandang pendidikan sebagai ruang untuk menumbuhkan manusia secara utuh, bukan hanya dari sisi pengetahuan, tetapi juga sikap, karakter, dan kepedulian sosial. Bagi saya, guru memiliki peran penting sebagai pembimbing, teladan, dan inspirator bagi peserta didik.\n\nMelalui Program PPG, saya ingin terus mengembangkan diri menjadi guru profesional yang mampu menciptakan pembelajaran yang bermakna, adaptif, dan berpusat pada peserta didik. Harapannya, saya dapat membantu peserta didik berkembang sesuai potensi, karakter, dan kebutuhan mereka masing-masing.',
     icon: <BookOpen size={24} />,
     largeIcon: <BookOpen className="w-9 h-9 md:w-11 md:h-11" />,
     meta: '3 Narasi',
@@ -1060,7 +737,7 @@ const hobbyDetails = [
     desc: 'Perjalanan membuka jendela wawasan dan mengubah perspektif. Setiap destinasi yang saya kunjungi adalah buku terbuka yang mengajarkan keragaman budaya, adaptasi, dan cara berkomunikasi dengan masyarakat lokal. Pengalaman ini merekatkan toleransi dan nilai-nilai kebersamaan.',
     image: publicAsset('traveling.svg'),
     icon: '✈️',
-    imagePosition: 'object-[center_85%]'
+    imagePosition: 'object-[center_38%]'
   },
   {
     title: 'Fotografi',
@@ -1070,19 +747,684 @@ const hobbyDetails = [
   }
 ];
 
+type EducationTimelineSubItem = {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+};
+
+type EducationTimelineItem = {
+  period: string;
+  year: string;
+  title: string;
+  place: string;
+  desc: string;
+  logo: string;
+  logoAlt: string;
+  logoClassName: string;
+  metaNote: string;
+  subHeading: string;
+  subItems: EducationTimelineSubItem[];
+};
+
+const educationTimeline: EducationTimelineItem[] = [
+  {
+    period: 'Sekarang',
+    year: '2026',
+    title: 'PPG PRAJABATAN',
+    place: 'Universitas Sarjanawiyata Tamansiswa',
+    desc: 'Sedang menempuh Program Pendidikan Profesi Guru di Universitas Sarjanawiyata Tamansiswa sebagai langkah pematangan diri untuk menjadi pendidik yang reflektif, humanis, dan mampu menghadirkan pembelajaran yang bermakna bagi setiap peserta didik.',
+    logo: publicAsset('logos/ust.png'),
+    logoAlt: 'Logo Universitas Sarjanawiyata Tamansiswa',
+    logoClassName: 'object-contain scale-[1.06]',
+    metaNote: '',
+    subHeading: '',
+    subItems: []
+  },
+  {
+    period: 'Karier',
+    year: '2025',
+    title: 'GURU TEKNIK PERMESINAN',
+    place: 'SMK Pancasila 1 Wonogiri',
+    desc: 'Menjadi guru di SMK Pancasila 1 Wonogiri memberi saya ruang untuk belajar memimpin kelas, memahami karakter peserta didik, dan menumbuhkan semangat belajar yang tidak berhenti pada materi, tetapi juga pada pembentukan sikap dan masa depan mereka.',
+    logo: publicAsset('logos/smk.png'),
+    logoAlt: 'Logo SMK Pancasila 1 Wonogiri',
+    logoClassName: 'object-contain scale-[1.15]',
+    metaNote: '',
+    subHeading: '',
+    subItems: []
+  },
+  {
+    period: 'Sarjana',
+    year: '2021-2025',
+    title: 'S1 PENDIDIKAN TEKNIK MESIN',
+    place: 'Universitas Sebelas Maret',
+    desc: 'Menempuh pendidikan selama 3,5 tahun di Universitas Sebelas Maret menjadi fase penting yang membentuk dasar keilmuan, kedisiplinan berpikir, dan keyakinan saya untuk bertumbuh di dunia pendidikan.',
+    logo: publicAsset('logos/uns.png'),
+    logoAlt: 'Logo Universitas Sebelas Maret',
+    logoClassName: 'object-contain scale-[1.1]',
+    metaNote: 'IPK 3,75',
+    subHeading: 'Jejak Bermakna Selama Kuliah',
+    subItems: [
+      {
+        label: 'Organisasi',
+        value: 'Aktif dalam organisasi dan berbagai kegiatan kemahasiswaan yang membentuk kepemimpinan, keberanian berpendapat, serta kemampuan bekerja sama dengan banyak orang.',
+        icon: <Sparkles size={16} />
+      },
+      {
+        label: 'Asisten Dosen',
+        value: 'Menjadi asisten dosen gambar teknik mengajarkan saya untuk teliti, bertanggung jawab, dan sabar dalam mendampingi proses belajar orang lain.',
+        icon: <BookOpen size={16} />
+      }
+    ]
+  },
+  {
+    period: 'Sekolah Menengah',
+    year: '2018-2021',
+    title: 'SMA N 1 TENGARAN',
+    place: 'SMA Negeri 1 Tengaran, Kabupaten Semarang',
+    desc: 'Masa belajar di SMA Negeri 1 Tengaran, Kabupaten Semarang menjadi titik awal yang menumbuhkan semangat belajar, rasa ingin tahu, dan keberanian saya untuk melangkah lebih jauh menuju dunia pendidikan tinggi.',
+    logo: publicAsset('logos/sma.png'),
+    logoAlt: 'Logo SMA Negeri 1 Tengaran',
+    logoClassName: 'object-contain scale-[1.12]',
+    metaNote: '',
+    subHeading: '',
+    subItems: []
+  }
+];
+
+const TimelineEntry = ({
+  item,
+  idx
+}: {
+  item: EducationTimelineItem;
+  idx: number;
+  key?: React.Key;
+}) => {
+  const entryRef = useRef<HTMLDivElement | null>(null);
+  const isInView = useInView(entryRef, { amount: 0.35, margin: "-10% 0px -10% 0px" });
+  const [hasEntered, setHasEntered] = useState(false);
+
+  useEffect(() => {
+    if (isInView) setHasEntered(true);
+  }, [isInView]);
+
+  const animationState = isInView
+    ? {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        filter: 'blur(0px)'
+      }
+    : hasEntered
+      ? {
+          opacity: 0.58,
+          y: 22,
+          scale: 0.985,
+          filter: 'blur(1.2px)'
+        }
+      : {
+          opacity: 0,
+          y: 54,
+          scale: 0.94,
+          filter: 'blur(7px)'
+        };
+
+  return (
+    <motion.div
+      ref={entryRef}
+      animate={animationState}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ x: 4 }}
+      className="relative grid gap-4 rounded-2xl border border-white/10 bg-brand-night/35 p-5 transition-colors hover:border-white/20 hover:bg-white/[0.04] md:grid-cols-[64px_minmax(0,1fr)]"
+    >
+      <motion.div
+        animate={{
+          scale: isInView ? 1 : 0.96,
+          y: isInView ? 0 : 6
+        }}
+        transition={{ duration: 0.35, ease: 'easeOut' }}
+        className="relative z-10 flex h-14 w-14 items-center justify-center"
+      >
+        <img
+          src={item.logo}
+          alt={item.logoAlt}
+          className={`h-full w-full drop-shadow-[0_6px_18px_rgba(0,0,0,0.2)] ${item.logoClassName}`}
+          loading="lazy"
+        />
+      </motion.div>
+      <div>
+        <div className="mb-2 flex flex-wrap items-center gap-2">
+          <span className="rounded-full border border-white/10 bg-white/[0.045] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white/48">
+            {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
+          </span>
+          <span className="rounded-full border border-accent/20 bg-accent/10 px-3 py-1 text-xs font-bold text-accent">
+            {item.period}
+          </span>
+          <span className="rounded-full border border-blue-300/18 bg-blue-400/10 px-3 py-1 text-xs font-bold text-blue-100">
+            {item.year}
+          </span>
+        </div>
+        <h4 className="text-xl font-black text-white">{item.title}</h4>
+        <p className="mt-1 text-sm font-semibold text-accent/85">{item.place}</p>
+        {item.metaNote && (
+          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-white/46">
+            {item.metaNote}
+          </p>
+        )}
+        <p className="mt-3 text-sm leading-relaxed text-white/62">{item.desc}</p>
+        {item.subItems.length > 0 && (
+          <div className="mt-5 border-t border-white/10 pt-4">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="h-px flex-1 bg-gradient-to-r from-accent/55 to-transparent" />
+              <p className="text-xs font-mono font-bold uppercase tracking-[0.32em] text-accent">
+                {item.subHeading}
+              </p>
+            </div>
+            <div className="overflow-hidden rounded-[24px] border border-accent/20 bg-gradient-to-br from-white/[0.05] via-brand-night/55 to-black/25 shadow-[0_20px_50px_rgba(0,0,0,0.18)]">
+              <div className="grid divide-y divide-white/10 md:grid-cols-2 md:divide-x md:divide-y-0">
+                {item.subItems.map((subItem, subIndex) => (
+                  <div
+                    key={`${item.title}-${subItem.label}`}
+                    className={`relative p-5 md:p-6 ${subIndex % 2 === 0 ? 'bg-accent/[0.1]' : 'bg-blue-400/[0.08]'}`}
+                  >
+                    <div className="pointer-events-none absolute right-4 top-3 text-3xl font-black text-white/6">
+                      0{subIndex + 1}
+                    </div>
+                    <div className="mb-3 flex items-center gap-3">
+                      <div className={`flex h-11 w-11 items-center justify-center rounded-2xl border shadow-[0_0_24px_rgba(203,255,156,0.12)] ${subIndex % 2 === 0 ? 'border-accent/25 bg-accent/16 text-accent' : 'border-blue-300/25 bg-blue-400/12 text-blue-200'}`}>
+                        {subItem.icon}
+                      </div>
+                      <p className="text-base font-black uppercase tracking-[0.08em] text-white">
+                        {subItem.label}
+                      </p>
+                    </div>
+                    <p className="max-w-sm text-sm leading-relaxed text-white/82 md:text-[15px]">
+                      {subItem.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+};
+
+const artifactSiklusLabel: Record<ArtifactSiklus, string> = {
+  'siklus-1': 'Siklus 1',
+  'siklus-2': 'Siklus 2',
+  'siklus-3': 'Siklus 3'
+};
+
+const artifactCategoryLabel: Record<ArtifactCategory, string> = {
+  rpp: 'RPP',
+  materi: 'Materi',
+  lkm: 'LKM',
+  media: 'Media',
+  asesmen: 'Asesmen',
+  lainnya: 'Lainnya'
+};
+
+const getArtifactActionLabel = (action: ArtifactAction) => {
+  if (action.type === 'file') return 'Buka File';
+  return 'Slot Siap Isi';
+};
+
+const ArtifactCover = ({ item }: { item: ArtifactItem }) => (
+  <div
+    className={`artifact-cover ${item.preview ? 'artifact-cover--image' : ''}`}
+    style={{
+      '--artifact-accent': item.cover.accent,
+      '--artifact-accent-soft': item.cover.accentSoft
+    } as React.CSSProperties}
+  >
+    {item.preview && (
+      <img
+        src={publicAsset(item.preview)}
+        alt={`Preview ${item.title}`}
+        className="artifact-cover__preview"
+        loading="lazy"
+      />
+    )}
+    <div className="artifact-cover__badge">{item.badge}</div>
+    <div className="artifact-cover__filetype">{item.fileType}</div>
+    {item.preview ? (
+      <div className="artifact-cover__image-caption">
+        <p>{item.cover.kicker}</p>
+        <span>{item.cover.subtitle}</span>
+      </div>
+    ) : (
+      <>
+        <div className="artifact-cover__content">
+          <p>{item.cover.kicker}</p>
+          <h4>{item.cover.title}</h4>
+          <span>{item.cover.subtitle}</span>
+        </div>
+        <div className="artifact-cover__toolbar">
+          {[0, 1, 2, 3, 4, 5].map((dot) => (
+            <span key={dot} />
+          ))}
+        </div>
+        <div className="artifact-cover__device">
+          <div />
+          <span />
+        </div>
+      </>
+    )}
+  </div>
+);
+
+const ArtifactCard = ({
+  item,
+  onOpen,
+  onAnalyze
+}: {
+  item: ArtifactItem;
+  onOpen: (item: ArtifactItem) => void;
+  onAnalyze: (item: ArtifactItem) => void;
+  key?: React.Key;
+}) => {
+  const isPlaceholder = item.action.type === 'placeholder';
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLElement>) => {
+    const card = event.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+
+    card.style.setProperty('--pointer-x', `${x * 100}%`);
+    card.style.setProperty('--pointer-y', `${y * 100}%`);
+    card.style.setProperty('--parallax-x', `${(0.5 - x) * 14}px`);
+    card.style.setProperty('--parallax-y', `${(0.5 - y) * 10}px`);
+    card.style.setProperty('--preview-x', `${(x - 0.5) * 7}px`);
+    card.style.setProperty('--preview-y', `${(y - 0.5) * 5}px`);
+  };
+
+  const handlePointerLeave = (event: React.PointerEvent<HTMLElement>) => {
+    const card = event.currentTarget;
+    card.style.setProperty('--pointer-x', '50%');
+    card.style.setProperty('--pointer-y', '42%');
+    card.style.setProperty('--parallax-x', '0px');
+    card.style.setProperty('--parallax-y', '0px');
+    card.style.setProperty('--preview-x', '0px');
+    card.style.setProperty('--preview-y', '0px');
+  };
+
+  const handleCardClick = () => {
+    if (!isPlaceholder) onOpen(item);
+  };
+
+  return (
+    <motion.article
+      layout
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 16 }}
+      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -10, scale: 1.012 }}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+      onClick={handleCardClick}
+      style={{
+        '--artifact-card-accent': item.cover.accent,
+        '--artifact-card-accent-soft': item.cover.accentSoft,
+        '--pointer-x': '50%',
+        '--pointer-y': '42%',
+        '--parallax-x': '0px',
+        '--parallax-y': '0px',
+        '--preview-x': '0px',
+        '--preview-y': '0px'
+      } as React.CSSProperties}
+      className={`artifact-card group relative overflow-hidden rounded-2xl border border-white/10 bg-[#121623]/92 transition-colors hover:border-accent/35 ${
+        isPlaceholder ? '' : 'cursor-pointer'
+      }`}
+    >
+      <ArtifactCover item={item} />
+      <div className="artifact-card__body flex min-h-[232px] flex-col p-5">
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <span className="rounded-full border border-accent/20 bg-accent/10 px-2.5 py-1 font-mono text-[9px] font-black uppercase tracking-[0.18em] text-accent">
+            {artifactCategoryLabel[item.category]}
+          </span>
+          <span className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-white/48">
+            {artifactSiklusLabel[item.siklus]}
+          </span>
+        </div>
+        <h3 className="artifact-card__title font-black leading-tight text-white">{item.title}</h3>
+        <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-white/58">{item.summary}</p>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          {item.tags.map((tag) => (
+            <span key={tag} className="rounded-full border border-white/10 bg-white/[0.035] px-2.5 py-1 text-[11px] font-bold text-white/45">
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-auto border-t border-white/10 pt-4">
+          <p className="min-w-0 truncate font-mono text-[10px] font-semibold text-white/36">{item.fileName}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                onAnalyze(item);
+              }}
+              className="artifact-card__action inline-flex shrink-0 items-center gap-2 rounded-lg border border-accent/25 bg-accent/10 px-3 py-2 text-[11px] font-black text-accent transition-all hover:-translate-y-0.5 hover:border-accent/45 hover:bg-accent/15 active:translate-y-0"
+            >
+              Analisis
+            </button>
+            <button
+              type="button"
+              disabled={isPlaceholder}
+              onClick={(event) => {
+                event.stopPropagation();
+                onOpen(item);
+              }}
+              className={`artifact-card__action inline-flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-[11px] font-black transition-all active:translate-y-0 ${
+                isPlaceholder
+                  ? 'cursor-not-allowed border border-white/10 bg-white/[0.03] text-white/35'
+                  : 'bg-accent text-brand-night shadow-[0_0_22px_rgba(203,255,156,0.18)] hover:-translate-y-0.5 hover:bg-accent/90'
+              }`}
+            >
+              {getArtifactActionLabel(item.action)}
+              {!isPlaceholder && <ArrowRight size={13} />}
+            </button>
+          </div>
+        </div>
+      </div>
+    </motion.article>
+  );
+};
+
+const evaluationHighlights = [
+  {
+    accent: '#22d3ee',
+    accentSoft: 'rgba(34, 211, 238, 0.15)',
+    title: 'Analisis RPP',
+    desc: 'RPP Siklus 1 yang sudah masuk menunjukkan fokus pembelajaran pada gambar proyeksi dalam mata pelajaran Dasar-Dasar Teknik Mesin. Isinya sudah mengarah pada pembelajaran praktik: siswa dikenalkan konsep proyeksi, diarahkan memahami tampak gambar, lalu diperkuat lewat LKM dan asesmen. Kekuatan RPP ini ada pada keterhubungan antara tujuan, materi, aktivitas, dan bukti belajar. Bagian yang masih bisa diperbaiki adalah penajaman diferensiasi, langkah bantuan untuk siswa yang kesulitan, serta indikator refleksi setelah pertemuan.'
+  },
+  {
+    accent: '#a78bfa',
+    accentSoft: 'rgba(167, 139, 250, 0.15)',
+    title: 'Analisis Media Pembelajaran',
+    desc: 'Media PPT Siklus 1 sudah sesuai dengan kebutuhan materi karena langsung mengangkat gambar teknik, gambar proyeksi, Proyeksi Amerika, dan Proyeksi Eropa. Tampilan slide mendukung penjelasan visual sebelum siswa mengerjakan LKM. Media ini kuat sebagai pengantar konsep, tetapi masih bisa ditingkatkan dengan menambah pertanyaan pemantik, contoh kesalahan gambar yang sering terjadi, dan cek pemahaman singkat agar siswa tidak hanya melihat slide tetapi ikut berpikir.'
+  },
+  {
+    accent: '#14b8a6',
+    accentSoft: 'rgba(20, 184, 166, 0.15)',
+    title: 'Analisis LKM dan Asesmen',
+    desc: 'LKM pertemuan 1 sampai 3 sudah membagi latihan secara bertahap: Proyeksi Eropa, Proyeksi Amerika, lalu latihan lanjutan melengkapi gambar. Asesmen juga sudah mengikuti alur tersebut sehingga penilaian tidak lepas dari aktivitas belajar. Kekuatan artefak ini ada pada konsistensi antara latihan dan evaluasi. Kekurangannya, rubrik singkat dan contoh standar hasil gambar perlu dibuat lebih eksplisit agar siswa tahu ukuran kerja yang rapi dan tepat.'
+  },
+  {
+    accent: '#f59e0b',
+    accentSoft: 'rgba(245, 158, 11, 0.15)',
+    title: 'Analisis Praktik Mengajar',
+    desc: 'Berdasarkan artefak yang sudah ada, praktik mengajar saya terlihat diarahkan pada aktivitas nyata menggambar, bukan hanya penyampaian materi. Siswa diberi media visual, lembar kerja, lalu hasilnya dibaca melalui instrumen asesmen. Ini menunjukkan praktik yang cukup konkret dan relevan dengan pembelajaran kejuruan. Hal yang perlu diperkuat adalah dokumentasi proses bimbingan, catatan kesulitan siswa, dan tindak lanjut setelah asesmen agar perkembangan praktik mengajar lebih terlihat.'
+  }
+];
+
+const cycleComparison = [
+  {
+    cycle: 'Siklus 1',
+    status: 'Artefak sudah masuk',
+    note: 'Data paling kuat saat ini karena RPP, media, LKM, dan asesmen sudah tersedia untuk materi gambar proyeksi.'
+  },
+  {
+    cycle: 'Siklus 2',
+    status: 'Menunggu artefak',
+    note: 'Analisis detail akan lebih akurat setelah RPP, media, LKM, asesmen, atau dokumentasi Siklus 2 ditambahkan.'
+  },
+  {
+    cycle: 'Siklus 3',
+    status: 'Menunggu artefak',
+    note: 'Siklus ini nanti bisa dipakai untuk membaca hasil akhir, perbaikan dari siklus sebelumnya, dan konsistensi peningkatan siswa.'
+  }
+];
+
+const generalEvaluation = {
+  strengths: [
+    'Artefak sudah saling nyambung: RPP memberi arah, media PPT menjelaskan konsep, LKM menjadi latihan, dan asesmen membaca hasil belajar.',
+    'Materi gambar proyeksi cocok dengan bentuk artefak yang dibuat karena membutuhkan visual, praktik manual, dan evaluasi produk gambar.',
+    'LKM per pertemuan membantu pembelajaran lebih runtut sehingga siswa tidak langsung diberi tugas besar tanpa tahapan.'
+  ],
+  weaknesses: [
+    'Diferensiasi untuk siswa yang cepat dan lambat memahami gambar proyeksi masih perlu dibuat lebih terlihat di RPP maupun LKM.',
+    'Rubrik penilaian sebaiknya dipadatkan agar mudah dipakai saat praktik, bukan hanya bagus sebagai dokumen.',
+    'Bukti perkembangan antar siklus belum lengkap karena artefak Siklus 2 dan 3 belum masuk, jadi analisis komparatif masih bersifat awal.'
+  ]
+};
+
+const theoryConnections = [
+  {
+    theory: 'Konstruktivisme',
+    relation: 'Artefak saya mendukung konstruktivisme karena siswa membangun pemahaman gambar proyeksi lewat latihan membaca bentuk dan menggambar tampak, bukan hanya menerima penjelasan.'
+  },
+  {
+    theory: 'Experiential Learning',
+    relation: 'LKM dan praktik menggambar menunjukkan pengalaman langsung. Siswa belajar dari proses mencoba, menemukan kesalahan, lalu memperbaiki hasil gambar.'
+  },
+  {
+    theory: 'Scaffolding',
+    relation: 'Media PPT, contoh proyeksi, dan LKM bertahap bisa menjadi bantuan awal sebelum siswa menggambar lebih mandiri.'
+  },
+  {
+    theory: 'Assessment for Learning',
+    relation: 'Instrumen asesmen saya dapat dipakai untuk membaca kesulitan siswa pada setiap pertemuan, lalu menjadi dasar perbaikan pembelajaran berikutnya.'
+  }
+];
+
+const assessmentDocuments = [
+  {
+    id: 'lampiran-7',
+    lampiran: 'Lampiran 7',
+    title: 'Penilaian Penyusunan Perangkat Pembelajaran',
+    evaluator: 'DPL dan GP',
+    fileName: 'Lampiran 7.pdf',
+    fileHref: 'penilaian/Lampiran 7.pdf',
+    driveHref: '',
+    summary: 'Instrumen penilaian penyusunan perangkat pembelajaran untuk Rancangan Pembelajaran 1-3. Isinya menilai identitas dan kompetensi, pengembangan materi, bahan, sumber, media belajar, serta kesesuaian rancangan pembelajaran.',
+    focus: ['5 halaman', 'Perangkat ajar', 'Rancangan 1-3']
+  },
+  {
+    id: 'lampiran-8',
+    lampiran: 'Lampiran 8',
+    title: 'Penilaian Praktik Mengajar Mahasiswa',
+    evaluator: 'DPL dan GP',
+    fileName: 'Lampiran 8.pdf',
+    fileHref: 'penilaian/Lampiran 8.pdf',
+    driveHref: '',
+    summary: 'Instrumen penilaian praktik mengajar mahasiswa untuk Pembelajaran 1-3. Dokumen ini memuat penilaian membuka pelajaran, kegiatan inti, ketepatan materi, penguasaan pembelajaran, umpan balik, dan pelaksanaan kelas.',
+    focus: ['4 halaman', 'Praktik mengajar', 'Pembelajaran 1-3']
+  }
+];
+
+const teacherModelPillars = [
+  {
+    title: 'Misi Mengembangkan Diri',
+    marker: 'Misi',
+    tone: 'from-cyan-300/22 via-sky-400/10 to-transparent',
+    accent: 'text-cyan-200',
+    accentColor: '#67e8f9',
+    items: [
+      'Membiasakan refleksi setelah mengajar agar setiap kelemahan menjadi bahan perbaikan nyata.',
+      'Mengembangkan perangkat ajar yang rapi, relevan, dan mudah dipakai di kelas kejuruan.',
+      'Terus belajar teknologi pembelajaran agar materi teknik lebih visual, hidup, dan dekat dengan siswa.'
+    ]
+  },
+  {
+    title: 'Kompetensi yang Ingin Dibangun',
+    marker: 'Skill',
+    tone: 'from-amber-300/24 via-orange-400/10 to-transparent',
+    accent: 'text-amber-200',
+    accentColor: '#fde68a',
+    items: [
+      'Kompetensi pedagogik untuk membaca kebutuhan siswa dan memilih strategi yang tepat.',
+      'Kompetensi profesional pada bidang Teknik Mesin, terutama gambar teknik dan praktik kerja industri.',
+      'Kompetensi digital untuk membuat media, dokumentasi, dan evaluasi pembelajaran yang lebih modern.'
+    ]
+  },
+  {
+    title: 'Karakter Guru Ideal',
+    marker: 'Karakter',
+    tone: 'from-rose-300/22 via-pink-400/10 to-transparent',
+    accent: 'text-rose-200',
+    accentColor: '#fecdd3',
+    items: [
+      'Humanis tetapi tetap tegas, dekat dengan siswa tanpa kehilangan arah pembelajaran.',
+      'Reflektif, jujur pada kekurangan, dan tidak berhenti memperbaiki cara mengajar.',
+      'Kreatif, disiplin, komunikatif, serta mampu menjadi teladan sikap kerja bagi peserta didik.'
+    ]
+  }
+];
+
+const selfDevelopmentStrategies = [
+  {
+    step: '01',
+    title: 'Audit Praktik Mengajar',
+    desc: 'Mencatat bagian pembelajaran yang berhasil, bagian yang belum efektif, dan respon siswa setelah proses mengajar.'
+  },
+  {
+    step: '02',
+    title: 'Upgrade Perangkat',
+    desc: 'Memperbaiki RPP, media, LKM, dan asesmen berdasarkan bukti kelas, bukan sekadar mengganti tampilan dokumen.'
+  },
+  {
+    step: '03',
+    title: 'Kolaborasi & Umpan Balik',
+    desc: 'Meminta masukan dari DPL, GP, teman sejawat, dan siswa agar pengembangan diri tidak berjalan sendirian.'
+  },
+  {
+    step: '04',
+    title: 'Portofolio Bertumbuh',
+    desc: 'Mengarsipkan karya, dokumentasi, penilaian, dan refleksi sebagai bukti perkembangan profesional yang bisa ditelusuri.'
+  }
+];
+
+type CompetencyCategoryId = 'pedagogik' | 'teknik' | 'teknologi' | 'kepemimpinan';
+
+const competencyCategories: Array<{
+  id: CompetencyCategoryId;
+  label: string;
+  icon: React.ReactNode;
+  gradient: string;
+  activeRing: string;
+}> = [
+  {
+    id: 'pedagogik',
+    label: 'Pedagogik',
+    icon: <BookOpen size={15} />,
+    gradient: 'from-accent to-accent-strong',
+    activeRing: 'shadow-accent/18'
+  },
+  {
+    id: 'teknik',
+    label: 'Teknik',
+    icon: <Wrench size={15} />,
+    gradient: 'from-[#d9ffac] to-[#8effe7]',
+    activeRing: 'shadow-accent/16'
+  },
+  {
+    id: 'teknologi',
+    label: 'Teknologi',
+    icon: <Code2 size={15} />,
+    gradient: 'from-accent-strong to-[#b8fff1]',
+    activeRing: 'shadow-accent-strong/16'
+  },
+  {
+    id: 'kepemimpinan',
+    label: 'Kepemimpinan',
+    icon: <Award size={15} />,
+    gradient: 'from-[#cbff9c] to-[#fff0b8]',
+    activeRing: 'shadow-accent/16'
+  }
+];
+
+const competencyItems: Record<CompetencyCategoryId, Array<{
+  title: string;
+  level: 'Mahir' | 'Menengah';
+  icon: React.ReactNode;
+}>> = {
+  pedagogik: [
+    { title: 'Memahami karakteristik peserta didik', level: 'Menengah', icon: <Fingerprint size={34} /> },
+    { title: 'Merancang pembelajaran berbasis praktik', level: 'Menengah', icon: <Layout size={34} /> },
+    { title: 'Mengelola kelas dan bengkel secara efektif', level: 'Mahir', icon: <Layers size={34} /> },
+    { title: 'Melaksanakan asesmen keterampilan', level: 'Mahir', icon: <Target size={34} /> },
+    { title: 'Membimbing sikap dan karakter kerja siswa', level: 'Menengah', icon: <GraduationCap size={34} /> }
+  ],
+  teknik: [
+    { title: 'Gambar Teknik dan CAD', level: 'Mahir', icon: <Palette size={34} /> },
+    { title: 'Pemrograman dan Operasi CNC', level: 'Mahir', icon: <Code2 size={34} /> },
+    { title: 'Fabrikasi dan Pengelasan', level: 'Menengah', icon: <Wrench size={34} /> },
+    { title: 'Teknik Pemesinan Konvensional', level: 'Mahir', icon: <Cog size={34} /> },
+    { title: 'Pengukuran Presisi dan Quality Control', level: 'Mahir', icon: <Gauge size={34} /> },
+    { title: 'Keselamatan dan Kesehatan Kerja (K3)', level: 'Mahir', icon: <Award size={34} /> },
+    { title: 'Proses Manufaktur dan Produksi', level: 'Mahir', icon: <Briefcase size={34} /> }
+  ],
+  teknologi: [
+    { title: 'Pemanfaatan AI dalam Pembelajaran Teknik Mesin', level: 'Mahir', icon: <Sparkles size={34} /> },
+    { title: 'Pembuatan Konten Digital Pembelajaran', level: 'Mahir', icon: <FileText size={34} /> },
+    { title: 'Penggunaan Platform Pembelajaran Digital', level: 'Mahir', icon: <Globe size={34} /> },
+    { title: 'Editing Video dan Media Pembelajaran Interaktif', level: 'Mahir', icon: <Youtube size={34} /> },
+    { title: 'Literasi Digital dan Adaptasi Teknologi Industri 4.0', level: 'Mahir', icon: <Zap size={34} /> }
+  ],
+  kepemimpinan: [
+    { title: 'Komunikasi dan Public Speaking', level: 'Mahir', icon: <Mail size={34} /> },
+    { title: 'Kerja Sama dan Kolaborasi Tim', level: 'Mahir', icon: <Layers size={34} /> },
+    { title: 'Kepemimpinan dan Manajemen Diri', level: 'Mahir', icon: <Target size={34} /> },
+    { title: 'Pembinaan Karakter dan Etos Kerja', level: 'Menengah', icon: <GraduationCap size={34} /> },
+    { title: 'Kewirausahaan dan Jiwa Inovatif', level: 'Menengah', icon: <Briefcase size={34} /> }
+  ]
+};
+
+const youtubeChannelUrl = 'https://www.youtube.com/@satriyanugraha8440';
+const youtubeVideoUrl = 'https://youtu.be/jMjdjtP_nMY';
+const youtubeVideoId = 'jMjdjtP_nMY';
+const youtubeEmbedUrl = `https://www.youtube.com/embed/${youtubeVideoId}?enablejsapi=1&autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1`;
+
 export default function App() {
   const [activeSection, setActiveSection] = useState('beranda');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeShowcase, setActiveShowcase] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-  const [activeProfilePopup, setActiveProfilePopup] = useState<number | null>(null);
-  const [activeHobbyPopup, setActiveHobbyPopup] = useState<number | null>(null);
   const [activeShowcasePopup, setActiveShowcasePopup] = useState<number | null>(null);
-  const [activePage, setActivePage] = useState<'home' | 'rpp' | 'media'>('home');
-  const [openDocGallery, setOpenDocGallery] = useState<number | null>(0);
-  const [activeDocGallery, setActiveDocGallery] = useState(0);
+  const [openDocGallery, setOpenDocGallery] = useState<number | null>(null);
+  const [activeGalleryCard, setActiveGalleryCard] = useState(0);
+  const [activeArtifactSiklus, setActiveArtifactSiklus] = useState<'semua' | ArtifactSiklus>('semua');
+  const [activeArtifactCategory, setActiveArtifactCategory] = useState<'semua' | ArtifactCategory>('semua');
+  const [activeArtifactAnalysis, setActiveArtifactAnalysis] = useState<ArtifactItem | null>(null);
+  const [activeCompetencyCategory, setActiveCompetencyCategory] = useState<CompetencyCategoryId>('pedagogik');
+  const [isVideoSoundEnabled, setIsVideoSoundEnabled] = useState(false);
+  const [isVideoInView, setIsVideoInView] = useState(false);
+  const [hasVideoEntered, setHasVideoEntered] = useState(false);
   const docGalleryDragStart = useRef<number | null>(null);
+  const galleryCardRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const activeGalleryCardRef = useRef(0);
+  const galleryAutoScrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const youtubeIframeRef = useRef<HTMLIFrameElement | null>(null);
+  const videoSoundEnabledRef = useRef(false);
+  const deferredArtifactSiklus = useDeferredValue(activeArtifactSiklus);
+  const deferredArtifactCategory = useDeferredValue(activeArtifactCategory);
+  const visibleArtifactItems = artifactItems.filter((item) => {
+    const matchesSiklus = deferredArtifactSiklus === 'semua' || item.siklus === deferredArtifactSiklus;
+    const matchesCategory = deferredArtifactCategory === 'semua' || item.category === deferredArtifactCategory;
+    return matchesSiklus && matchesCategory;
+  });
+  const activeCompetency = competencyCategories.find((category) => category.id === activeCompetencyCategory) ?? competencyCategories[0];
+  const visibleCompetencies = competencyItems[activeCompetencyCategory];
+  const navigationItems = [
+    { id: 'beranda', label: 'Beranda' },
+    { id: 'profil', label: 'Profil' },
+    { id: 'dokumentasi', label: 'Dokumentasi' },
+    { id: 'artefak', label: 'Artefak' },
+    { id: 'analisis-evaluasi', label: 'Analisis' },
+    { id: 'penilaian', label: 'Penilaian' },
+    { id: 'model-guru', label: 'Model Guru' },
+    { id: 'video', label: 'Video' },
+    { id: 'kontak', label: 'Kontak' }
+  ];
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -1095,62 +1437,159 @@ export default function App() {
   const orbY2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const bgOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [1, 0.8, 0.8, 1]);
   const profileRotate = useTransform(scrollYProgress, [0, 0.2], [2, 0]);
-  const handleDocGallerySwipe = (offsetX: number) => {
-    const galleryLength = openDocGallery === null
-      ? documentationPhotos.length
-      : (documentationPhotos[openDocGallery]?.galleryPhotos?.length ?? 1);
 
-    if (Math.abs(offsetX) < 45 || galleryLength <= 1) return;
-    setActiveDocGallery((prev) => (
-      offsetX < 0
-        ? (prev + 1) % galleryLength
-        : (prev + galleryLength - 1) % galleryLength
-    ));
-  };
   const documentationPhotos = [
     {
       step: '01',
       side: 'left',
       title: 'Orientasi & Pemetaan',
+      summary: 'Momen awal pemetaan kebutuhan, ritme kelas, dan suasana belajar sebagai dasar menyusun langkah pembelajaran berikutnya.',
       isPhoto: true,
-      photo: publicAsset('fase1.jpg'),
+      photo: publicAsset('galeri-01.jpg'),
       galleryPhotos: [
-        publicAsset('fase1-1.jpg'),
-        publicAsset('fase1-2.jpg'),
-        publicAsset('fase1-3.jpg'),
-        publicAsset('fase1-4.jpg')
+        publicAsset('galeri-01.jpg'),
+        publicAsset('galeri-02.jpg'),
+        publicAsset('galeri-03.jpg'),
+        publicAsset('galeri-04.jpg')
       ]
     },
     {
       step: '02',
       side: 'right',
       title: 'Desain Strategis',
+      summary: 'Perancangan strategi, perangkat, dan arah pembelajaran agar proses di kelas lebih terarah, relevan, dan terukur.',
       isPhoto: true,
-      photo: publicAsset('fase2.jpg'),
-      galleryPhotos: [publicAsset('fase2.jpg')]
+      photo: publicAsset('galeri-05.jpg'),
+      galleryPhotos: [
+        publicAsset('galeri-05.jpg'),
+        publicAsset('galeri-06.jpg'),
+        publicAsset('galeri-07.jpg'),
+        publicAsset('galeri-08.jpg')
+      ]
     },
     {
       step: '03',
       side: 'left',
       title: 'Implementasi Nyata',
+      summary: 'Pelaksanaan pembelajaran di lapangan yang memperlihatkan interaksi nyata, praktik, dan hasil dari strategi yang telah disiapkan.',
       isPhoto: true,
-      photo: publicAsset('fase3.jpg'),
-      galleryPhotos: [publicAsset('fase3.jpg')]
+      photo: publicAsset('galeri-09.jpg'),
+      galleryPhotos: [
+        publicAsset('galeri-09.jpg'),
+        publicAsset('galeri-10.jpg'),
+        publicAsset('galeri-11.jpg'),
+        publicAsset('galeri-12.jpg')
+      ]
     }
   ];
+
+  const documentationGalleryItems = documentationPhotos
+    .flatMap((item) => {
+      const photos = item.galleryPhotos?.length ? item.galleryPhotos : [item.photo];
+      return photos.map((photo, photoIndex) => ({
+        id: `${item.step}-${photoIndex}`,
+        step: item.step,
+        title: item.title,
+        photoIndex,
+        totalPhotos: photos.length,
+        photo
+      }));
+    })
+    .map((item, index) => ({
+      ...item,
+      galleryLabel: `Galeri ${String(index + 1).padStart(2, '0')}`,
+      alt: `Galeri ${String(index + 1).padStart(2, '0')}`
+    }));
+
+  const activeFullscreenItem = openDocGallery !== null ? documentationGalleryItems[openDocGallery] : null;
+  const activeFullscreenPhoto = activeFullscreenItem?.photo;
+
+  const handleDocGallerySwipe = (offsetX: number) => {
+    const galleryLength = documentationGalleryItems.length;
+
+    if (openDocGallery === null || Math.abs(offsetX) < 45 || galleryLength <= 1) return;
+    setOpenDocGallery((prev) => {
+      if (prev === null) return prev;
+      return offsetX < 0
+        ? (prev + 1) % galleryLength
+        : (prev + galleryLength - 1) % galleryLength;
+    });
+  };
+
+  const handleGalleryCardHover = (index: number) => {
+    if (activeGalleryCardRef.current === index) return;
+
+    activeGalleryCardRef.current = index;
+    setActiveGalleryCard(index);
+
+    if (galleryAutoScrollTimer.current) {
+      clearTimeout(galleryAutoScrollTimer.current);
+    }
+
+    galleryAutoScrollTimer.current = setTimeout(() => {
+      const container = document.getElementById('doc-gallery-scroll');
+      const card = galleryCardRefs.current[index];
+      if (!container || !card) return;
+
+      const containerRect = container.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      const centeredOffset = (cardRect.left - containerRect.left) - ((container.clientWidth - cardRect.width) / 2);
+
+      container.scrollTo({
+        left: container.scrollLeft + centeredOffset,
+        behavior: 'smooth'
+      });
+    }, 180);
+  };
+
+  const handleOpenArtifact = (item: ArtifactItem) => {
+    if (item.action.type === 'file') {
+      window.open(publicAsset(item.action.href), '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const sendYoutubeCommand = (func: string, args: unknown[] = []) => {
+    youtubeIframeRef.current?.contentWindow?.postMessage(
+      JSON.stringify({
+        event: 'command',
+        func,
+        args
+      }),
+      'https://www.youtube.com'
+    );
+  };
+
+  const activateYoutubePlayback = () => {
+    videoSoundEnabledRef.current = true;
+    setIsVideoSoundEnabled(true);
+    sendYoutubeCommand('unMute');
+    sendYoutubeCommand('setVolume', [86]);
+    sendYoutubeCommand('playVideo');
+  };
+
+  const muteYoutubePlayback = () => {
+    videoSoundEnabledRef.current = false;
+    setIsVideoSoundEnabled(false);
+    sendYoutubeCommand('mute');
+  };
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => setCursorPos({ x: e.clientX, y: e.clientY });
     const handleScroll = () => {
-      const sections = ['beranda', 'profil', 'perjalanan', 'artefak', 'kontak'];
-      const current = sections.find(section => {
+      const sections = ['beranda', 'profil', 'dokumentasi', 'artefak', 'analisis-evaluasi', 'penilaian', 'model-guru', 'video', 'kontak'];
+      const marker = window.innerHeight * 0.36;
+      let current = sections[0];
+
+      sections.forEach((section) => {
         const el = document.getElementById(section);
         if (el) {
           const rect = el.getBoundingClientRect();
-          return rect.top >= -200 && rect.top <= 200;
+          if (rect.top <= marker) {
+            current = section;
+          }
         }
-        return false;
       });
+
       if (current) setActiveSection(current);
     };
 
@@ -1166,12 +1605,104 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (isLoading) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    if (isLoading) return;
+
+    const videoSection = document.getElementById('video');
+    if (!videoSection) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const isVisible = entry.isIntersecting;
+        setIsVideoInView(isVisible);
+
+        if (isVisible) {
+          setHasVideoEntered(true);
+          sendYoutubeCommand('playVideo');
+          if (videoSoundEnabledRef.current) {
+            sendYoutubeCommand('unMute');
+            sendYoutubeCommand('setVolume', [86]);
+          } else {
+            sendYoutubeCommand('mute');
+          }
+        } else {
+          sendYoutubeCommand('pauseVideo');
+        }
+      },
+      { rootMargin: '-12% 0px -12% 0px', threshold: [0, 0.08, 0.18] }
+    );
+
+    observer.observe(videoSection);
+
+    return () => {
+      observer.disconnect();
+      sendYoutubeCommand('pauseVideo');
+    };
   }, [isLoading]);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (activeSection === 'video') {
+      setHasVideoEntered(true);
+      setIsVideoInView(true);
+      window.setTimeout(() => {
+        sendYoutubeCommand('playVideo');
+        if (videoSoundEnabledRef.current) {
+          sendYoutubeCommand('unMute');
+          sendYoutubeCommand('setVolume', [86]);
+        } else {
+          sendYoutubeCommand('mute');
+        }
+      }, 260);
+      return;
+    }
+
+    if (hasVideoEntered) {
+      setIsVideoInView(false);
+      sendYoutubeCommand('pauseVideo');
+    }
+  }, [activeSection, hasVideoEntered, isLoading]);
+
+  useEffect(() => {
+    document.body.style.overflow = isLoading || openDocGallery !== null || activeArtifactAnalysis !== null ? 'hidden' : 'unset';
+  }, [activeArtifactAnalysis, isLoading, openDocGallery]);
+
+  useEffect(() => {
+    if (activeArtifactAnalysis === null) return;
+
+    const handleAnalysisKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setActiveArtifactAnalysis(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleAnalysisKeydown);
+    return () => window.removeEventListener('keydown', handleAnalysisKeydown);
+  }, [activeArtifactAnalysis]);
+
+  useEffect(() => {
+    if (openDocGallery === null) return;
+
+    const handleGalleryKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpenDocGallery(null);
+        return;
+      }
+
+      if (documentationGalleryItems.length <= 1) return;
+
+      if (event.key === 'ArrowRight') {
+        setOpenDocGallery((prev) => (prev === null ? prev : (prev + 1) % documentationGalleryItems.length));
+      }
+
+      if (event.key === 'ArrowLeft') {
+        setOpenDocGallery((prev) => (prev === null ? prev : (prev + documentationGalleryItems.length - 1) % documentationGalleryItems.length));
+      }
+    };
+
+    window.addEventListener('keydown', handleGalleryKeydown);
+    return () => window.removeEventListener('keydown', handleGalleryKeydown);
+  }, [documentationGalleryItems.length, openDocGallery]);
 
   return (
     <div className="relative min-h-screen text-white font-sans overflow-x-hidden">
@@ -1257,30 +1788,6 @@ export default function App() {
               className="fixed bottom-40 right-[10%] w-[35rem] h-[35rem] rounded-full blur-[150px] bg-accent/10 animate-float-orb-reverse pointer-events-none z-0" 
             />
 
-            <AnimatePresence mode="wait">
-              {activePage === 'rpp' && (
-                <RppPage
-                  onBack={() => {
-                    setActivePage('home');
-                    setTimeout(() => {
-                      const element = document.getElementById('artefak');
-                      if (element) element.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
-                  }}
-                />
-              )}
-              {activePage === 'media' && (
-                <MediaPage
-                  onBack={() => {
-                    setActivePage('home');
-                    setTimeout(() => {
-                      document.getElementById('artefak')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 80);
-                  }}
-                />
-              )}
-            </AnimatePresence>
-
             {/* Header */}
             <motion.header 
               variants={{
@@ -1289,9 +1796,10 @@ export default function App() {
               }}
               className="fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-2"
             >
-        <div className="max-w-6xl mx-auto">
-          <div className="relative flex items-center justify-between gap-4 md:gap-6 px-4 py-1.5 border border-white/10 rounded-full bg-brand-blue/40 backdrop-blur-xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
-            <a href="#beranda" className="flex items-center gap-4 md:gap-6">
+        <div className="mx-auto max-w-7xl">
+          <div className="relative flex items-center justify-between gap-3 overflow-hidden rounded-full border border-accent/10 bg-brand-night/72 px-3 py-1.5 shadow-[0_10px_34px_rgba(0,0,0,0.34)] backdrop-blur-2xl md:px-4">
+            <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
+            <a href="#beranda" className="relative z-10 flex shrink-0 items-center gap-3 lg:gap-4">
               <div className="relative w-8 h-8 md:w-10 md:h-10 group shrink-0">
                 <img 
                   src={publicAsset('logo.png')} 
@@ -1300,28 +1808,30 @@ export default function App() {
                   referrerPolicy="no-referrer"
                 />
               </div>
-              <div className="flex flex-col text-left">
+              <div className="hidden flex-col text-left xl:flex">
                 <span className="text-[11px] md:text-[13px] font-bold leading-tight whitespace-nowrap">Universitas Sarjanawiyata</span>
                 <span className="text-[11px] md:text-[13px] font-bold leading-tight whitespace-nowrap">Tamansiswa</span>
               </div>
             </a>
 
-            <nav className="hidden md:flex items-center gap-2">
-              {['Beranda', 'Profil', 'Perjalanan', 'Artefak', 'Kontak'].map((item) => (
-                <div key={item}>
+            <nav className="relative z-10 hidden flex-1 items-center justify-end gap-1 lg:flex">
+              {navigationItems.map((item) => (
+                <div key={item.id} className="shrink-0">
                   <NavLink 
-                    href={`#${item.toLowerCase()}`}
-                    isActive={activeSection === item.toLowerCase()}
-                    onClick={() => setActiveSection(item.toLowerCase())}
+                    href={`#${item.id}`}
+                    isActive={activeSection === item.id}
+                    onClick={() => {
+                      setActiveSection(item.id);
+                    }}
                   >
-                    {item}
+                    {item.label}
                   </NavLink>
                 </div>
               ))}
             </nav>
 
             <button 
-              className="md:hidden p-2 text-white glass-card border-accent/20 bg-accent/10 rounded-xl"
+              className="relative z-10 p-2 text-white glass-card border-accent/20 bg-accent/10 rounded-xl lg:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X /> : <Menu size={24} className="text-accent" />}
@@ -1336,16 +1846,23 @@ export default function App() {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="absolute top-full left-4 right-4 mt-2 p-4 grid gap-2 rounded-3xl border border-white/12 bg-brand-night/95 backdrop-blur-xl shadow-2xl md:hidden"
+              className="absolute top-full left-4 right-4 mt-2 p-4 grid gap-2 rounded-3xl border border-white/12 bg-brand-night/95 backdrop-blur-xl shadow-2xl lg:hidden"
             >
-              {['Beranda', 'Profil', 'Perjalanan', 'Artefak', 'Kontak'].map((item) => (
+              {navigationItems.map((item) => (
                 <a 
-                  key={item} 
-                  href={`#${item.toLowerCase()}`}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="px-4 py-3 rounded-2xl text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                  key={item.id} 
+                  href={`#${item.id}`}
+                  onClick={() => {
+                    setActiveSection(item.id);
+                    setIsMenuOpen(false);
+                  }}
+                  className={`px-4 py-3 rounded-2xl transition-colors ${
+                    activeSection === item.id
+                      ? 'bg-accent text-brand-night font-black'
+                      : 'text-white/70 hover:text-white hover:bg-white/5'
+                  }`}
                 >
-                  {item}
+                  {item.label}
                 </a>
               ))}
             </motion.nav>
@@ -1515,298 +2032,848 @@ export default function App() {
         <section id="profil" className="relative scroll-mt-16 pt-12 min-h-screen flex flex-col justify-center pb-24">
           <Reveal direction="up" className="text-center mb-14">
             <SectionKicker>Identitas Personal</SectionKicker>
-            <h2 className="text-4xl md:text-5xl lg:text-[72px] font-bold tracking-tight text-white mb-6">Profil</h2>
+            <h2 className="text-gradient mb-6">Profil</h2>
             <div className="w-24 h-1 bg-accent mx-auto rounded-full" />
           </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10 w-full">
-            {profileDetails.map((item, i) => (
-              <Reveal key={i} direction={i === 0 ? "right" : i === 1 ? "up" : "left"} delay={0.1 * (i + 1)} className="h-full">
-                <motion.button
-                  type="button"
-                  onClick={() => setActiveProfilePopup(i)}
-                  whileHover={{ y: -8 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="glass-card group relative flex h-full w-full flex-col overflow-hidden border-white/10 bg-white/[0.035] p-6 text-left transition-all hover:border-accent/40 hover:bg-white/[0.055] md:p-7"
-                >
-                  <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/45 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                  <div className="mb-7 flex items-start justify-between gap-4">
-                    <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border transition-transform duration-500 group-hover:scale-110 ${item.iconBgClass}`}>
-                      {item.icon}
+          <div className="relative z-10 grid w-full gap-6 lg:grid-cols-12">
+            <Reveal direction="right" className="lg:col-span-7">
+              <div className="glass-card relative h-full overflow-hidden border-accent/20 bg-white/[0.035] p-6 md:p-8">
+                <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-accent/10 blur-3xl" />
+                <div className="relative z-10">
+                  <div className="max-w-3xl">
+                    <div className="mb-6 border-b border-white/10 pb-5">
+                      <div className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-accent">{profileDetails[0].meta}</div>
+                      <h3 className="mt-2 text-3xl font-black leading-tight text-white md:text-4xl">{profileDetails[0].title}</h3>
                     </div>
-                    <div className="rounded-full border border-white/10 bg-white/[0.045] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-white/50">
-                      {item.meta}
+
+                    <div className="space-y-4 text-sm leading-7 text-white/76 md:text-[15px] md:leading-8">
+                      {profileDetails[0].fullDesc.split('\n\n').map((para, idx) => (
+                        <p key={idx}>{para}</p>
+                      ))}
                     </div>
-                  </div>
 
-                  <h3 className="mb-3 text-2xl font-bold text-white transition-colors group-hover:text-accent">{item.title}</h3>
-                  <p className="mb-6 min-h-[84px] text-sm leading-relaxed text-white/62">
-                    {item.shortDesc}
-                  </p>
-
-                  <div className="mt-auto space-y-3">
-                    <div className="flex flex-wrap gap-2">
-                      {item.previewItems.map((preview) => (
-                        <span key={preview} className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-white/62">
+                    <div className="mt-6 flex flex-wrap gap-2">
+                      {profileDetails[0].previewItems.map((preview) => (
+                        <span key={preview} className="rounded-full border border-accent/15 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent/90">
                           {preview}
                         </span>
                       ))}
                     </div>
-                    <div className="flex items-center justify-between border-t border-white/10 pt-4">
-                      <span className="text-sm font-bold text-accent">{item.cta}</span>
-                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-brand-night transition-transform group-hover:translate-x-1">
-                        <ArrowRight size={17} />
-                      </span>
-                    </div>
                   </div>
-                </motion.button>
-              </Reveal>
-            ))}
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal direction="left" className="lg:col-span-5">
+              <div className="space-y-5">
+                {profileDetails[0].image && (
+                  <motion.div
+                    animate={{ y: [0, -6, 0] }}
+                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                    className="relative w-full"
+                  >
+                    <div className="absolute -inset-4 rounded-[1.8rem] bg-accent/16 blur-3xl" />
+                    <img
+                      src={profileDetails[0].image}
+                      alt="Satriya Nugraha"
+                      className="relative aspect-[16/7] w-full rounded-[1.4rem] border border-white/15 object-cover object-[center_24%] shadow-[0_22px_70px_rgba(0,0,0,0.36)]"
+                    />
+                    <p className="mt-2 text-center font-mono text-[9px] uppercase tracking-[0.2em] text-white/38">
+                      Satriya Nugraha
+                    </p>
+                  </motion.div>
+                )}
+
+                <div className="glass-card relative overflow-hidden border-blue-400/20 bg-blue-400/[0.035] p-6 md:p-8">
+                <div className="pointer-events-none absolute -bottom-20 -right-16 h-64 w-64 rounded-full bg-blue-400/10 blur-3xl" />
+                <div className="relative z-10">
+                  <div className="mb-5 flex items-center justify-between gap-4">
+                    <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border ${profileDetails[2].iconBgClass}`}>
+                      {profileDetails[2].icon}
+                    </div>
+                    <span className="rounded-full border border-white/10 bg-white/[0.045] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-white/50">
+                      {profileDetails[2].meta}
+                    </span>
+                  </div>
+                  <h3 className="text-3xl font-black text-white">{profileDetails[2].title}</h3>
+                  <p className="mt-5 text-sm leading-relaxed text-white/72 md:text-base">
+                    {profileDetails[2].fullDesc}
+                  </p>
+                  <div className="mt-6 grid gap-3">
+                    {profileDetails[2].previewItems.map((preview) => (
+                      <div key={preview} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3 text-sm font-semibold text-white/72">
+                        <span className="h-2 w-2 rounded-full bg-blue-300" />
+                        {preview}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal direction="up" className="lg:col-span-12">
+              <div className="space-y-5">
+                <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <SectionKicker>{profileDetails[1].meta}</SectionKicker>
+                    <h3 className="text-3xl font-black text-white">Galeri Hobi</h3>
+                  </div>
+                  <p className="max-w-xl text-sm leading-relaxed text-white/58">
+                    {profileDetails[1].shortDesc}
+                  </p>
+                </div>
+
+                <div className="grid gap-5 md:grid-cols-3">
+                  {hobbyDetails.map((hobby) => (
+                    <motion.div
+                      key={hobby.title}
+                      whileHover={{ y: -6 }}
+                      className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.035] shadow-[0_20px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl transition-colors hover:border-accent/35"
+                    >
+                      <div className="relative aspect-[4/3] overflow-hidden">
+                        <img
+                          src={hobby.image}
+                          alt={hobby.title}
+                          className={`h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 ${hobby.imagePosition || ''}`}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-brand-night/80 via-brand-night/18 to-transparent" />
+                        <h4 className="absolute bottom-4 left-4 text-2xl font-black text-white">{hobby.title}</h4>
+                      </div>
+                      <div className="p-5">
+                        <p className="text-sm leading-relaxed text-white/64">{hobby.desc}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal direction="up" className="lg:col-span-12">
+              <div className="relative">
+                <div className="mb-8">
+                  <div>
+                    <SectionKicker>Riwayat Hidup</SectionKicker>
+                    <h3 className="text-3xl font-black text-white md:text-4xl">Riwayat Hidup</h3>
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <div className="absolute left-5 top-3 hidden h-[calc(100%-1.5rem)] w-px bg-gradient-to-b from-accent via-white/15 to-transparent md:block" />
+                  <div className="grid gap-4">
+                    {educationTimeline.map((item, idx) => (
+                      <TimelineEntry
+                        key={`${item.period}-${item.title}`}
+                        item={item}
+                        idx={idx}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Reveal>
           </div>
         </section>
 
         {/* Documentation Gallery Section */}
-        <section id="perjalanan" className="relative scroll-mt-16 pt-12 min-h-screen flex flex-col justify-center pb-24">
+        <section id="dokumentasi" className="relative scroll-mt-16 pt-12 min-h-screen flex flex-col justify-center pb-24">
           <div className="max-w-6xl mx-auto w-full">
             <Reveal direction="up" className="text-center mb-14" parallax={-30}>
-              <SectionKicker>Artefak</SectionKicker>
-              <h2 className="text-gradient">Dokumentasi</h2>
-              <p className="text-muted max-w-xl mx-auto mt-6">Kumpulan dokumentasi pembelajaran, pengalaman, dan bukti kegiatan yang menggambarkan perjalanan profesional saya.</p>
+              <h2 className="text-gradient mb-6">Dokumentasi Kegiatan</h2>
+              <p className="text-muted text-sm md:text-base max-w-lg mx-auto">Kumpulan momen bermakna selama proses belajar mengajar</p>
             </Reveal>
 
-            <Reveal direction="up" className="grid gap-5 md:grid-cols-3" cascade>
-              {documentationPhotos.map((item, i) => {
-                const isSelected = openDocGallery === i;
-                const galleryCount = item.galleryPhotos?.length ?? 1;
-
-                return (
-                  <motion.button
-                    key={item.step}
-                    type="button"
-                    whileHover={{ y: -6 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => {
-                      setOpenDocGallery(i);
-                      setActiveDocGallery(0);
-                    }}
-                    className={`group relative overflow-hidden rounded-2xl border text-left shadow-[0_24px_70px_rgba(0,0,0,0.28)] transition-colors ${
-                      isSelected
-                        ? 'border-accent/55 bg-accent/10'
-                        : 'border-white/10 bg-white/[0.035] hover:border-accent/35'
-                    }`}
-                  >
-                    <div className="relative aspect-[4/3] overflow-hidden">
-                      <img
-                        src={item.photo}
-                        alt={item.title}
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-brand-night via-brand-night/18 to-transparent" />
-                      <div className="absolute left-4 top-4 rounded-full border border-white/15 bg-brand-night/60 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-accent backdrop-blur-md">
-                        {item.step}
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-5">
-                        <h3 className="text-xl font-bold text-white">{item.title}</h3>
-                        <div className="mt-3 flex items-center justify-between gap-4">
-                          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/55">
-                            {galleryCount} Foto
-                          </span>
-                          <span className="inline-flex items-center gap-2 text-xs font-bold text-accent">
-                            Galeri <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.button>
-                );
-              })}
-            </Reveal>
-
-            <AnimatePresence mode="wait">
-              {openDocGallery !== null && (() => {
-                const activeItem = documentationPhotos[openDocGallery];
-                const galleryPhotos = activeItem.galleryPhotos?.length ? activeItem.galleryPhotos : [activeItem.photo];
-                const activePhoto = galleryPhotos[activeDocGallery] ?? galleryPhotos[0];
-                const previousPhoto = () => setActiveDocGallery((prev) => (prev + galleryPhotos.length - 1) % galleryPhotos.length);
-                const nextPhoto = () => setActiveDocGallery((prev) => (prev + 1) % galleryPhotos.length);
-
-                return (
-                  <motion.div
-                    key={`documentation-gallery-${openDocGallery}`}
-                    initial={{ opacity: 0, y: 28, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 18, scale: 0.98 }}
-                    transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                    className="mt-8 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.035] shadow-[0_26px_90px_rgba(0,0,0,0.35)] backdrop-blur-xl"
-                  >
-                    <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_320px]">
-                      <div
-                        className="relative min-h-[280px] select-none bg-brand-night"
-                        onPointerDown={(event) => {
-                          docGalleryDragStart.current = event.clientX;
-                        }}
-                        onPointerUp={(event) => {
-                          if (docGalleryDragStart.current === null) return;
-                          handleDocGallerySwipe(event.clientX - docGalleryDragStart.current);
-                          docGalleryDragStart.current = null;
-                        }}
-                        onPointerCancel={() => {
-                          docGalleryDragStart.current = null;
-                        }}
-                      >
-                        <AnimatePresence mode="wait">
-                          <motion.img
-                            key={activePhoto}
-                            src={activePhoto}
-                            alt={`${activeItem.title} ${activeDocGallery + 1}`}
-                            initial={{ opacity: 0, scale: 1.03 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.985 }}
-                            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                            draggable={false}
-                            className="h-full min-h-[280px] w-full object-cover md:min-h-[520px]"
-                          />
-                        </AnimatePresence>
-                        <div className="absolute inset-0 bg-gradient-to-t from-brand-night/46 via-transparent to-brand-night/20 pointer-events-none" />
-
-                        {galleryPhotos.length > 1 && (
-                          <div className="absolute inset-x-4 top-1/2 z-10 flex -translate-y-1/2 items-center justify-between">
-                            <button
-                              type="button"
-                              onClick={previousPhoto}
-                              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-brand-night/60 text-white backdrop-blur-md transition-colors hover:border-accent/50 hover:text-accent"
-                            >
-                              <ChevronLeft size={20} />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={nextPhoto}
-                              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-brand-night/60 text-white backdrop-blur-md transition-colors hover:border-accent/50 hover:text-accent"
-                            >
-                              <ChevronRight size={20} />
-                            </button>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex flex-col justify-between gap-6 border-t border-white/10 p-5 lg:border-l lg:border-t-0 lg:p-6">
-                        <div>
-                          <SectionKicker>Dokumentasi {activeItem.step}</SectionKicker>
-                          <h3 className="text-2xl font-bold text-white">{activeItem.title}</h3>
-                          <p className="mt-4 text-sm leading-relaxed text-white/58">
-                            Bukti visual kegiatan pada tahap ini ditampilkan dalam format galeri agar setiap momen lebih mudah dilihat.
-                          </p>
-                        </div>
-
-                        <div className="grid grid-cols-4 gap-2 lg:grid-cols-3">
-                          {galleryPhotos.map((photo, photoIndex) => (
-                            <button
-                              key={photo}
-                              type="button"
-                              onClick={() => setActiveDocGallery(photoIndex)}
-                              className={`relative aspect-square overflow-hidden rounded-lg border transition-all ${
-                                photoIndex === activeDocGallery
-                                  ? 'border-accent shadow-[0_0_20px_rgba(203,255,156,0.24)]'
-                                  : 'border-white/10 opacity-55 hover:opacity-100'
-                              }`}
-                            >
-                              <img src={photo} alt="" className="h-full w-full object-cover" />
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })()}
-            </AnimatePresence>
-        </div>
-      </section>
-
-        {/* Showcase Section */}
-        <section id="artefak" className="space-y-12 scroll-mt-16 pt-12 min-h-screen flex flex-col justify-center pb-24">
-          <Reveal className="flex flex-col md:flex-row md:items-end justify-between gap-8" parallax={20}>
-            <div className="max-w-2xl">
-              <SectionKicker>Featured Projects</SectionKicker>
-              <h2 className="text-gradient">Highlights Artefak</h2>
-            </div>
-            <p className="text-muted text-sm max-w-xs">Eksplorasi RPP, media ajar, dan asesmen pilihan.</p>
-          </Reveal>
-
-          <div className="grid lg:grid-cols-12 gap-8 items-start">
-            <Reveal direction="left" className="lg:col-span-4 flex flex-col gap-3" parallax={-20}>
-              {showcaseData.map((item, i) => (
+            <Reveal direction="up">
+              <div className="relative group/carousel">
+                {/* Left scroll arrow */}
                 <button
-                  key={i}
-                  onClick={() => setActiveShowcase(i)}
-                  className={`w-full text-left p-6 rounded-2xl border transition-all duration-300 relative overflow-hidden ${
-                    activeShowcase === i 
-                      ? 'bg-white/5 border-white/20 shadow-xl' 
-                      : 'bg-transparent border-transparent hover:bg-white/5'
-                  }`}
-                >
-                  <span className={`text-[10px] font-mono tracking-widest uppercase mb-1 block ${activeShowcase === i ? 'text-accent' : 'text-white/30'}`}>
-                    {item.meta}
-                  </span>
-                  <span className={`text-lg font-bold ${activeShowcase === i ? 'text-white' : 'text-white/50'}`}>
-                    {item.title}
-                  </span>
-                  {activeShowcase === i && (
-                    <motion.div 
-                      layoutId="active-showcase-bar"
-                      className="absolute left-0 top-0 bottom-0 w-1 bg-accent"
-                    />
-                  )}
-                </button>
-              ))}
-            </Reveal>
-
-            <Reveal direction="right" className="lg:col-span-8" parallax={20}>
-              <AnimatePresence mode="wait">
-                <ShowcaseCard 
-                  key={activeShowcase}
-                  item={showcaseData[activeShowcase]}
-                  isActive={true}
-                  onClickDetail={() => {
-                    const link = showcaseData[activeShowcase].directLink;
-                    if (link === 'rpp' || link === 'media') {
-                      setActivePage(link);
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                      return;
-                    }
-                    setActiveShowcasePopup(activeShowcase);
+                  type="button"
+                  onClick={() => {
+                    const el = document.getElementById('doc-gallery-scroll');
+                    if (el) el.scrollBy({ left: -260, behavior: 'smooth' });
                   }}
-                />
-              </AnimatePresence>
+                  className="absolute left-2 md:-left-5 top-1/2 -translate-y-1/2 z-20 flex h-12 w-12 items-center justify-center rounded-full border border-white/14 bg-brand-night/70 text-white/80 shadow-[0_8px_24px_rgba(0,0,0,0.4)] backdrop-blur-md transition-all hover:border-accent/45 hover:text-accent hover:scale-110 opacity-0 group-hover/carousel:opacity-100"
+                  aria-label="Geser kiri"
+                >
+                  <ChevronLeft size={24} />
+                </button>
+                {/* Right scroll arrow */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = document.getElementById('doc-gallery-scroll');
+                    if (el) el.scrollBy({ left: 260, behavior: 'smooth' });
+                  }}
+                  className="absolute right-2 md:-right-5 top-1/2 -translate-y-1/2 z-20 flex h-12 w-12 items-center justify-center rounded-full border border-white/14 bg-brand-night/70 text-white/80 shadow-[0_8px_24px_rgba(0,0,0,0.4)] backdrop-blur-md transition-all hover:border-accent/45 hover:text-accent hover:scale-110 opacity-0 group-hover/carousel:opacity-100"
+                  aria-label="Geser kanan"
+                >
+                  <ChevronRight size={24} />
+                </button>
+
+                {/* Accordion-style horizontal gallery */}
+                <div
+                  id="doc-gallery-scroll"
+                  className="flex items-stretch gap-1 overflow-x-auto pb-2 scroll-smooth overflow-y-visible md:gap-1.5"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
+                >
+                  <style>{`#doc-gallery-scroll::-webkit-scrollbar { display: none; }`}</style>
+                  {documentationGalleryItems.map((item, i) => {
+                    const isActive = activeGalleryCard === i;
+                    return (
+                      <motion.button
+                        key={item.id}
+                        type="button"
+                        ref={(el) => { galleryCardRefs.current[i] = el; }}
+                        onPointerMove={() => handleGalleryCardHover(i)}
+                        onFocus={() => handleGalleryCardHover(i)}
+                        onClick={() => setOpenDocGallery(i)}
+                        aria-label={`Buka ${item.galleryLabel}`}
+                        className={`relative flex-shrink-0 overflow-hidden rounded-[22px] border border-white/12 bg-brand-night/18 cursor-pointer h-[400px] md:h-[500px] transition-[width,filter,box-shadow] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                          isActive
+                            ? 'w-[340px] md:w-[520px] shadow-[0_30px_80px_rgba(0,0,0,0.5)] z-10 brightness-100'
+                            : 'w-[118px] md:w-[150px] shadow-[0_12px_34px_rgba(0,0,0,0.3)] brightness-[0.76] hover:brightness-[0.9]'
+                        }`}
+                      >
+                        <img
+                          src={item.photo}
+                          alt={item.alt}
+                          className={`absolute inset-0 h-full w-full object-cover transition-transform duration-700 ${
+                            isActive ? 'scale-105' : 'scale-110'
+                          }`}
+                        />
+                        <div className={`absolute inset-0 transition-opacity duration-700 ${
+                          isActive
+                            ? 'bg-gradient-to-t from-black/80 via-black/10 to-transparent'
+                            : 'bg-gradient-to-t from-black/70 via-black/30 to-black/10'
+                        }`} />
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </div>
             </Reveal>
           </div>
         </section>
 
-        {/* Values Section */}
-        <section className="relative px-8">
-          <div className="absolute right-0 top-0 w-80 h-80 bg-accent/20 blur-[120px] rounded-full pointer-events-none" />
-          <Reveal direction="up" cascade className="max-w-3xl mb-20" parallax={-40}>
-            <SectionKicker>Principle Guide</SectionKicker>
-            <ParallaxText baseHeight={30}>
-              <h2 className="text-gradient">Fundamental <br /> Values</h2>
-            </ParallaxText>
-            <p className="text-muted text-lg mt-6 leading-relaxed">Nilai-nilai ini adalah kompas dalam setiap keputusan desain dan pengajaran yang saya ambil.</p>
+        {/* Artifact Gallery Section */}
+        <section id="artefak" className="artifact-portfolio relative scroll-mt-16 py-16 md:py-24">
+          <div className="pointer-events-none absolute inset-x-[-8%] top-12 h-72 rounded-full bg-accent/10 blur-[120px]" />
+          <Reveal className="relative z-10 mx-auto max-w-3xl text-center" parallax={18}>
+            <h2 className="text-gradient">Hasil Karya</h2>
           </Reveal>
-          
-          <Reveal direction="up" cascade delay={0.2} className="grid md:grid-cols-3 gap-8">
-            {[
-              { title: 'Impact First', desc: 'Setiap elemen visual harus memiliki fungsi pedagogis yang jelas, bukan sekadar dekorasi.', meta: 'Pilar 01' },
-              { title: 'Fluid Logic', desc: 'Navigasi dan penyampaian pesan harus mengalir secara alami mengikuti intuisi manusia.', meta: 'Pilar 02' },
-              { title: 'Radical Honesty', desc: 'Portfolio ini menampilkan proses apa adanya, termasuk tantangan dan ruang perbaikan.', meta: 'Pilar 03' }
-            ].map((item, i) => (
-              <div key={i}>
-                <TiltCard className="flex flex-col gap-6 h-full border-white/5 bg-white/2 hover:border-accent/50 transition-all p-12 group/value shadow-lg shadow-accent/5">
-                  <span className="font-mono text-[10px] text-accent tracking-[0.2em]">{item.meta}</span>
-                  <h3 className="text-2xl font-bold group-hover/value:text-accent transition-colors">{item.title}</h3>
-                  <p className="text-muted leading-relaxed font-light">{item.desc}</p>
-                </TiltCard>
+
+          <Reveal direction="up" className="relative z-10 mt-8 space-y-4">
+            <div className="flex justify-center">
+              <div className="inline-flex max-w-full gap-1 overflow-x-auto rounded-2xl border border-white/12 bg-brand-night/70 p-1 shadow-[0_18px_50px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+                {artifactSiklusTabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveArtifactSiklus(tab.id)}
+                    className={`shrink-0 rounded-xl px-4 py-2 text-[11px] font-black transition-all ${
+                      activeArtifactSiklus === tab.id
+                        ? 'bg-accent text-brand-night shadow-[0_0_20px_rgba(203,255,156,0.28)]'
+                        : 'text-white/54 hover:bg-white/[0.06] hover:text-white'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
               </div>
-            ))}
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-2">
+              {artifactCategories.map((category) => (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => setActiveArtifactCategory(category.id)}
+                  className={`rounded-full border px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] transition-all ${
+                    activeArtifactCategory === category.id
+                      ? 'border-accent/60 bg-accent/15 text-accent'
+                      : 'border-white/12 bg-white/[0.035] text-white/48 hover:border-white/24 hover:text-white/78'
+                  }`}
+                >
+                  {category.label}
+                </button>
+              ))}
+            </div>
+          </Reveal>
+
+          <Reveal direction="up" className="relative z-10 mt-8">
+            <div className="mb-5 flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-sm text-white/58 backdrop-blur-xl md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-accent/20 bg-accent/10 text-accent">
+                  <Layers size={18} />
+                </div>
+                <div>
+                  <p className="font-black text-white">{visibleArtifactItems.length} artefak tampil</p>
+                  <p className="text-xs text-white/42">Filter aktif bisa diganti per siklus atau kategori.</p>
+                </div>
+              </div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/36">
+                public/artefak/[kategori]/nama-file
+              </p>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              <AnimatePresence>
+                {visibleArtifactItems.map((item) => (
+                  <ArtifactCard key={item.id} item={item} onOpen={handleOpenArtifact} onAnalyze={setActiveArtifactAnalysis} />
+                ))}
+              </AnimatePresence>
+            </div>
+
+            {visibleArtifactItems.length === 0 && (
+              <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-8 text-center text-sm text-white/46">
+                Belum ada artefak untuk kombinasi filter ini.
+              </div>
+            )}
+          </Reveal>
+
+          <Reveal direction="up" className="relative z-10 mt-6">
+            <div className="grid gap-4 rounded-2xl border border-accent/20 bg-accent/[0.055] p-5 backdrop-blur-xl md:grid-cols-[1fr_auto] md:items-center">
+              <div>
+                <p className="font-black text-white">Folder artefak sudah disiapkan.</p>
+                <p className="mt-1 text-sm leading-relaxed text-white/58">
+                  Masukkan file ke folder kategori, lalu update daftar di `src/data/artefak.ts`. Kartu baru otomatis ikut layout grid ini.
+                </p>
+              </div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-brand-night/38 px-4 py-2 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">
+                <MousePointer2 size={13} /> Ready for files
+              </div>
+            </div>
+          </Reveal>
+        </section>
+
+        {/* Analysis & Evaluation Section */}
+        <section id="analisis-evaluasi" className="relative scroll-mt-16 py-16 md:py-24">
+          <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-accent-strong/10 blur-[120px]" />
+          <div className="pointer-events-none absolute -right-24 bottom-16 h-80 w-80 rounded-full bg-accent/10 blur-[120px]" />
+
+          <Reveal direction="up" className="relative z-10 mx-auto max-w-4xl text-center" parallax={-18}>
+            <SectionKicker>Analisis & Evaluasi</SectionKicker>
+            <h2 className="analysis-section__title text-gradient mt-3">Analisis Artefak Pembelajaran</h2>
+          </Reveal>
+
+          <Reveal direction="up" className="relative z-10 mt-10">
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+              {evaluationHighlights.map((item) => (
+                <motion.article
+                  key={item.title}
+                  whileHover={{ y: -8 }}
+                  style={{
+                    '--analysis-accent': item.accent,
+                    '--analysis-accent-soft': item.accentSoft
+                  } as React.CSSProperties}
+                  className="analysis-card rounded-[1.6rem] border border-white/10 bg-[#111827]/78 p-6 shadow-[0_20px_70px_rgba(0,0,0,0.28)] backdrop-blur-xl transition-colors hover:border-accent/35"
+                >
+                  <div className="analysis-card__heading">
+                    <span />
+                    <h3 className="analysis-card__title font-black leading-snug">{item.title}</h3>
+                  </div>
+                  <p className="analysis-card__body mt-5 text-sm leading-relaxed text-white/60">{item.desc}</p>
+                </motion.article>
+              ))}
+            </div>
+          </Reveal>
+
+          <Reveal direction="up" className="relative z-10 mt-8">
+            <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl md:p-7">
+              <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <SectionKicker>Catatan Siklus</SectionKicker>
+                  <h3 className="mt-2 text-2xl font-black text-white md:text-3xl">Status Artefak per Siklus</h3>
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-3">
+                {cycleComparison.map((item) => (
+                  <div key={item.cycle} className="rounded-2xl border border-white/10 bg-brand-night/36 p-5">
+                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">{item.status}</p>
+                    <h4 className="mt-2 text-lg font-black text-white">{item.cycle}</h4>
+                    <p className="mt-3 text-sm leading-relaxed text-white/62">{item.note}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal direction="up" className="relative z-10 mt-8">
+            <div className="rounded-[1.6rem] border border-white/10 bg-white/[0.035] p-6 backdrop-blur-xl md:p-7">
+              <h3 className="text-2xl font-black text-white md:text-3xl">Kelebihan dan Kekurangan Umum</h3>
+              <div className="mt-6 grid gap-6 md:grid-cols-2">
+                <div>
+                  <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-accent">Kelebihan</p>
+                  <ul className="mt-4 space-y-4">
+                    {generalEvaluation.strengths.map((item) => (
+                      <li key={item} className="flex gap-3 text-sm leading-relaxed text-white/62">
+                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-white/38">Kekurangan</p>
+                  <ul className="mt-4 space-y-4">
+                    {generalEvaluation.weaknesses.map((item) => (
+                      <li key={item} className="flex gap-3 text-sm leading-relaxed text-white/62">
+                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white/34" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal direction="up" className="relative z-10 mt-8">
+            <div className="overflow-hidden rounded-[2rem] border border-accent/20 bg-accent/[0.055] p-6 backdrop-blur-xl md:p-7">
+              <div className="mb-6 flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent text-brand-night">
+                  <BookOpen size={21} />
+                </div>
+                <div>
+                  <SectionKicker>Landasan Teori</SectionKicker>
+                  <h3 className="text-2xl font-black text-white md:text-3xl">Keterikatan dengan Teori Pendidikan</h3>
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                {theoryConnections.map((item) => (
+                  <div key={item.theory} className="rounded-2xl border border-white/10 bg-brand-night/34 p-5">
+                    <h4 className="font-black text-accent">{item.theory}</h4>
+                    <p className="mt-2 text-sm leading-relaxed text-white/62">{item.relation}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+        </section>
+
+        {/* DPL & GP Assessment Section */}
+        <section id="penilaian" className="relative scroll-mt-16 py-12 md:py-16">
+          <div className="pointer-events-none absolute inset-x-[-6%] top-20 h-80 rounded-full bg-accent/10 blur-[130px]" />
+
+          <Reveal direction="up" className="relative z-10 mx-auto max-w-4xl text-center" parallax={-14}>
+            <SectionKicker>Penilaian DPL dan GP</SectionKicker>
+            <h2 className="analysis-section__title text-gradient mt-3">Hasil Penilaian Praktik</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/58">
+              Bagian ini disiapkan untuk menampilkan Lampiran 7 dan Lampiran 8 sebagai bukti penilaian perangkat pembelajaran dan praktik mengajar mahasiswa.
+            </p>
+          </Reveal>
+
+          <Reveal direction="up" className="relative z-10 mt-7">
+            <div className="grid gap-5 lg:grid-cols-2">
+              {assessmentDocuments.map((item) => {
+                const fileUrl = encodeURI(publicAsset(item.fileHref));
+                const hasDriveLink = item.driveHref.trim().length > 0;
+
+                return (
+                  <motion.article
+                    key={item.id}
+                    whileHover={{ y: -8 }}
+                    onClick={() => window.open(fileUrl, '_blank', 'noopener,noreferrer')}
+                    className="assessment-card group cursor-pointer overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#101827]/88 shadow-[0_22px_72px_rgba(0,0,0,0.3)] backdrop-blur-xl transition-colors hover:border-accent/35"
+                  >
+                    <div className="relative h-[250px] overflow-hidden border-b border-white/10 bg-[#e9f2f7] p-3 text-slate-950">
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(34,211,238,0.24),transparent_28%),linear-gradient(135deg,rgba(255,255,255,0.92),rgba(223,238,245,0.96))]" />
+                      <div className="absolute left-0 top-0 z-10 h-14 w-14 bg-accent [clip-path:polygon(0_0,100%_0,0_100%)]" />
+                      <div className="absolute right-0 bottom-0 z-10 h-20 w-20 bg-[#0e1a2c] [clip-path:polygon(100%_0,100%_100%,0_100%)]" />
+
+                      <div className="relative z-0 h-full overflow-hidden rounded-xl border border-slate-900/12 bg-white shadow-[0_18px_42px_rgba(15,23,42,0.16)] transition-transform duration-500 group-hover:-translate-y-1 group-hover:rotate-[-0.35deg]">
+                        <iframe
+                          title={`Preview ${item.title}`}
+                          src={`${fileUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
+                          className="pointer-events-none h-full w-full bg-white"
+                        />
+                        <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between gap-3 border-b border-slate-900/10 bg-white/92 px-4 py-3 backdrop-blur-sm">
+                          <div>
+                            <p className="font-mono text-[9px] font-black uppercase tracking-[0.16em] text-cyan-600">
+                              {item.lampiran}
+                            </p>
+                            <p className="mt-0.5 max-w-[250px] truncate text-xs font-black text-slate-950">
+                              Preview PDF asli
+                            </p>
+                          </div>
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-accent">
+                            <FileText size={16} />
+                          </div>
+                        </div>
+                        <div className="assessment-card__peek pointer-events-none absolute inset-0 flex items-center justify-center bg-slate-950/42 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
+                          <div className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-brand-night shadow-[0_0_28px_rgba(203,255,156,0.35)]">
+                            Lihat lebih jauh <ArrowRight size={13} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-5 md:p-6">
+                      <div className="mb-3 flex flex-wrap items-center gap-2">
+                        <span className="rounded-full border border-accent/20 bg-accent/10 px-3 py-1 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">
+                          {item.lampiran}
+                        </span>
+                        <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">
+                          {item.evaluator}
+                        </span>
+                      </div>
+
+                      <h3 className="text-base font-black leading-tight text-white md:text-lg">
+                        {item.title}
+                      </h3>
+                      <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-white/60">{item.summary}</p>
+                      <p className="mt-3 truncate font-mono text-[10px] font-semibold text-white/36">{item.fileName}</p>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        <a
+                          href={fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(event) => event.stopPropagation()}
+                          className="inline-flex items-center gap-2 rounded-lg bg-accent px-3.5 py-2 text-[11px] font-black text-brand-night transition-all hover:-translate-y-0.5 hover:bg-accent/90"
+                        >
+                          Preview PDF <ArrowRight size={13} />
+                        </a>
+                        {hasDriveLink ? (
+                          <a
+                            href={item.driveHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(event) => event.stopPropagation()}
+                            className="inline-flex items-center gap-2 rounded-lg border border-white/12 bg-white/[0.04] px-3.5 py-2 text-[11px] font-black text-white/72 transition-all hover:-translate-y-0.5 hover:border-accent/35 hover:text-accent"
+                          >
+                            Buka Drive <ExternalLink size={13} />
+                          </a>
+                        ) : (
+                          <button
+                            type="button"
+                            disabled
+                            className="inline-flex cursor-not-allowed items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3.5 py-2 text-[11px] font-black text-white/34"
+                          >
+                            Link Drive Belum Ada <ExternalLink size={13} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </motion.article>
+                );
+              })}
+            </div>
+          </Reveal>
+        </section>
+
+        {/* Target Teacher Model Section */}
+        <section id="model-guru" className="relative scroll-mt-16 py-16 md:py-24">
+          <div className="pointer-events-none absolute -left-28 top-8 h-80 w-80 rounded-full bg-cyan-400/12 blur-[110px]" />
+          <div className="pointer-events-none absolute right-[-9rem] top-56 h-96 w-96 rounded-full bg-rose-400/10 blur-[130px]" />
+          <div className="pointer-events-none absolute bottom-4 left-1/3 h-72 w-72 rounded-full bg-amber-300/10 blur-[120px]" />
+
+          <Reveal direction="up" className="relative z-10 mx-auto max-w-4xl text-center" parallax={-18}>
+            <SectionKicker>Model Guru yang Dituju</SectionKicker>
+            <h2 className="analysis-section__title text-gradient mt-3">Visi & Karakter Guru Profesional</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/58">
+              Gambaran utuh tentang visi, kompetensi, karakter, dan strategi pengembangan diri yang menjadi arah perjalanan saya sebagai pendidik.
+            </p>
+          </Reveal>
+
+          <Reveal direction="up" className="relative z-10 mt-10">
+            <div className="relative overflow-hidden rounded-[2rem] border border-white/12 bg-[#f6efe1] p-6 text-[#111827] shadow-[0_22px_70px_rgba(0,0,0,0.28)] md:p-8">
+              <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#fb7185]/28 blur-[40px]" />
+              <div className="absolute bottom-0 left-0 h-20 w-full bg-[linear-gradient(135deg,#22d3ee_0_18%,transparent_18%_100%)] opacity-75" />
+              <div className="relative grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
+                <div className="flex flex-col">
+                  <div className="inline-flex rounded-full bg-[#111827] px-3.5 py-1.5 font-mono text-[9px] font-black uppercase tracking-[0.2em] text-[#fef3c7]">
+                    Visi Utama
+                  </div>
+                  <h3 className="text-3xl md:text-4xl font-black text-[#111827] mt-5 max-w-lg leading-tight">
+                    Visi Menjadi Guru Profesional
+                  </h3>
+                  <div className="mt-5 max-w-full text-sm font-medium leading-relaxed text-[#263248]/80 md:text-base">
+                    <p className="mb-4">
+                      Mendidik bukan sekadar memindahkan pengetahuan dari buku ke pikiran, melainkan seni menyalakan pelita keberanian dan rasa ingin tahu di dalam jiwa. Saya beraspirasi menjadi guru Teknik Mesin yang melampaui batas ruang kelas—seorang fasilitator yang adaptif, reflektif, dan menjunjung tinggi nilai-nilai humanis.
+                    </p>
+                    <p>
+                      Di tengah pusaran inovasi teknologi dan dinamika industri yang berlari cepat, saya berkomitmen untuk merangkai pengalaman belajar yang bermakna. Setiap garis pada gambar teknik dan setiap presisi di meja kerja bengkel adalah medium untuk membentuk ketangguhan, ketelitian, dan integritas. Mengantarkan peserta didik menjadi individu yang tak hanya cakap secara kompetensi, tapi juga siap menghadapi hari esok dengan martabat.
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2 md:grid-cols-1 md:gap-3">
+                  {['Adaptif', 'Reflektif', 'Humanis'].map((item) => (
+                    <div key={item} className="rounded-xl border border-[#111827]/10 bg-white/55 px-4 py-3 text-center text-[10px] font-black uppercase tracking-[0.11em] text-[#111827]/76 shadow-[0_10px_24px_rgba(17,24,39,0.08)] md:min-w-[120px]">
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal direction="up" className="relative z-10 mt-6">
+            <div className="grid gap-5 md:grid-cols-3">
+              {teacherModelPillars.map((item) => (
+                <motion.article
+                  key={item.title}
+                  whileHover={{ y: -8 }}
+                  className={`relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#10131f] p-5 shadow-[0_16px_48px_rgba(0,0,0,0.22)] md:p-6 flex flex-col h-full`}
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br ${item.tone}`} />
+                  <div className="relative flex flex-col h-full">
+                    <div className="mb-5 border-b border-white/10 pb-4">
+                      <span className={`font-mono text-[10px] font-black uppercase tracking-[0.22em] ${item.accent}`}>
+                        {item.marker}
+                      </span>
+                      <h3 className="model-pillar-title mt-2 font-black text-white">{item.title}</h3>
+                    </div>
+                    <ul className="space-y-4 flex-1">
+                      {item.items.map((point) => (
+                        <li key={point} className="flex gap-3 text-sm leading-relaxed text-white/66">
+                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: item.accentColor }} />
+                          <span className="flex-1">{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </motion.article>
+              ))}
+            </div>
+          </Reveal>
+
+          <Reveal direction="up" className="relative z-10 mt-5">
+            <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+              <div className="rounded-[1.7rem] border border-white/10 bg-[#0f172a]/88 p-5 shadow-[0_20px_64px_rgba(0,0,0,0.26)] md:p-6">
+                <div className="mb-5 flex items-center justify-between gap-4">
+                  <div>
+                    <SectionKicker>Strategi Pengembangan Diri</SectionKicker>
+                    <h3 className="model-panel-title mt-2 font-black text-white">Roadmap Bertumbuh</h3>
+                  </div>
+                  <div className="hidden h-12 w-12 items-center justify-center rounded-2xl bg-cyan-300 text-slate-950 shadow-[0_0_30px_rgba(103,232,249,0.22)] md:flex">
+                    <Gauge size={21} />
+                  </div>
+                </div>
+
+                <div className="grid gap-2.5">
+                  {selfDevelopmentStrategies.map((item) => (
+                    <div key={item.step} className="grid gap-2.5 rounded-2xl border border-white/10 bg-white/[0.035] p-3.5 md:grid-cols-[54px_1fr]">
+                      <div className="font-mono text-xl font-black text-amber-200">{item.step}</div>
+                      <div>
+                        <h4 className="font-black text-white">{item.title}</h4>
+                        <p className="mt-1 text-sm leading-relaxed text-white/58">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="relative overflow-hidden rounded-[1.7rem] border border-white/10 bg-[linear-gradient(145deg,#1d1237,#0e2231_52%,#2c1d0d)] p-5 shadow-[0_24px_72px_rgba(0,0,0,0.3)] md:p-6">
+                <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-amber-300/18 blur-[50px]" />
+                <div className="absolute -bottom-20 left-0 h-48 w-48 rounded-full bg-cyan-300/14 blur-[55px]" />
+                <div className="relative">
+                  <SectionKicker>Harapan untuk Masa Depan</SectionKicker>
+                  <h3 className="text-2xl md:text-3xl font-black text-white mt-4 leading-tight">
+                    Mengajar bukan hanya mentransfer materi, tapi menyalakan arah.
+                  </h3>
+                  <p className="mt-5 text-sm leading-relaxed text-white/66">
+                    Harapannya, saya mampu menjadi guru yang membuat siswa merasa mampu, berani mencoba, dan melihat pelajaran teknik sebagai bekal masa depan. Saya ingin kelas menjadi ruang yang disiplin, hangat, produktif, dan terus berkembang bersama kebutuhan zaman.
+                  </p>
+                  <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.07] p-4">
+                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.2em] text-amber-200">
+                      Komitmen
+                    </p>
+                    <p className="mt-3 text-base font-black leading-tight text-white md:text-lg">
+                      Terus belajar, terus memperbaiki perangkat, dan terus menghadirkan pembelajaran yang manusiawi sekaligus relevan.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal direction="up" className="relative z-10 mt-10">
+            <div className="relative py-2 md:py-4">
+              <div className="pointer-events-none absolute left-1/2 top-6 h-64 w-[min(92vw,720px)] -translate-x-1/2 rounded-full bg-accent/8 blur-[90px]" />
+              <div className="pointer-events-none absolute bottom-0 left-1/2 h-72 w-[min(92vw,760px)] -translate-x-1/2 rounded-full bg-accent-strong/7 blur-[100px]" />
+
+              <div className="relative mx-auto max-w-3xl text-center">
+                <div className="inline-flex items-center gap-2 rounded-full border border-accent/18 bg-accent/8 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-accent">
+                  <Wrench size={14} />
+                  Keahlian
+                </div>
+                <h3 className="competency-section-title mt-5 text-white">Kompetensi & Keahlian</h3>
+                <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/58 md:text-base">
+                  Berbagai keterampilan yang mendukung profesionalisme saya sebagai calon guru Teknik Mesin.
+                </p>
+              </div>
+
+              <div className="relative mt-8 flex flex-wrap justify-center gap-3">
+                {competencyCategories.map((category) => {
+                  const isActive = activeCompetencyCategory === category.id;
+                  return (
+                    <motion.button
+                      key={category.id}
+                      type="button"
+                      onClick={() => setActiveCompetencyCategory(category.id)}
+                      whileHover={{ y: -3 }}
+                      whileTap={{ scale: 0.96 }}
+                      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-black transition-all md:px-5 ${
+                        isActive
+                          ? `border-accent/24 bg-gradient-to-r ${category.gradient} text-brand-night shadow-xl ${category.activeRing}`
+                          : 'border-accent/10 bg-brand-night/30 text-white/62 hover:border-accent/24 hover:bg-accent/10 hover:text-white'
+                      }`}
+                      aria-pressed={isActive}
+                    >
+                      {category.icon}
+                      {category.label}
+                    </motion.button>
+                  );
+                })}
+              </div>
+
+              <div className="relative mt-7">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeCompetencyCategory}
+                    initial={{ opacity: 0, y: 16, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                    transition={{ duration: 0.28, ease: [0.25, 0.1, 0.25, 1] }}
+                    className={`competency-card-grid ${visibleCompetencies.length === 5 ? 'competency-card-grid--five' : ''}`}
+                  >
+                    {visibleCompetencies.map((item, index) => (
+                      <motion.article
+                        key={item.title}
+                        initial={{ opacity: 0, y: 14 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.045, duration: 0.34 }}
+                        whileHover={{ y: -8, scale: 1.02 }}
+                        className="competency-card-shell group relative min-h-[190px] overflow-hidden rounded-[1.45rem] p-5"
+                      >
+                        <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${activeCompetency.gradient} opacity-60`} />
+                        <div className={`absolute -right-12 -top-12 h-28 w-28 rounded-full bg-gradient-to-br ${activeCompetency.gradient} opacity-0 blur-[34px] transition-opacity duration-300 group-hover:opacity-20`} />
+                        <div className="relative flex h-full flex-col items-center justify-center text-center">
+                          <div className={`mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br ${activeCompetency.gradient} text-brand-night shadow-[0_16px_40px_rgba(24,58,68,0.24)] transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
+                            {item.icon}
+                          </div>
+                          <p className="competency-card-title text-white">{item.title}</p>
+                          <span className={`mt-4 rounded-full px-3.5 py-1.5 font-mono text-[10px] font-black uppercase tracking-[0.16em] ${
+                            item.level === 'Mahir'
+                              ? 'bg-accent-strong/12 text-accent-strong ring-1 ring-accent-strong/18'
+                              : 'bg-accent/12 text-accent ring-1 ring-accent/16'
+                          }`}>
+                            {item.level}
+                          </span>
+                        </div>
+                      </motion.article>
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+          </Reveal>
+        </section>
+
+        {/* Video Section */}
+        <section id="video" className="relative scroll-mt-16 py-16 md:py-24">
+          <div className="pointer-events-none absolute -left-28 top-10 h-80 w-80 rounded-full bg-accent/10 blur-[120px]" />
+          <div className="pointer-events-none absolute -right-28 bottom-12 h-96 w-96 rounded-full bg-accent-strong/10 blur-[130px]" />
+
+          <Reveal direction="up" className="relative z-10 mx-auto max-w-4xl text-center" parallax={-18}>
+            <SectionKicker>Video</SectionKicker>
+            <h2 className="analysis-section__title text-gradient mt-3">Preview Video YouTube</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/58">
+              Dokumentasi video langsung dari channel YouTube, ditampilkan penuh agar bisa diputar tanpa keluar dari halaman.
+            </p>
+          </Reveal>
+
+          <Reveal direction="up" className="relative z-10 mt-10">
+            <motion.div
+              whileHover={{ y: -6 }}
+              className="group relative overflow-hidden rounded-[2rem] border border-accent/14 bg-brand-night/46 p-3 shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-xl md:p-4"
+            >
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(203,255,156,0.12),transparent_32%),radial-gradient(circle_at_82%_100%,rgba(142,255,231,0.1),transparent_34%)]" />
+              <div className="relative overflow-hidden rounded-[1.55rem] border border-white/10 bg-black">
+                <div className="relative aspect-video w-full">
+                  {hasVideoEntered ? (
+                    <iframe
+                      ref={youtubeIframeRef}
+                      title="Preview video YouTube Satriya Nugraha"
+                      src={`${youtubeEmbedUrl}&origin=${encodeURIComponent(window.location.origin)}`}
+                      className="h-full w-full"
+                      loading="eager"
+                      onLoad={() => {
+                        if (isVideoInView) {
+                          sendYoutubeCommand('playVideo');
+                          if (videoSoundEnabledRef.current) {
+                            sendYoutubeCommand('unMute');
+                            sendYoutubeCommand('setVolume', [86]);
+                          } else {
+                            sendYoutubeCommand('mute');
+                          }
+                        }
+                      }}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(circle_at_50%_35%,rgba(203,255,156,0.16),transparent_34%),linear-gradient(135deg,#07141c,#03070a)] px-6 text-center">
+                      <div>
+                        <Youtube className="mx-auto mb-4 text-accent" size={42} />
+                        <p className="font-mono text-[10px] font-black uppercase tracking-[0.2em] text-accent/80">
+                          Video Standby
+                        </p>
+                        <p className="mt-2 max-w-md text-sm font-bold leading-relaxed text-white/68">
+                          Video akan autoplay otomatis saat section ini benar-benar masuk layar.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="relative mt-4 flex flex-col gap-3 px-1 pb-1 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="font-mono text-[10px] font-black uppercase tracking-[0.2em] text-accent/80">
+                    {isVideoInView ? 'Auto Play Aktif' : 'Auto Pause Aktif'}
+                  </p>
+                  <p className="mt-1 text-sm font-bold text-white/78">
+                    Video baru berjalan saat section ini terlihat. Default mute, lalu bisa kamu aktifkan suaranya.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={isVideoSoundEnabled ? muteYoutubePlayback : activateYoutubePlayback}
+                    className={`inline-flex w-max items-center gap-2 rounded-full border px-4 py-2 text-xs font-black transition-all hover:-translate-y-0.5 ${
+                      isVideoSoundEnabled
+                        ? 'border-accent-strong/24 bg-accent-strong/12 text-accent-strong hover:bg-accent-strong hover:text-brand-night'
+                        : 'border-accent/18 bg-accent/10 text-accent hover:bg-accent hover:text-brand-night'
+                    }`}
+                    aria-pressed={isVideoSoundEnabled}
+                  >
+                    {isVideoSoundEnabled ? 'Mute Suara' : 'Aktifkan Suara'}
+                  </button>
+                  <a
+                    href={youtubeVideoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-max items-center gap-2 rounded-full border border-accent/18 bg-accent/10 px-4 py-2 text-xs font-black text-accent transition-all hover:-translate-y-0.5 hover:bg-accent hover:text-brand-night"
+                  >
+                    Buka Video <ExternalLink size={14} />
+                  </a>
+                  <a
+                    href={youtubeChannelUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-max items-center gap-2 rounded-full border border-white/12 bg-white/[0.035] px-4 py-2 text-xs font-black text-white/62 transition-all hover:-translate-y-0.5 hover:border-accent/24 hover:text-accent"
+                  >
+                    Channel <Youtube size={14} />
+                  </a>
+                </div>
+              </div>
+            </motion.div>
           </Reveal>
         </section>
 
@@ -1870,274 +2937,6 @@ export default function App() {
             </div>
           </div>
         </section>
-
-        {/* Profile Detail Modal */}
-        <AnimatePresence>
-          {activeProfilePopup !== null && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setActiveProfilePopup(null)}
-              className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-brand-night/40 backdrop-blur-sm"
-            >
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                onClick={(e) => e.stopPropagation()}
-                className="relative w-full max-w-5xl glass-card border border-white/10 bg-brand-deep p-6 md:p-8 lg:p-10 overflow-hidden mx-4"
-              >
-                {/* Background glow */}
-                <div className="absolute top-0 right-0 w-80 h-80 bg-accent/10 blur-[100px] rounded-full pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-80 h-80 bg-brand-night blur-[100px] rounded-full pointer-events-none" />
-
-                <button 
-                  onClick={() => setActiveProfilePopup(null)}
-                  className="absolute top-4 right-4 md:top-6 md:right-6 p-2 md:p-3 rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white/50 hover:text-white z-50 group pointer-events-auto"
-                >
-                  <X size={24} className="md:w-7 md:h-7 group-hover:scale-110 transition-transform" />
-                </button>
-
-                <div className="relative z-10 w-full">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={activeProfilePopup}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.3 }}
-                      className="w-full flex flex-col"
-                    >
-                      {/* Title */}
-                      <h3 className={`text-2xl md:text-3xl font-bold mb-4 ${profileDetails[activeProfilePopup].textColorClass}`}>
-                        {profileDetails[activeProfilePopup].title}
-                      </h3>
-
-                      {/* Layout Logic */}
-                      {profileDetails[activeProfilePopup].image && activeProfilePopup === 0 ? (
-                        // Specialized "Latar Belakang" Layout based on screenshot
-                        <div className="flex flex-col gap-4 md:gap-6">
-                          <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_0.7fr] gap-6 lg:gap-12 items-start">
-                            {/* Paragraphs */}
-                            <div className="text-white/90 text-sm md:text-base leading-relaxed font-light space-y-3">
-                              {profileDetails[activeProfilePopup].fullDesc.split('\n\n').map((para, idx) => (
-                                <p key={idx}>{para}</p>
-                              ))}
-                            </div>
-                            
-                            {/* Image Right Area */}
-                            <Reveal direction="left" className="flex justify-center">
-                              <div className="relative group w-full max-w-[220px] lg:max-w-full">
-                                <div className="absolute -inset-4 bg-accent/20 blur-3xl rounded-full opacity-50" />
-                                <img 
-                                  src={profileDetails[activeProfilePopup].image} 
-                                  alt="Profile" 
-                                  className="relative w-full aspect-[4/5] object-cover rounded-xl border border-white/20 shadow-2xl"
-                                />
-                                <p className="mt-2 text-center text-white/30 text-[10px] tracking-widest uppercase italic">
-                                  Satriya Nugraha, S.Pd
-                                </p>
-                              </div>
-                            </Reveal>
-                          </div>
-                        </div>
-                      ) : (
-                        // Default layout for other popups
-                        <div className={`grid grid-cols-1 ${profileDetails[activeProfilePopup].image ? 'lg:grid-cols-[1.2fr_0.8fr]' : ''} gap-12 lg:gap-20 items-start`}>
-                          <div className={activeProfilePopup === 1 ? 'w-full' : ''}>
-                            {profileDetails[activeProfilePopup].largeIcon && (
-                              <div className={`w-14 h-14 md:w-20 md:h-20 rounded-full border mb-8 flex items-center justify-center ${profileDetails[activeProfilePopup].iconBgClass}`}>
-                                {profileDetails[activeProfilePopup].largeIcon}
-                              </div>
-                            )}
-                            
-                            <div className="text-white/90 text-sm md:text-base leading-relaxed font-light space-y-4">
-                              {profileDetails[activeProfilePopup].fullDesc.split('\n\n').map((para, idx) => (
-                                <p key={idx}>{para}</p>
-                              ))}
-                              
-                              {/* Render list items if they exist - specific style for Hobi */}
-                              {profileDetails[activeProfilePopup].listItems && activeProfilePopup === 1 && (
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 w-full">
-                                  {profileDetails[activeProfilePopup].listItems.map((item, idx) => (
-                                    <div key={idx} onClick={() => setActiveHobbyPopup(idx)} className="glass-card p-6 flex flex-col items-center justify-center text-center border-accent/20 bg-accent/5 hover:bg-accent/10 transition-colors rounded-2xl group relative overflow-hidden cursor-pointer">
-                                      <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                      <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center mb-4 overflow-hidden group-hover:scale-110 transition-transform border border-accent/20 p-1">
-                                        <div 
-                                          className="w-full h-full rounded-full bg-cover bg-center" 
-                                          style={{ backgroundImage: `url(${hobbyDetails[idx].image})` }} 
-                                        />
-                                      </div>
-                                      <span className="font-bold text-lg text-white group-hover:text-accent transition-colors relative z-10">{item}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                              
-                              {/* Render normal list items for other sections if needed */}
-                              {profileDetails[activeProfilePopup].listItems && activeProfilePopup !== 1 && (
-                                <ul className="mt-4 space-y-2">
-                                  {profileDetails[activeProfilePopup].listItems.map((item, idx) => (
-                                    <li key={idx} className="flex items-center gap-3">
-                                      <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-                                      <span className="font-medium text-white">{item}</span>
-                                    </li>
-                                  ))}
-                                </ul>
-                              )}
-                            </div>
-                          </div>
-
-                          {profileDetails[activeProfilePopup].image && (
-                            <Reveal direction="left" className="flex justify-center flex-col items-center">
-                              <div className="relative group">
-                                <div className={`absolute -inset-6 opacity-30 blur-3xl rounded-full transition-opacity duration-500 group-hover:opacity-50 bg-white`} />
-                                <img 
-                                  src={profileDetails[activeProfilePopup].image} 
-                                  alt="Profile Picture" 
-                                  className="relative w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 object-cover rounded-3xl border-4 border-white/10 shadow-3xl"
-                                  referrerPolicy="no-referrer"
-                                />
-                              </div>
-                            </Reveal>
-                          )}
-                        </div>
-                      )}
-                      
-                      {/* Navigation Buttons for Profile Modal */}
-                      <div className="flex items-center justify-start gap-4 mt-8 pt-4 border-t border-white/10 w-full">
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveProfilePopup((prev) => prev !== null ? (prev === 0 ? profileDetails.length - 1 : prev - 1) : null);
-                          }}
-                          className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 hover:border-white/30 transition-all hover:scale-110"
-                        >
-                          <ChevronLeft size={20} />
-                        </button>
-                        
-                        <div className="flex gap-2">
-                          {profileDetails.map((_, idx) => (
-                            <div 
-                              key={idx} 
-                              className={`w-2 h-2 rounded-full transition-all duration-300 pointer-events-none ${idx === activeProfilePopup ? 'bg-accent w-4' : 'bg-white/20'}`} 
-                            />
-                          ))}
-                        </div>
-
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveProfilePopup((prev) => prev !== null ? (prev === profileDetails.length - 1 ? 0 : prev + 1) : null);
-                          }}
-                          className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 hover:border-white/30 transition-all hover:scale-110"
-                        >
-                          <ChevronRight size={20} />
-                        </button>
-                      </div>
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Hobby Detail Modal */}
-        <AnimatePresence>
-          {activeHobbyPopup !== null && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setActiveHobbyPopup(null)}
-              className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-brand-night/40 backdrop-blur-md"
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                onClick={(e) => e.stopPropagation()}
-                className="relative w-full max-w-4xl glass-card border border-white/10 bg-brand-deep p-6 md:p-8 lg:p-10 overflow-hidden mx-4 rounded-3xl"
-              >
-                {/* Background glow */}
-                <div className="absolute top-0 right-0 w-80 h-80 bg-accent/10 blur-[100px] rounded-full pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-80 h-80 bg-brand-night blur-[100px] rounded-full pointer-events-none" />
-
-                <button 
-                  onClick={() => setActiveHobbyPopup(null)}
-                  className="absolute top-4 right-4 md:top-5 md:right-5 p-1.5 md:p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white/50 hover:text-white z-50 group pointer-events-auto"
-                >
-                  <X size={18} className="md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
-                </button>
-
-                <AnimatePresence mode="wait">
-                  <motion.div 
-                    key={activeHobbyPopup}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="relative z-10 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-12 items-center mt-2"
-                  >
-                    <div>
-                      <h3 className="text-3xl md:text-4xl font-bold mb-4 text-accent">
-                        {hobbyDetails[activeHobbyPopup].title}
-                      </h3>
-                      <p className="text-white/80 text-base md:text-lg leading-relaxed font-light mb-8">
-                        {hobbyDetails[activeHobbyPopup].desc}
-                      </p>
-                      
-                      {/* Navigation Buttons */}
-                      <div className="flex items-center gap-4">
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveHobbyPopup((prev) => prev !== null ? (prev === 0 ? hobbyDetails.length - 1 : prev - 1) : null);
-                          }}
-                          className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 hover:border-white/30 transition-all hover:scale-110"
-                        >
-                          <ChevronLeft size={20} />
-                        </button>
-                        
-                        <div className="flex gap-2">
-                          {hobbyDetails.map((_, idx) => (
-                            <div 
-                              key={idx} 
-                              className={`w-2 h-2 rounded-full transition-all duration-300 pointer-events-none ${idx === activeHobbyPopup ? 'bg-accent w-4' : 'bg-white/20'}`} 
-                            />
-                          ))}
-                        </div>
-
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveHobbyPopup((prev) => prev !== null ? (prev === hobbyDetails.length - 1 ? 0 : prev + 1) : null);
-                          }}
-                          className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 hover:border-white/30 transition-all hover:scale-110"
-                        >
-                          <ChevronRight size={20} />
-                        </button>
-                      </div>
-                    </div>
-                    
-                    <div className="flex justify-center">
-                      <img 
-                        src={hobbyDetails[activeHobbyPopup].image} 
-                        alt={hobbyDetails[activeHobbyPopup].title} 
-                        className={`w-full aspect-[4/3] lg:aspect-square object-cover rounded-2xl border border-white/10 shadow-2xl ${hobbyDetails[activeHobbyPopup].imagePosition || ''}`}
-                        referrerPolicy="no-referrer"
-                      />
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Showcase Detail Modal */}
         <AnimatePresence>
@@ -2213,7 +3012,215 @@ export default function App() {
           )}
         </AnimatePresence>
 
+        {/* Artifact Analysis Modal */}
+        <AnimatePresence>
+          {activeArtifactAnalysis && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActiveArtifactAnalysis(null)}
+              className="fixed inset-0 z-[104] flex items-center justify-center bg-brand-night/82 p-4 backdrop-blur-md"
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94, y: 22 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.94, y: 22 }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                onClick={(event) => event.stopPropagation()}
+                className="relative max-h-[90vh] w-full max-w-6xl overflow-y-auto rounded-[2rem] border border-white/10 bg-[#0d1220] shadow-[0_28px_90px_rgba(0,0,0,0.5)]"
+              >
+                <button
+                  type="button"
+                  onClick={() => setActiveArtifactAnalysis(null)}
+                  className="absolute right-4 top-4 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/55 transition-colors hover:border-accent/40 hover:text-accent md:right-6 md:top-6"
+                  aria-label="Tutup analisis artefak"
+                >
+                  <X size={20} />
+                </button>
+
+                <div className="grid gap-0 lg:grid-cols-[0.92fr_1.08fr]">
+                  <div className="relative overflow-hidden border-b border-white/10 bg-white/[0.025] p-5 lg:border-b-0 lg:border-r lg:p-7">
+                    <div
+                      className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full blur-[90px]"
+                      style={{ background: activeArtifactAnalysis.cover.accentSoft }}
+                    />
+                    <div className="relative">
+                      <div className="mb-4 flex flex-wrap items-center gap-2 pr-12">
+                        <span className="rounded-full border border-accent/25 bg-accent/10 px-3 py-1 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">
+                          Analisis Artefak
+                        </span>
+                        <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-white/48">
+                          {artifactCategoryLabel[activeArtifactAnalysis.category]}
+                        </span>
+                        <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-white/48">
+                          {artifactSiklusLabel[activeArtifactAnalysis.siklus]}
+                        </span>
+                      </div>
+
+                      <h2 className="max-w-xl text-2xl font-black leading-tight text-white md:text-4xl">
+                        {activeArtifactAnalysis.title}
+                      </h2>
+                      <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/58 md:text-base">
+                        {activeArtifactAnalysis.summary}
+                      </p>
+
+                      <div className="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-brand-night/45 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
+                        {activeArtifactAnalysis.preview ? (
+                          <img
+                            src={publicAsset(activeArtifactAnalysis.preview)}
+                            alt={`Preview ${activeArtifactAnalysis.title}`}
+                            className="max-h-[360px] w-full object-cover object-top"
+                          />
+                        ) : (
+                          <ArtifactCover item={activeArtifactAnalysis} />
+                        )}
+                      </div>
+
+                      <div className="mt-5 flex flex-wrap items-center gap-2">
+                        <span className="rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5 font-mono text-[10px] font-semibold text-white/42">
+                          {activeArtifactAnalysis.fileName}
+                        </span>
+                        {activeArtifactAnalysis.action.type === 'file' && (
+                          <button
+                            type="button"
+                            onClick={() => handleOpenArtifact(activeArtifactAnalysis)}
+                            className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-[11px] font-black text-brand-night transition-all hover:-translate-y-0.5 hover:bg-accent/90"
+                          >
+                            Buka File <ExternalLink size={13} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-5 md:p-7">
+                    <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-5">
+                      <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-accent">
+                        Konteks
+                      </p>
+                      <p className="mt-3 text-sm leading-relaxed text-white/66">
+                        {activeArtifactAnalysis.analysis.konteks}
+                      </p>
+                    </div>
+
+                    <div className="mt-5 grid gap-4 md:grid-cols-3">
+                      {[
+                        { title: 'Tujuan', items: activeArtifactAnalysis.analysis.tujuan },
+                        { title: 'Kelebihan', items: activeArtifactAnalysis.analysis.kelebihan },
+                        { title: 'Kekurangan', items: activeArtifactAnalysis.analysis.kekurangan }
+                      ].map((section) => (
+                        <div key={section.title} className="rounded-2xl border border-white/10 bg-white/[0.035] p-5">
+                          <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-white/46">
+                            {section.title}
+                          </p>
+                          <ul className="mt-4 space-y-3">
+                            {section.items.map((text) => (
+                              <li key={text} className="flex gap-3 text-sm leading-relaxed text-white/62">
+                                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                                <span>{text}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
       </motion.main>
+
+      <AnimatePresence>
+        {openDocGallery !== null && activeFullscreenPhoto && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setOpenDocGallery(null)}
+            className="fixed inset-0 z-[105] overflow-hidden bg-black/95"
+          >
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={() => setOpenDocGallery(null)}
+              className="absolute right-4 top-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-white/14 bg-brand-night/70 text-white/88 shadow-[0_10px_30px_rgba(0,0,0,0.32)] backdrop-blur-md transition-colors hover:border-accent/45 hover:text-accent md:right-6 md:top-6"
+              aria-label="Tutup galeri dokumentasi"
+            >
+              <X size={22} />
+            </button>
+
+            {/* Photo counter */}
+            <div className="absolute top-5 left-1/2 -translate-x-1/2 z-30 rounded-full border border-white/10 bg-brand-night/60 px-4 py-2 font-mono text-xs text-white/70 backdrop-blur-md">
+              {(openDocGallery ?? 0) + 1} / {documentationGalleryItems.length}
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.985 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.985 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              onClick={(event) => event.stopPropagation()}
+              className="relative z-10 h-screen w-screen flex items-center justify-center"
+            >
+              <div
+                className="relative h-full w-full flex items-center justify-center"
+                onPointerDown={(event) => {
+                  docGalleryDragStart.current = event.clientX;
+                }}
+                onPointerUp={(event) => {
+                  if (docGalleryDragStart.current === null) return;
+                  handleDocGallerySwipe(event.clientX - docGalleryDragStart.current);
+                  docGalleryDragStart.current = null;
+                }}
+                onPointerCancel={() => {
+                  docGalleryDragStart.current = null;
+                }}
+              >
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={activeFullscreenPhoto}
+                    src={activeFullscreenPhoto}
+                    alt={activeFullscreenItem?.alt ?? 'Dokumentasi'}
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.02 }}
+                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    className="max-h-[85vh] max-w-[90vw] object-contain select-none"
+                    draggable={false}
+                  />
+                </AnimatePresence>
+
+                {documentationGalleryItems.length > 1 && (
+                  <>
+                    {/* Left arrow button */}
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); setOpenDocGallery((prev) => (prev === null ? prev : (prev + documentationGalleryItems.length - 1) % documentationGalleryItems.length)); }}
+                      className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 flex h-14 w-14 items-center justify-center rounded-full border border-white/14 bg-brand-night/60 text-white/80 shadow-[0_8px_24px_rgba(0,0,0,0.4)] backdrop-blur-md transition-all hover:border-accent/45 hover:text-accent hover:scale-110 hover:bg-brand-night/80"
+                      aria-label="Foto sebelumnya"
+                    >
+                      <ChevronLeft size={28} />
+                    </button>
+                    {/* Right arrow button */}
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); setOpenDocGallery((prev) => (prev === null ? prev : (prev + 1) % documentationGalleryItems.length)); }}
+                      className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 flex h-14 w-14 items-center justify-center rounded-full border border-white/14 bg-brand-night/60 text-white/80 shadow-[0_8px_24px_rgba(0,0,0,0.4)] backdrop-blur-md transition-all hover:border-accent/45 hover:text-accent hover:scale-110 hover:bg-brand-night/80"
+                      aria-label="Foto berikutnya"
+                    >
+                      <ChevronRight size={28} />
+                    </button>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Mobile-only Bottom Navigation Bar */}
       <motion.div 
@@ -2221,30 +3228,45 @@ export default function App() {
           hidden: { opacity: 0, y: 50 },
           visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
         }}
-        className="md:hidden fixed bottom-6 left-6 right-6 z-[100] flex justify-center"
+        className="md:hidden fixed bottom-6 left-4 right-4 z-[100] flex justify-center"
       >
         <motion.nav 
-          className="flex items-center gap-1 p-2 bg-brand-night/80 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl"
+          className="flex max-w-full items-center gap-1 overflow-x-auto p-2 bg-brand-night/80 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl"
+          style={{ scrollbarWidth: 'none' }}
         >
           {[
             { id: 'beranda', icon: <Layout size={20} /> },
             { id: 'profil', icon: <GraduationCap size={20} /> },
-            { id: 'perjalanan', icon: <Briefcase size={20} /> },
+            { id: 'dokumentasi', icon: <Briefcase size={20} /> },
             { id: 'artefak', icon: <Target size={20} /> },
+            { id: 'analisis-evaluasi', icon: <Award size={20} /> },
+            { id: 'penilaian', icon: <FileText size={20} /> },
+            { id: 'model-guru', icon: <Sparkles size={20} /> },
+            { id: 'video', icon: <Youtube size={20} /> },
             { id: 'kontak', icon: <Mail size={20} /> }
           ].map((item) => (
             <motion.a
               key={item.id}
               href={`#${item.id}`}
-              onClick={() => setActiveSection(item.id)}
+              onClick={() => {
+                setActiveSection(item.id);
+              }}
+              whileHover={{ y: -2 }}
               whileTap={{ scale: 0.9 }}
-              className={`p-3 rounded-xl transition-all ${
-                activeSection === item.id 
-                  ? 'bg-accent text-brand-night font-bold shadow-lg shadow-accent/20' 
-                  : 'text-white/40 hover:text-white hover:bg-white/5'
+              className={`relative shrink-0 rounded-xl p-2.5 transition-colors ${
+                activeSection === item.id ? 'text-brand-night' : 'text-white/40 hover:text-white'
               }`}
             >
-              {item.icon}
+              {activeSection === item.id && (
+                <motion.span
+                  layoutId="mobile-bottom-nav-active"
+                  className="absolute inset-0 rounded-xl bg-accent shadow-lg shadow-accent/20"
+                  transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+                />
+              )}
+              <span className="relative z-10 block">
+                {item.icon}
+              </span>
             </motion.a>
           ))}
         </motion.nav>
