@@ -186,6 +186,11 @@ body::before {
   animation: cinematic-swipe-light 1.8s ease-in-out infinite;
 }
 
+.cinematic-loader-status {
+  min-height: 40px;
+  text-wrap: balance;
+}
+
 @keyframes cinematic-scan {
   0%, 100% {
     background-position: 0 -45%, 0 0;
@@ -281,6 +286,10 @@ body::before {
   .cinematic-swipe span {
     font-size: 8px;
     letter-spacing: 0.16em;
+  }
+
+  .cinematic-loader-status {
+    min-height: 38px;
   }
 }
 

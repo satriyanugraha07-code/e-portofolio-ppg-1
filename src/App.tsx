@@ -526,6 +526,10 @@ const Counter = ({ target }: { target: number }) => {
 const CoolLoader = ({ onComplete }: { onComplete: () => void, key?: any }) => {
   const [isReady, setIsReady] = useState(false);
   const [swipeOffset, setSwipeOffset] = useState(0);
+  const [loaderProgress, setLoaderProgress] = useState(4);
+  const [loaderStatus, setLoaderStatus] = useState('Menyiapkan web');
+  const [loadedAssets, setLoadedAssets] = useState(0);
+  const [totalAssets, setTotalAssets] = useState(0);
   const pointerStartY = useRef<number | null>(null);
   const swipeOffsetRef = useRef(0);
   const hasEntered = useRef(false);
@@ -537,6 +541,66 @@ const CoolLoader = ({ onComplete }: { onComplete: () => void, key?: any }) => {
     setSwipeOffset(-96);
     setTimeout(onComplete, 180);
   };
+
+  useEffect(() => {
+    let isMounted = true;
+    const assets = createLoaderAssetEntries();
+
+    setTotalAssets(assets.length);
+    setLoadedAssets(0);
+    setLoaderProgress(4);
+    setLoaderStatus('Menyiapkan web');
+
+    const markAssetReady = (label: string) => {
+      if (!isMounted) return;
+
+      setLoadedAssets((current) => {
+        const next = Math.min(current + 1, assets.length);
+        const nextProgress = assets.length > 0
+          ? 10 + Math.round((next / assets.length) * 82)
+          : 92;
+
+        setLoaderProgress(Math.min(nextProgress, 92));
+        setLoaderStatus(label);
+        return next;
+      });
+    };
+
+    const preparePage = async () => {
+      setLoaderStatus('Menyiapkan font dan layout');
+
+      if ('fonts' in document) {
+        await document.fonts.ready.catch(() => undefined);
+      }
+
+      setLoaderProgress(10);
+      setLoaderStatus('Memuat gambar utama');
+
+      await Promise.all(
+        assets.map((asset) => (
+          preloadLoaderImage(asset.src).then(() => markAssetReady(asset.label))
+        ))
+      );
+
+      if (!isMounted) return;
+
+      setLoaderStatus('Merapikan transisi masuk');
+      setLoaderProgress(96);
+
+      window.setTimeout(() => {
+        if (!isMounted) return;
+        setLoaderProgress(100);
+        setLoaderStatus('Semua tampilan siap');
+        setIsReady(true);
+      }, 280);
+    };
+
+    preparePage();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!isReady) return;
@@ -625,23 +689,40 @@ const CoolLoader = ({ onComplete }: { onComplete: () => void, key?: any }) => {
           className="relative z-10 text-center"
         >
           <div className="font-mono text-[10px] font-bold uppercase tracking-[0.38em] text-accent/85">
-            {isReady ? 'READY' : 'INITIALIZING'}
+            {isReady ? 'SIAP' : 'MENYIAPKAN'}
           </div>
           <div className="mt-2 font-mono text-3xl font-bold text-white drop-shadow-[0_0_18px_rgba(203,255,156,0.55)] md:text-5xl">
-            {isReady ? '100%' : 'PPG'}
+            {`${Math.round(loaderProgress)}%`}
           </div>
         </motion.div>
       </div>
 
       <div className="cinematic-center-control absolute left-1/2 top-1/2 z-20 w-[min(82vw,390px)] -translate-x-1/2 translate-y-[160px] md:translate-y-[210px]">
-        <div className="h-1.5 overflow-hidden rounded-full border border-accent/20 bg-brand-night/24 shadow-[0_0_22px_rgba(203,255,156,0.16)] backdrop-blur-md">
+        <div
+          className="h-1.5 overflow-hidden rounded-full border border-accent/20 bg-brand-night/24 shadow-[0_0_22px_rgba(203,255,156,0.16)] backdrop-blur-md"
+          role="progressbar"
+          aria-label="Persiapan halaman"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(loaderProgress)}
+        >
           <motion.div
             className="h-full origin-left bg-accent shadow-[0_0_22px_rgba(203,255,156,0.85)]"
             initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 3.4, ease: [0.22, 1, 0.36, 1] }}
-            onAnimationComplete={() => setTimeout(() => setIsReady(true), 260)}
+            animate={{ scaleX: loaderProgress / 100 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           />
+        </div>
+
+        <div className="cinematic-loader-status mt-3 text-center" aria-live="polite">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-accent/90">
+            {loaderStatus}
+          </p>
+          <p className="mt-1 text-xs font-medium text-white/58">
+            {isReady
+              ? 'Swipe ke atas untuk masuk tanpa jeda.'
+              : `${loadedAssets}/${totalAssets || '...'} aset siap`}
+          </p>
         </div>
 
         <motion.div
@@ -683,6 +764,84 @@ const CoolLoader = ({ onComplete }: { onComplete: () => void, key?: any }) => {
 
 // --- Data ---
 const publicAsset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;
+
+type LoaderAssetEntry = {
+  src: string;
+  label: string;
+};
+
+const loaderImageCache = new Map<string, Promise<void>>();
+
+const preloadLoaderImage = (src: string) => {
+  const cached = loaderImageCache.get(src);
+  if (cached) return cached;
+
+  const promise = new Promise<void>((resolve) => {
+    const img = new Image();
+    let isSettled = false;
+
+    const finish = () => {
+      if (isSettled) return;
+      isSettled = true;
+      window.clearTimeout(timeoutId);
+      resolve();
+    };
+
+    const finishAfterDecode = () => {
+      if (img.decode) {
+        img.decode().catch(() => undefined).then(finish);
+        return;
+      }
+
+      finish();
+    };
+
+    const timeoutId = window.setTimeout(finish, 9000);
+
+    img.decoding = 'async';
+    img.loading = 'eager';
+    img.onload = finishAfterDecode;
+    img.onerror = finish;
+    img.src = src;
+
+    if (img.complete) {
+      finishAfterDecode();
+    }
+  });
+
+  loaderImageCache.set(src, promise);
+  return promise;
+};
+
+const createLoaderAssetEntries = (): LoaderAssetEntry[] => {
+  const entries: LoaderAssetEntry[] = [
+    { src: publicAsset('loader-cinematic.png'), label: 'Menyiapkan loading screen' },
+    { src: publicAsset('logo.png'), label: 'Memuat logo dan navigasi' },
+    { src: publicAsset('profile.svg'), label: 'Memuat foto profil' },
+    { src: publicAsset('latarbelakang.svg'), label: 'Menyiapkan bagian profil' },
+    { src: publicAsset('hiking.svg'), label: 'Menyiapkan bagian hobi' },
+    { src: publicAsset('traveling.svg'), label: 'Menyiapkan bagian hobi' },
+    { src: publicAsset('fotografi.svg'), label: 'Menyiapkan bagian hobi' },
+    { src: publicAsset('logos/ust.png'), label: 'Memuat logo pendidikan' },
+    { src: publicAsset('logos/smk.png'), label: 'Memuat logo pendidikan' },
+    { src: publicAsset('logos/uns.png'), label: 'Memuat logo pendidikan' },
+    { src: publicAsset('logos/sma.png'), label: 'Memuat logo pendidikan' },
+    ...Array.from({ length: 12 }, (_, index) => ({
+      src: publicAsset(`galeri-${String(index + 1).padStart(2, '0')}.jpg`),
+      label: 'Memuat galeri dokumentasi'
+    })),
+    ...artifactItems
+      .filter((item): item is ArtifactItem & { preview: string } => Boolean(item.preview))
+      .map((item) => ({
+        src: publicAsset(item.preview),
+        label: 'Menyiapkan preview artefak'
+      }))
+  ];
+
+  return Array.from(
+    new Map(entries.map((entry) => [entry.src, entry])).values()
+  );
+};
 
 const profileDetails = [
   {
