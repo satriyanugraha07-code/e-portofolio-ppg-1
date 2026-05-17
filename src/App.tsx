@@ -1538,6 +1538,140 @@ const competencyItems: Record<CompetencyCategoryId, Array<{
   ]
 };
 
+type CertificateAchievement = {
+  number: string;
+  title: string;
+  role: string;
+  issuer: string;
+  category: string;
+  description: string;
+  icon: React.ReactNode;
+  accent: string;
+  accentSoft: string;
+  preview: string;
+  fileHref: string;
+};
+
+const certificateAchievements: CertificateAchievement[] = [
+  {
+    number: '01',
+    title: 'Bootcamp NVivo',
+    role: 'Pelatihan penelitian kualitatif',
+    issuer: 'PT Ebiz Prima Nusa',
+    category: 'Pelatihan',
+    description: 'Mengikuti bootcamp penelitian kualitatif menggunakan Tool AI dan NVivo 12 selama 96 JP.',
+    icon: <FileText size={22} />,
+    accent: '#cbff9c',
+    accentSoft: 'rgba(203, 255, 156, 0.16)',
+    preview: 'sertifikat/preview/pelatihan-nvivo-ai-ebizmark-2024.jpg',
+    fileHref: 'sertifikat/rapi/pelatihan-nvivo-ai-ebizmark-2024.pdf'
+  },
+  {
+    number: '02',
+    title: 'Asisten Dosen',
+    role: 'Asisten Dosen',
+    issuer: 'Pendidikan Teknik Mesin FKIP UNS',
+    category: 'Akademik',
+    description: 'Bertugas sebagai asisten dosen pada mata kuliah Menggambar Mesin semester Agustus 2022 sampai Januari 2023.',
+    icon: <GraduationCap size={22} />,
+    accent: '#8effe7',
+    accentSoft: 'rgba(142, 255, 231, 0.14)',
+    preview: 'sertifikat/preview/asisten-dosen-menggambar-mesin-2023.jpg',
+    fileHref: 'sertifikat/rapi/asisten-dosen-menggambar-mesin-2023.pdf'
+  },
+  {
+    number: '03',
+    title: 'Panitia MEF',
+    role: 'Panitia MEF 2022',
+    issuer: 'Pendidikan Teknik Mesin UNS',
+    category: 'Event',
+    description: 'Berkontribusi sebagai panitia dalam Mechanical Education Festival 2022 Pendidikan Teknik Mesin Universitas Sebelas Maret.',
+    icon: <Target size={22} />,
+    accent: '#ffd378',
+    accentSoft: 'rgba(255, 211, 120, 0.14)',
+    preview: 'sertifikat/preview/panitia-mechanical-education-festival-2022.jpg',
+    fileHref: 'sertifikat/rapi/panitia-mechanical-education-festival-2022.pdf'
+  },
+  {
+    number: '04',
+    title: 'Staf Pembekalan Rohani',
+    role: 'Staf Pembekalan Rohani',
+    issuer: 'UKM PMK FKIP UNS',
+    category: 'Organisasi',
+    description: 'Berkontribusi dalam kepengurusan UKM Persekutuan Mahasiswa Kristen FKIP UNS periode 2022/2023.',
+    icon: <Layers size={22} />,
+    accent: '#f7f8ff',
+    accentSoft: 'rgba(247, 248, 255, 0.12)',
+    preview: 'sertifikat/preview/staf-pembekalan-rohani-ukm-pmk-2022.jpg',
+    fileHref: 'sertifikat/rapi/staf-pembekalan-rohani-ukm-pmk-2022.pdf'
+  },
+  {
+    number: '05',
+    title: 'PKL PT YPTI',
+    role: 'Peserta praktik kerja industri',
+    issuer: 'PT Yogya Presisi Tehnikatama Industri',
+    category: 'Industri',
+    description: 'Mengikuti praktik kerja industri di PT Yogya Presisi Tehnikatama Industri pada 2 Januari sampai 28 Maret 2024.',
+    icon: <Briefcase size={22} />,
+    accent: '#cbff9c',
+    accentSoft: 'rgba(203, 255, 156, 0.14)',
+    preview: 'sertifikat/preview/praktik-kerja-industri-pt-ypti-2024.jpg',
+    fileHref: 'sertifikat/rapi/praktik-kerja-industri-pt-ypti-2024.pdf'
+  },
+  {
+    number: '06',
+    title: 'Wakil Ketua PMK',
+    role: 'Wakil Ketua',
+    issuer: 'UKM PMK FKIP UNS',
+    category: 'Kepemimpinan',
+    description: 'Berkontribusi sebagai wakil ketua pada kepengurusan UKM PMK FKIP UNS periode 2023/2024.',
+    icon: <Award size={22} />,
+    accent: '#8effe7',
+    accentSoft: 'rgba(142, 255, 231, 0.14)',
+    preview: 'sertifikat/preview/wakil-ketua-ukm-pmk-2023.jpg',
+    fileHref: 'sertifikat/rapi/wakil-ketua-ukm-pmk-2023.pdf'
+  },
+  {
+    number: '07',
+    title: 'Diklat Anti Bullying',
+    role: 'Peserta',
+    issuer: 'PPG FKIP UST',
+    category: 'Diklat',
+    description: 'Mengikuti Diklat Anti Bullying dan Penanganan Kekerasan Seksual bagi mahasiswa PPG Calon Guru Gelombang I.',
+    icon: <Sparkles size={22} />,
+    accent: '#ffd378',
+    accentSoft: 'rgba(255, 211, 120, 0.14)',
+    preview: 'sertifikat/preview/diklat-anti-bullying-ppg-2026.jpg',
+    fileHref: 'sertifikat/rapi/diklat-anti-bullying-ppg-2026.pdf'
+  },
+  {
+    number: '08',
+    title: 'Diklat Kebinekaan Global',
+    role: 'Peserta',
+    issuer: 'PPG FKIP UST',
+    category: 'Diklat',
+    description: 'Mengikuti diklat wawasan kebinekaan global bagi mahasiswa PPG Calon Guru Gelombang I tahun akademik 2025/2026.',
+    icon: <Globe size={22} />,
+    accent: '#f7f8ff',
+    accentSoft: 'rgba(247, 248, 255, 0.12)',
+    preview: 'sertifikat/preview/diklat-wawasan-kebinekaan-global-2026.jpg',
+    fileHref: 'sertifikat/rapi/diklat-wawasan-kebinekaan-global-2026.pdf'
+  },
+  {
+    number: '09',
+    title: 'Webinar Kewirausahaan 2021',
+    role: 'Peserta',
+    issuer: 'KOMPRESI FKIP UNS',
+    category: 'Kewirausahaan',
+    description: 'Mengikuti webinar kewirausahaan 2021 bertema aktif dan produktif di usia muda dengan berwirausaha.',
+    icon: <Briefcase size={22} />,
+    accent: '#8effe7',
+    accentSoft: 'rgba(142, 255, 231, 0.14)',
+    preview: 'sertifikat/preview/webinar-kewirausahaan-2021.jpg',
+    fileHref: 'sertifikat/rapi/webinar-kewirausahaan-2021.pdf'
+  }
+];
+
 const youtubeChannelUrl = 'https://www.youtube.com/@satriyanugraha8440';
 const youtubeVideoUrl = 'https://youtu.be/jMjdjtP_nMY';
 const youtubeVideoId = 'jMjdjtP_nMY';
@@ -1555,6 +1689,7 @@ export default function App() {
   const [activeArtifactCategory, setActiveArtifactCategory] = useState<'semua' | ArtifactCategory>('semua');
   const [activeArtifactAnalysis, setActiveArtifactAnalysis] = useState<ArtifactItem | null>(null);
   const [activeCompetencyCategory, setActiveCompetencyCategory] = useState<CompetencyCategoryId>('pedagogik');
+  const [activeCertificate, setActiveCertificate] = useState<CertificateAchievement | null>(null);
   const [isVideoSoundEnabled, setIsVideoSoundEnabled] = useState(false);
   const [isVideoInView, setIsVideoInView] = useState(false);
   const [hasVideoEntered, setHasVideoEntered] = useState(false);
@@ -1582,6 +1717,7 @@ export default function App() {
     { id: 'penilaian', label: 'Penilaian' },
     { id: 'model-guru', label: 'Model Guru' },
     { id: 'video', label: 'Video' },
+    { id: 'sertifikat', label: 'Sertifikat' },
     { id: 'kontak', label: 'Kontak' }
   ];
 
@@ -1735,7 +1871,7 @@ export default function App() {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => setCursorPos({ x: e.clientX, y: e.clientY });
     const handleScroll = () => {
-      const sections = ['beranda', 'profil', 'dokumentasi', 'artefak', 'analisis-evaluasi', 'penilaian', 'model-guru', 'video', 'kontak'];
+      const sections = ['beranda', 'profil', 'dokumentasi', 'artefak', 'analisis-evaluasi', 'penilaian', 'model-guru', 'video', 'sertifikat', 'kontak'];
       const marker = window.innerHeight * 0.36;
       let current = sections[0];
 
@@ -1823,8 +1959,21 @@ export default function App() {
   }, [activeSection, hasVideoEntered, isLoading]);
 
   useEffect(() => {
-    document.body.style.overflow = isLoading || openDocGallery !== null || activeArtifactAnalysis !== null ? 'hidden' : 'unset';
-  }, [activeArtifactAnalysis, isLoading, openDocGallery]);
+    document.body.style.overflow = isLoading || openDocGallery !== null || activeArtifactAnalysis !== null || activeCertificate !== null ? 'hidden' : 'unset';
+  }, [activeArtifactAnalysis, activeCertificate, isLoading, openDocGallery]);
+
+  useEffect(() => {
+    if (activeCertificate === null) return;
+
+    const handleCertificateKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setActiveCertificate(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleCertificateKeydown);
+    return () => window.removeEventListener('keydown', handleCertificateKeydown);
+  }, [activeCertificate]);
 
   useEffect(() => {
     if (activeArtifactAnalysis === null) return;
@@ -3036,6 +3185,101 @@ export default function App() {
           </Reveal>
         </section>
 
+        {/* Certificate Section */}
+        <section id="sertifikat" className="relative scroll-mt-16 py-16 md:py-24">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/24 to-transparent" />
+
+          <Reveal direction="up" className="relative z-10 mx-auto max-w-4xl text-center" parallax={-14}>
+            <SectionKicker>Sertifikat</SectionKicker>
+            <h2 className="analysis-section__title text-gradient mt-3">Sertifikat & Pencapaian</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/58 md:text-base">
+              Kumpulan bukti pengalaman organisasi, kepanitiaan, akademik, pelatihan, dan pengembangan diri yang memperkuat profil profesional.
+            </p>
+          </Reveal>
+
+          <Reveal direction="up" className="relative z-10 mt-9" cascade>
+            <div className="mb-5 flex flex-wrap items-center justify-center gap-3">
+              <div className="rounded-full border border-accent/18 bg-accent/10 px-4 py-2 font-mono text-[10px] font-black uppercase tracking-[0.18em] text-accent">
+                {certificateAchievements.length} Sertifikat
+              </div>
+              <div className="rounded-full border border-white/10 bg-white/[0.035] px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white/46">
+                Akademik - Organisasi - Pelatihan - Industri
+              </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {certificateAchievements.map((item, index) => (
+                <motion.button
+                  key={item.title}
+                  type="button"
+                  onClick={() => setActiveCertificate(item)}
+                  whileHover={{ y: -8, scale: 1.015 }}
+                  whileTap={{ scale: 0.985 }}
+                  transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                  className="certificate-card group relative overflow-hidden rounded-2xl border border-white/10 bg-brand-night/58 p-4 text-left backdrop-blur-xl"
+                  style={{
+                    '--certificate-accent': item.accent,
+                    '--certificate-accent-soft': item.accentSoft
+                  } as React.CSSProperties}
+                  aria-label={`Buka detail ${item.title}`}
+                >
+                  <div className="certificate-card__preview" aria-hidden="true">
+                    {item.preview ? (
+                      <img
+                        src={publicAsset(item.preview)}
+                        alt=""
+                        className="certificate-card__image"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="certificate-card__paper">
+                        <div className="certificate-card__paper-top">
+                          <span>{item.number}</span>
+                          <span>{item.category}</span>
+                        </div>
+                        <div className="certificate-card__paper-title">
+                          <span />
+                          <span />
+                        </div>
+                        <div className="certificate-card__paper-lines">
+                          <span />
+                          <span />
+                          <span />
+                        </div>
+                        <div className="certificate-card__seal">
+                          {item.icon}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="relative mt-4">
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <span className="rounded-full border border-white/10 bg-white/[0.035] px-2.5 py-1 font-mono text-[9px] font-black uppercase tracking-[0.16em] text-white/42">
+                        Certif {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <span className="grid h-9 w-9 place-items-center rounded-xl text-brand-night shadow-[0_12px_30px_rgba(0,0,0,0.2)]" style={{ background: item.accent }}>
+                        {item.icon}
+                      </span>
+                    </div>
+
+                    <h3 className="certificate-card__title font-black text-white">{item.title}</h3>
+                    <p className="mt-2 text-xs font-bold uppercase tracking-[0.12em] text-[color:var(--certificate-accent)]">
+                      {item.issuer}
+                    </p>
+                    <p className="mt-3 text-sm font-semibold leading-snug text-white/74">
+                      {item.role}
+                    </p>
+                    <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5 font-mono text-[9px] font-black uppercase tracking-[0.16em] text-white/44 transition-colors group-hover:border-accent/26 group-hover:text-accent">
+                      Detail <ExternalLink size={11} />
+                    </p>
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+          </Reveal>
+        </section>
+
         {/* Contact Section */}
         <section id="kontak" className="relative scroll-mt-16 pt-12 min-h-[85vh] flex flex-col justify-center pb-24">
           <div className="glass-card p-12 md:p-24 border-white/10 bg-brand-deep/30 relative overflow-hidden group">
@@ -3096,6 +3340,98 @@ export default function App() {
             </div>
           </div>
         </section>
+
+        {/* Certificate Detail Modal */}
+        <AnimatePresence>
+          {activeCertificate && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActiveCertificate(null)}
+              className="fixed inset-0 z-[104] flex items-center justify-center bg-brand-night/84 p-4 backdrop-blur-md"
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94, y: 22 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.94, y: 22 }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                onClick={(event) => event.stopPropagation()}
+                className="relative grid max-h-[90vh] w-full max-w-6xl overflow-y-auto rounded-[2rem] border border-white/10 bg-[#0d1220] shadow-[0_28px_90px_rgba(0,0,0,0.5)] lg:grid-cols-[1.14fr_0.86fr]"
+              >
+                <button
+                  type="button"
+                  onClick={() => setActiveCertificate(null)}
+                  className="absolute right-4 top-4 z-30 flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/55 transition-colors hover:border-accent/40 hover:text-accent md:right-6 md:top-6"
+                  aria-label="Tutup detail sertifikat"
+                >
+                  <X size={20} />
+                </button>
+
+                <div className="relative overflow-hidden border-b border-white/10 bg-white/[0.025] p-5 lg:border-b-0 lg:border-r lg:p-7">
+                  <div
+                    className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full blur-[90px]"
+                    style={{ background: activeCertificate.accentSoft }}
+                  />
+                  <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-brand-night/52 shadow-[0_20px_60px_rgba(0,0,0,0.28)]">
+                    <img
+                      src={publicAsset(activeCertificate.preview)}
+                      alt={`Sertifikat ${activeCertificate.title}`}
+                      className="max-h-[72vh] w-full object-contain"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-5 md:p-7">
+                  <div className="mb-5 flex flex-wrap items-center gap-2 pr-12">
+                    <span className="rounded-full border border-accent/25 bg-accent/10 px-3 py-1 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">
+                      Sertifikat {activeCertificate.number}
+                    </span>
+                    <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-white/48">
+                      {activeCertificate.category}
+                    </span>
+                  </div>
+
+                  <h2 className="text-2xl font-black leading-tight text-white md:text-4xl">
+                    {activeCertificate.title}
+                  </h2>
+                  <p className="mt-3 text-sm font-black uppercase tracking-[0.14em] text-[color:var(--certificate-modal-accent)]" style={{ '--certificate-modal-accent': activeCertificate.accent } as React.CSSProperties}>
+                    {activeCertificate.issuer}
+                  </p>
+
+                  <div className="mt-6 grid gap-4">
+                    <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-5">
+                      <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-white/42">
+                        Peran
+                      </p>
+                      <p className="mt-2 text-base font-bold text-white/82">
+                        {activeCertificate.role}
+                      </p>
+                    </div>
+
+                    <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-5">
+                      <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-white/42">
+                        Keterangan
+                      </p>
+                      <p className="mt-3 text-sm leading-relaxed text-white/66">
+                        {activeCertificate.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <a
+                    href={publicAsset(activeCertificate.fileHref)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-black text-brand-night transition-all hover:-translate-y-0.5 hover:bg-accent/90"
+                  >
+                    Buka PDF <ExternalLink size={16} />
+                  </a>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Showcase Detail Modal */}
         <AnimatePresence>
@@ -3402,6 +3738,7 @@ export default function App() {
             { id: 'penilaian', icon: <FileText size={20} /> },
             { id: 'model-guru', icon: <Sparkles size={20} /> },
             { id: 'video', icon: <Youtube size={20} /> },
+            { id: 'sertifikat', icon: <Award size={20} /> },
             { id: 'kontak', icon: <Mail size={20} /> }
           ].map((item) => (
             <motion.a
