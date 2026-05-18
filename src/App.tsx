@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useRef, useDeferredValue } from 'react';
+import { useForm, ValidationError } from '@formspree/react';
 import { 
   motion, AnimatePresence, useScroll, useSpring, useTransform, useInView
 } from 'motion/react';
@@ -13,7 +14,7 @@ import {
   GraduationCap, Briefcase, Target, MousePointer2,
   Sparkles, Layers, Fingerprint, ExternalLink,
   Code2, Palette, Globe, Linkedin, Youtube, FileText,
-  Cog, Wrench, Gauge
+  Cog, Wrench, Gauge, MapPin, Send, MessageCircle
 } from 'lucide-react';
 import {
   artifactCategories,
@@ -1680,6 +1681,18 @@ const youtubeChannelUrl = 'https://www.youtube.com/@satriyanugraha8440';
 const youtubeVideoUrl = 'https://youtu.be/jMjdjtP_nMY';
 const youtubeVideoId = 'jMjdjtP_nMY';
 const youtubeEmbedUrl = `https://www.youtube.com/embed/${youtubeVideoId}?enablejsapi=1&autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1`;
+const formspreeFormId = 'xeedqrqg';
+const contactEmail = 'cocreyhanfams@gmail.com';
+const profileEmail = 'satriyanugraha@student.uns.ac.id';
+const whatsappNumber = '0858-7941-3890';
+const whatsappUrl = 'https://wa.me/6285879413890';
+
+type ContactFormFields = {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+};
 
 export default function App() {
   const [activeSection, setActiveSection] = useState('beranda');
@@ -1695,6 +1708,7 @@ export default function App() {
   const [activeCompetencyCategory, setActiveCompetencyCategory] = useState<CompetencyCategoryId>('pedagogik');
   const [activeAnalysisHighlight, setActiveAnalysisHighlight] = useState<(typeof evaluationHighlights)[number] | null>(null);
   const [activeCertificate, setActiveCertificate] = useState<CertificateAchievement | null>(null);
+  const [contactFormState, handleContactFormSubmit] = useForm<ContactFormFields>(formspreeFormId);
   const [isVideoSoundEnabled, setIsVideoSoundEnabled] = useState(false);
   const [isVideoInView, setIsVideoInView] = useState(false);
   const [hasVideoEntered, setHasVideoEntered] = useState(false);
@@ -1703,6 +1717,7 @@ export default function App() {
   const activeGalleryCardRef = useRef(0);
   const galleryAutoScrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const youtubeIframeRef = useRef<HTMLIFrameElement | null>(null);
+  const contactFormRef = useRef<HTMLFormElement | null>(null);
   const videoSoundEnabledRef = useRef(false);
   const deferredArtifactSiklus = useDeferredValue(activeArtifactSiklus);
   const deferredArtifactCategory = useDeferredValue(activeArtifactCategory);
@@ -1872,6 +1887,12 @@ export default function App() {
     setIsVideoSoundEnabled(false);
     sendYoutubeCommand('mute');
   };
+
+  useEffect(() => {
+    if (contactFormState.succeeded) {
+      contactFormRef.current?.reset();
+    }
+  }, [contactFormState.succeeded]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => setCursorPos({ x: e.clientX, y: e.clientY });
@@ -2294,6 +2315,13 @@ export default function App() {
                   <div className="absolute -inset-1 bg-accent/50 blur-lg opacity-0 group-hover:opacity-100 transition duration-500 rounded-full" />
                   <div className="relative flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/5 hover:bg-accent/20 hover:border hover:border-accent/30 transition-all text-white group-hover:text-[#EA4335] shadow-xl z-10">
                     <Mail size={22} className="md:w-6 md:h-6" />
+                  </div>
+                </MagneticLink>
+
+                <MagneticLink href={whatsappUrl} className="group relative">
+                  <div className="absolute -inset-1 bg-accent/50 blur-lg opacity-0 group-hover:opacity-100 transition duration-500 rounded-full" />
+                  <div className="relative flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/5 hover:bg-accent/20 hover:border hover:border-accent/30 transition-all text-white group-hover:text-[#25D366] shadow-xl z-10">
+                    <MessageCircle size={22} className="md:w-6 md:h-6" />
                   </div>
                 </MagneticLink>
               </div>
@@ -3272,64 +3300,146 @@ export default function App() {
         </section>
 
         {/* Contact Section */}
-        <section id="kontak" className="relative scroll-mt-16 pt-12 min-h-[85vh] flex flex-col justify-center pb-24">
-          <div className="glass-card p-12 md:p-24 border-white/10 bg-brand-deep/30 relative overflow-hidden group">
-            <motion.div 
-              animate={{ 
-                scale: [1, 1.2, 1],
-                opacity: [0.1, 0.2, 0.1]
-              }}
-              transition={{ duration: 15, repeat: Infinity }}
-              className="absolute -top-40 -right-40 w-[60rem] h-[60rem] bg-accent/20 blur-[180px] rounded-full pointer-events-none" 
-            />
-            
-            <div className="grid lg:grid-cols-2 gap-20 items-center relative z-10">
-              <Reveal direction="left">
-                <div>
-                  <SectionKicker>Final Word</SectionKicker>
-                  <h2 className="text-gradient leading-tight mb-10 italic">Mari Berkolaborasi Mendobrak <span className="text-accent">Batas Pendidikan.</span></h2>
-                  <p className="text-muted/80 text-xl leading-relaxed max-w-lg font-light">
-                    Jika Anda melihat potensi dalam pendekatan ini, saya sangat terbuka untuk diskusi, masukan, atau peluang kolaborasi lainnya.
-                  </p>
-                </div>
-              </Reveal>
+        <section id="kontak" className="relative scroll-mt-16 py-16 md:py-24">
+          <div className="pointer-events-none absolute -left-28 top-8 h-80 w-80 rounded-full bg-accent/10 blur-[120px]" />
+          <div className="pointer-events-none absolute -right-28 bottom-10 h-96 w-96 rounded-full bg-accent-strong/10 blur-[130px]" />
 
-              <Reveal direction="right" delay={0.2} cascade className="flex flex-col gap-6">
-                {[
-                  { label: "Email Portfolio", value: "satriyanugraha@student.uns.ac.id", icon: <Mail size={24} />, href: "mailto:satriyanugraha@student.uns.ac.id" },
-                  { label: "Social", value: "LinkedIn", icon: <Linkedin size={24} />, href: "https://www.linkedin.com/in/satriya-nugraha/" },
-                  { label: "Social", value: "YouTube", icon: <Youtube size={24} />, href: "https://www.youtube.com/@satriyanugraha8440" },
-                  { label: "Social Presence", value: "@_satriyanugraha", icon: <Instagram size={24} />, href: "https://www.instagram.com/_satriyanugraha/" }
-                ].map((link, i) => (
-                  <motion.a 
-                    key={i}
-                    whileHover={{ scale: 1.02, x: 10 }}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-6 p-8 glass-card border-white/5 bg-white/3 hover:bg-white/8 transition-all group/link"
-                  >
-                    <div className="p-5 rounded-full bg-accent text-brand-night shadow-[0_10px_30px_rgba(203,255,156,0.3)]">
-                      {link.icon}
-                    </div>
+          <Reveal direction="up" className="relative z-10 mx-auto max-w-4xl text-center" parallax={-14}>
+            <SectionKicker>Kontak</SectionKicker>
+            <h2 className="analysis-section__title text-gradient mt-3">Hubungi Saya</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/58 md:text-base">
+              Terbuka untuk diskusi, kolaborasi, masukan, atau komunikasi terkait portofolio dan pengembangan pembelajaran.
+            </p>
+          </Reveal>
+
+          <Reveal direction="up" className="relative z-10 mt-10">
+            <div className="grid gap-7 lg:grid-cols-[0.85fr_1.15fr]">
+              <div className="space-y-5">
+                <div className="rounded-[1.7rem] border border-white/10 bg-brand-night/48 p-5 backdrop-blur-xl md:p-6">
+                  <p className="mb-5 font-mono text-[10px] font-black uppercase tracking-[0.2em] text-accent">
+                    Jalur Komunikasi
+                  </p>
+                  <div className="grid gap-3">
+                    {[
+                      { label: 'Email', value: profileEmail, href: `mailto:${profileEmail}`, icon: <Mail size={18} /> },
+                      { label: 'WhatsApp', value: whatsappNumber, href: whatsappUrl, icon: <MessageCircle size={18} /> },
+                      { label: 'Instagram', value: '@_satriyanugraha', href: 'https://www.instagram.com/_satriyanugraha/', icon: <Instagram size={18} /> },
+                      { label: 'LinkedIn', value: 'Satriya Nugraha', href: 'https://www.linkedin.com/in/satriya-nugraha/', icon: <Linkedin size={18} /> },
+                      { label: 'YouTube', value: 'Satriya Nugraha', href: youtubeChannelUrl, icon: <Youtube size={18} /> }
+                    ].map((item) => (
+                      <a
+                        key={item.label}
+                        href={item.href}
+                        target={item.href.startsWith('mailto:') ? undefined : '_blank'}
+                        rel={item.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
+                        className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.035] p-4 transition-all hover:-translate-y-1 hover:border-accent/28 hover:bg-accent/10"
+                      >
+                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-accent/18 bg-accent/10 text-accent transition-colors group-hover:bg-accent group-hover:text-brand-night">
+                          {item.icon}
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block font-mono text-[9px] font-black uppercase tracking-[0.18em] text-white/38">{item.label}</span>
+                          <span className="mt-1 block truncate text-sm font-bold text-white/74 group-hover:text-accent">{item.value}</span>
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="overflow-hidden rounded-[1.7rem] border border-white/10 bg-brand-night/48 p-3 backdrop-blur-xl">
+                  <div className="mb-3 flex items-center gap-3 px-2">
+                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent text-brand-night">
+                      <MapPin size={18} />
+                    </span>
                     <div>
-                      <span className="text-[10px] font-mono text-white/30 uppercase tracking-[0.2em] block mb-1">{link.label}</span>
-                      <span className="text-base md:text-lg lg:text-xl font-bold group-hover/link:text-accent transition-colors break-all md:break-normal">{link.value}</span>
+                      <p className="font-mono text-[9px] font-black uppercase tracking-[0.18em] text-accent">Lokasi Rujukan</p>
+                      <p className="text-sm font-bold text-white/72">UST Yogyakarta</p>
                     </div>
-                  </motion.a>
-                ))}
-                
-                <motion.button 
-                  whileHover={{ y: -5 }}
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                  className="flex items-center justify-center gap-4 p-8 text-white/30 hover:text-white transition-colors group/top mt-4 border-t border-white/5"
-                >
-                  <ArrowUp size={20} className="group-hover/top:-translate-y-2 transition-transform" />
-                  <span className="text-xs font-mono uppercase tracking-[0.3em]">Return to Top</span>
-                </motion.button>
-              </Reveal>
+                  </div>
+                  <div className="overflow-hidden rounded-[1.25rem] border border-white/10 bg-black">
+                    <iframe
+                      title="Peta Universitas Sarjanawiyata Tamansiswa Yogyakarta"
+                      src="https://www.google.com/maps?q=Universitas%20Sarjanawiyata%20Tamansiswa%20Yogyakarta&output=embed"
+                      className="h-64 w-full grayscale-[15%] invert-0"
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <form
+                ref={contactFormRef}
+                onSubmit={handleContactFormSubmit}
+                className="relative overflow-hidden rounded-[1.9rem] border border-accent/14 bg-brand-night/58 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl md:p-7"
+              >
+                <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-accent/10 blur-[80px]" />
+                <div className="relative">
+                  <p className="font-mono text-[10px] font-black uppercase tracking-[0.2em] text-accent">
+                    Kirim Pesan
+                  </p>
+                  <h3 className="mt-3 text-2xl font-black leading-tight text-white md:text-3xl">
+                    Ada ide atau masukan?
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-white/54">
+                    Tulis pesan singkat. Saat dikirim, pesan diproses langsung dari halaman ini tanpa membuka aplikasi email.
+                  </p>
+                  <input type="hidden" name="_subject" value="Pesan baru dari E-Portfolio Satriya Nugraha" />
+
+                  <div className="mt-7 grid gap-4 md:grid-cols-2">
+                    <label className="grid gap-2 text-sm font-bold text-white/70">
+                      Nama
+                      <input name="name" required placeholder="Nama Anda" className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-white/30 focus:border-accent/40" />
+                      <ValidationError field="name" errors={contactFormState.errors} className="text-xs font-semibold text-rose-300" />
+                    </label>
+                    <label className="grid gap-2 text-sm font-bold text-white/70">
+                      Email
+                      <input name="email" type="email" required placeholder="email@anda.com" className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-white/30 focus:border-accent/40" />
+                      <ValidationError field="email" errors={contactFormState.errors} className="text-xs font-semibold text-rose-300" />
+                    </label>
+                  </div>
+
+                  <label className="mt-4 grid gap-2 text-sm font-bold text-white/70">
+                    Subjek
+                    <input name="subject" required placeholder="Topik pesan Anda" className="rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-white/30 focus:border-accent/40" />
+                    <ValidationError field="subject" errors={contactFormState.errors} className="text-xs font-semibold text-rose-300" />
+                  </label>
+
+                  <label className="mt-4 grid gap-2 text-sm font-bold text-white/70">
+                    Pesan
+                    <textarea name="message" required rows={6} placeholder="Tulis pesan Anda di sini..." className="resize-none rounded-2xl border border-white/10 bg-white/[0.045] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-white/30 focus:border-accent/40" />
+                    <ValidationError field="message" errors={contactFormState.errors} className="text-xs font-semibold text-rose-300" />
+                  </label>
+
+                  <button
+                    type="submit"
+                    disabled={contactFormState.submitting}
+                    className={`mt-5 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-black text-brand-night shadow-[0_16px_38px_rgba(203,255,156,0.18)] transition-all hover:-translate-y-1 hover:bg-accent-strong ${
+                      contactFormState.submitting ? 'cursor-wait opacity-70 hover:translate-y-0' : ''
+                    }`}
+                  >
+                    {contactFormState.submitting ? 'Mengirim...' : 'Kirim Pesan'} <Send size={16} />
+                  </button>
+
+                  {(contactFormState.submitting || contactFormState.succeeded || contactFormState.errors) && (
+                    <p className={`mt-3 text-sm font-bold ${
+                      contactFormState.succeeded
+                        ? 'text-accent'
+                        : contactFormState.errors
+                          ? 'text-rose-300'
+                          : 'text-white/48'
+                    }`}>
+                      {contactFormState.succeeded
+                        ? 'Pesan berhasil dikirim lewat Formspree.'
+                        : contactFormState.errors
+                          ? 'Pesan belum terkirim. Cek isian form atau dashboard Formspree.'
+                          : 'Mengirim pesan...'}
+                    </p>
+                  )}
+                </div>
+              </form>
             </div>
-          </div>
+          </Reveal>
         </section>
 
         {/* Certificate Detail Modal */}
@@ -3856,14 +3966,116 @@ export default function App() {
         </motion.nav>
       </motion.div>
 
-      <motion.footer 
+      <motion.footer
         variants={{
           hidden: { opacity: 0, y: 30 },
           visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
         }}
-        className="max-w-6xl mx-auto px-6 py-12 text-center text-white/40 border-t border-white/5 mb-24 md:mb-0 relative z-10 w-full"
+        className="relative z-10 -mx-4 mt-6 overflow-hidden border-t border-white/8 bg-[linear-gradient(180deg,rgba(24,58,68,0.08),rgba(7,17,24,0.74)_28%,rgba(5,10,14,0.92))] px-4 pb-28 pt-16 md:-mx-6 md:mb-0 md:px-6 md:pb-14 md:pt-20"
       >
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em]">Satriya Nugraha - E-Portfolio Interaktif 2026</p>
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
+        <div className="pointer-events-none absolute left-[-10%] top-10 h-80 w-80 rounded-full bg-accent/10 blur-[120px]" />
+        <div className="pointer-events-none absolute right-[-8%] bottom-4 h-96 w-96 rounded-full bg-accent-strong/10 blur-[130px]" />
+        <div className="pointer-events-none absolute inset-0 opacity-[0.1] [background-image:linear-gradient(rgba(255,255,255,.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.06)_1px,transparent_1px)] [background-size:34px_34px]" />
+
+        <div className="relative mx-auto max-w-6xl">
+          <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+            <div className="text-center lg:text-left">
+              <img
+                src={publicAsset('logo.png')}
+                alt="Satriya Nugraha"
+                className="mx-auto h-14 w-14 object-contain drop-shadow-[0_0_24px_rgba(203,255,156,0.18)] lg:mx-0"
+                referrerPolicy="no-referrer"
+              />
+              <p className="mt-5 font-mono text-[10px] font-black uppercase tracking-[0.22em] text-accent">
+                E-Portfolio PPG Prajabatan 2026
+              </p>
+              <h2 className="mt-3 text-2xl font-black tracking-[-0.045em] text-white md:text-4xl">
+                Satriya Nugraha
+              </h2>
+              <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-white/55 lg:mx-0">
+                Calon guru Teknik Mesin yang membangun pembelajaran visual, reflektif, dan dekat dengan praktik nyata di kelas kejuruan.
+              </p>
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mx-auto mt-5 inline-flex items-center gap-2 rounded-full border border-accent/16 bg-accent/8 px-4 py-2 text-sm font-black text-accent transition-all hover:-translate-y-1 hover:bg-accent hover:text-brand-night lg:mx-0"
+              >
+                <MessageCircle size={16} />
+                {whatsappNumber}
+              </a>
+
+              <div className="mt-7 flex justify-center gap-3 lg:justify-start">
+                {[
+                  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/satriya-nugraha/', icon: <Linkedin size={18} /> },
+                  { label: 'Instagram', href: 'https://www.instagram.com/_satriyanugraha/', icon: <Instagram size={18} /> },
+                  { label: 'YouTube', href: youtubeChannelUrl, icon: <Youtube size={18} /> },
+                  { label: 'WhatsApp', href: whatsappUrl, icon: <MessageCircle size={18} /> },
+                  { label: 'Email', href: `mailto:${contactEmail}`, icon: <Mail size={18} /> }
+                ].map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target={item.href.startsWith('mailto:') ? undefined : '_blank'}
+                    rel={item.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
+                    aria-label={item.label}
+                    className="grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-white/[0.045] text-white/70 transition-all hover:-translate-y-1 hover:border-accent/28 hover:bg-accent hover:text-brand-night hover:shadow-[0_12px_34px_rgba(203,255,156,0.18)]"
+                  >
+                    {item.icon}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="mb-6 text-center text-sm font-black uppercase tracking-[0.18em] text-white lg:text-left">
+                Navigasi
+              </p>
+              <div className="grid grid-cols-2 gap-x-8 gap-y-3 text-center sm:grid-cols-3 lg:text-left">
+                {navigationItems.map((item) => (
+                  <a
+                    key={item.id}
+                    href={`#${item.id}`}
+                    className="group text-sm font-bold text-white/50 transition-colors hover:text-accent"
+                  >
+                    <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-accent/0 transition-all group-hover:bg-accent/80" />
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+
+              <div className="mt-10 grid gap-4 md:grid-cols-3">
+                {[
+                  { label: 'Fokus', value: 'Artefak Pembelajaran' },
+                  { label: 'Bidang', value: 'Teknik Mesin' },
+                  { label: 'Arah', value: 'Guru Profesional' }
+                ].map((item) => (
+                  <div key={item.label} className="border-l border-accent/20 pl-4 text-left">
+                    <p className="font-mono text-[9px] font-black uppercase tracking-[0.18em] text-accent/72">{item.label}</p>
+                    <p className="mt-1 text-sm font-black text-white/72">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-14 border-t border-white/10 pt-7">
+            <div className="flex flex-col gap-5 text-center md:flex-row md:items-center md:justify-between md:text-left">
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white/36">
+                (c) 2026 Satriya Nugraha. E-Portfolio Interaktif PPG Prajabatan.
+              </p>
+              <button
+                type="button"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/18 bg-accent/12 text-accent shadow-[0_14px_34px_rgba(203,255,156,0.1)] transition-all hover:-translate-y-1 hover:bg-accent hover:text-brand-night md:mx-0"
+                aria-label="Kembali ke atas"
+              >
+                <ArrowUp size={18} />
+              </button>
+            </div>
+          </div>
+        </div>
       </motion.footer>
           </motion.div>
         )}
