@@ -652,15 +652,32 @@ body::before {
 }
 
 .analysis-card__heading {
-  display: grid;
-  gap: 0.85rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
   border-radius: 1rem;
   border: 1px solid color-mix(in srgb, var(--analysis-accent) 26%, transparent);
   background: linear-gradient(135deg, var(--analysis-accent-soft), rgba(255, 255, 255, 0.025));
   padding: 0.95rem 1rem 1rem;
 }
 
+.analysis-card__marker {
+  display: grid;
+  width: 2.65rem;
+  height: 2.65rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 0.9rem;
+  color: #071627;
+  background: var(--analysis-accent);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 950;
+  box-shadow: 0 16px 34px var(--analysis-accent-soft);
+}
+
 .analysis-card__heading span {
+  display: block;
   width: 44px;
   height: 3px;
   border-radius: 999px;
@@ -673,6 +690,98 @@ body::before {
   line-height: 1.22;
   letter-spacing: -0.02em;
   color: var(--analysis-accent);
+}
+
+.analysis-card--expanded {
+  border-color: color-mix(in srgb, var(--analysis-accent) 34%, transparent);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
+}
+
+.analysis-card__lead {
+  font-weight: 700;
+}
+
+.analysis-card__toggle:focus-visible {
+  outline: 2px solid var(--analysis-accent);
+  outline-offset: 3px;
+}
+
+.analysis-card__diagnosis,
+.analysis-card__deep {
+  position: relative;
+}
+
+.analysis-card__diagnosis {
+  overflow: hidden;
+}
+
+.analysis-card__diagnosis::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 0% 0%, var(--analysis-accent-soft), transparent 42%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.035), transparent 50%);
+  opacity: 0.72;
+}
+
+.analysis-card__diagnosis p {
+  position: relative;
+  z-index: 1;
+}
+
+.analysis-card__deep {
+  border-left: 1px solid color-mix(in srgb, var(--analysis-accent) 28%, transparent);
+  padding-left: 1rem;
+}
+
+.analysis-card__impact {
+  position: relative;
+  overflow: hidden;
+}
+
+.analysis-card__impact::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, var(--analysis-accent-soft), transparent 42%);
+  opacity: 0.64;
+}
+
+.analysis-card__impact p {
+  position: relative;
+  z-index: 1;
+}
+
+.analysis-synthesis {
+  position: relative;
+}
+
+.analysis-synthesis::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(203, 255, 156, 0.14), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.04), transparent 48%);
+}
+
+.analysis-synthesis > div {
+  position: relative;
+  z-index: 1;
+}
+
+.analysis-synthesis__item {
+  transition: border-color 0.28s ease, background 0.28s ease, transform 0.28s ease;
+}
+
+.analysis-synthesis__item:hover {
+  transform: translateY(-3px);
+  border-color: rgba(203, 255, 156, 0.24);
+  background: rgba(24, 58, 68, 0.48);
 }
 
 .model-vision-title {

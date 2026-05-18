@@ -90,7 +90,7 @@ const showcaseData: any[] = [
     accent: "rgba(255, 211, 120, 0.2)"
   },
   {
-    title: "Paket Refleksi dan Tindak Lanjut",
+    title: "Paket Refleksi Pembelajaran",
     meta: "Refleksi",
     summary: "Bagian refleksi dibuat lebih menarik dengan perpaduan visual, narasi, dan bullet insight yang singkat tapi terasa kuat.",
     bullets: [
@@ -1300,78 +1300,82 @@ const ArtifactCard = ({
 
 const evaluationHighlights = [
   {
+    marker: '01',
     accent: '#22d3ee',
     accentSoft: 'rgba(34, 211, 238, 0.15)',
-    title: 'Analisis RPP',
-    desc: 'RPP Siklus 1 yang sudah masuk menunjukkan fokus pembelajaran pada gambar proyeksi dalam mata pelajaran Dasar-Dasar Teknik Mesin. Isinya sudah mengarah pada pembelajaran praktik: siswa dikenalkan konsep proyeksi, diarahkan memahami tampak gambar, lalu diperkuat lewat LKM dan asesmen. Kekuatan RPP ini ada pada keterhubungan antara tujuan, materi, aktivitas, dan bukti belajar. Bagian yang masih bisa diperbaiki adalah penajaman diferensiasi, langkah bantuan untuk siswa yang kesulitan, serta indikator refleksi setelah pertemuan.'
+    title: 'Kendala Penyusunan Produk',
+    lead: 'Penyusunan produk pembelajaran tidak hanya berhenti pada pembuatan dokumen, tetapi menjadi proses menerjemahkan kebutuhan kelas ke dalam rancangan yang dapat dijalankan secara nyata.',
+    diagnosis: 'Kendala paling besar muncul ketika rancangan ideal harus disesuaikan dengan kondisi kelas, kemampuan awal siswa, ketersediaan waktu, dan kesiapan media. Produk pembelajaran harus tetap sistematis, tetapi tidak boleh terlalu kaku karena situasi kelas dapat berubah ketika pembelajaran berlangsung.',
+    deepDive: [
+      'Pada tahap awal penyusunan, tantangan utama terletak pada penyelarasan antara tujuan pembelajaran, materi, kegiatan, LKM, media, dan asesmen. Jika salah satu komponen tidak saling terhubung, produk pembelajaran berisiko hanya menjadi dokumen administratif, bukan alat bantu yang benar-benar mengarahkan pembelajaran.',
+      'Kendala berikutnya adalah menentukan tingkat kedalaman materi. Materi perlu cukup kuat secara konsep, tetapi tetap dapat dipahami oleh peserta didik dengan latar kemampuan yang beragam. Hal ini menuntut guru untuk memilih contoh, urutan penjelasan, dan bentuk latihan yang bertahap.',
+      'Kendala teknis juga muncul pada pengaturan waktu. Dalam pembelajaran kejuruan, waktu tidak hanya digunakan untuk menjelaskan materi, tetapi juga untuk demonstrasi, latihan, pendampingan, koreksi, dan refleksi. Produk pembelajaran yang terlalu padat dapat membuat guru tergesa-gesa dan siswa kehilangan kesempatan memperbaiki pemahamannya.'
+    ],
+    impact: 'Implikasinya, produk pembelajaran harus dirancang sebagai perangkat yang hidup: jelas secara alur, kuat secara pedagogis, tetapi tetap fleksibel ketika menghadapi dinamika kelas. Produk yang baik bukan hanya lengkap, melainkan mampu membantu guru mengambil keputusan saat pembelajaran berlangsung.'
   },
   {
+    marker: '02',
     accent: '#a78bfa',
     accentSoft: 'rgba(167, 139, 250, 0.15)',
-    title: 'Analisis Media Pembelajaran',
-    desc: 'Media PPT Siklus 1 sudah sesuai dengan kebutuhan materi karena langsung mengangkat gambar teknik, gambar proyeksi, Proyeksi Amerika, dan Proyeksi Eropa. Tampilan slide mendukung penjelasan visual sebelum siswa mengerjakan LKM. Media ini kuat sebagai pengantar konsep, tetapi masih bisa ditingkatkan dengan menambah pertanyaan pemantik, contoh kesalahan gambar yang sering terjadi, dan cek pemahaman singkat agar siswa tidak hanya melihat slide tetapi ikut berpikir.'
+    title: 'Konsep Pedagogis yang Diadopsi',
+    lead: 'Produk pembelajaran disusun dengan dasar pedagogis yang menempatkan siswa sebagai subjek aktif, sehingga pembelajaran tidak hanya berpusat pada penjelasan guru.',
+    diagnosis: 'Konsep pedagogis yang digunakan perlu terlihat dalam keputusan desain pembelajaran. Artinya, teori tidak cukup hanya disebutkan, tetapi harus tampak pada pemilihan aktivitas, cara guru memberi bantuan, bentuk latihan, serta cara asesmen digunakan untuk memperbaiki pembelajaran.',
+    deepDive: [
+      'Konstruktivisme diadopsi karena siswa perlu membangun pemahaman melalui pengalaman, contoh, pertanyaan, dan latihan. Dalam konteks pembelajaran teknik, konsep abstrak akan lebih mudah dipahami jika siswa diberi kesempatan melihat contoh, membandingkan bentuk, lalu menyusun pemahamannya sendiri melalui praktik.',
+      'Experiential learning digunakan karena keterampilan kejuruan tidak cukup dipelajari melalui teori. Siswa perlu mengalami proses mencoba, menemukan kesalahan, menerima umpan balik, lalu memperbaiki pekerjaannya. Siklus pengalaman ini membuat pembelajaran lebih bermakna karena siswa belajar dari tindakan nyata.',
+      'Scaffolding menjadi dasar penting karena tidak semua siswa memiliki kesiapan yang sama. Bantuan guru, contoh bertahap, petunjuk LKM, dan penguatan visual menjadi penopang awal. Bantuan tersebut kemudian dapat dikurangi ketika siswa mulai mampu bekerja lebih mandiri.',
+      'Assessment for learning juga diadopsi agar penilaian tidak hanya berfungsi sebagai angka akhir. Hasil asesmen digunakan untuk membaca bagian mana yang belum dipahami siswa, jenis kesalahan yang sering muncul, dan tindakan perbaikan yang perlu dilakukan pada pembelajaran berikutnya.'
+    ],
+    impact: 'Dengan dasar pedagogis tersebut, produk pembelajaran diarahkan untuk membangun pemahaman konseptual, keterampilan praktik, kemandirian belajar, dan kemampuan reflektif siswa. Teori menjadi dasar pengambilan keputusan, bukan sekadar kutipan dalam dokumen.'
   },
   {
+    marker: '03',
     accent: '#14b8a6',
     accentSoft: 'rgba(20, 184, 166, 0.15)',
-    title: 'Analisis LKM dan Asesmen',
-    desc: 'LKM pertemuan 1 sampai 3 sudah membagi latihan secara bertahap: Proyeksi Eropa, Proyeksi Amerika, lalu latihan lanjutan melengkapi gambar. Asesmen juga sudah mengikuti alur tersebut sehingga penilaian tidak lepas dari aktivitas belajar. Kekuatan artefak ini ada pada konsistensi antara latihan dan evaluasi. Kekurangannya, rubrik singkat dan contoh standar hasil gambar perlu dibuat lebih eksplisit agar siswa tahu ukuran kerja yang rapi dan tepat.'
+    title: 'Faktor Keberhasilan Penerapan',
+    lead: 'Keberhasilan penerapan produk pembelajaran sangat dipengaruhi oleh sejauh mana rancangan dapat diterjemahkan menjadi pengalaman belajar yang terarah di kelas.',
+    diagnosis: 'Produk pembelajaran dapat dikatakan berhasil apabila mampu membantu guru mengelola alur belajar dan membantu siswa memahami materi secara bertahap. Keberhasilan tidak hanya diukur dari tersedianya perangkat, tetapi dari keterpakaian perangkat tersebut dalam proses belajar.',
+    deepDive: [
+      'Faktor pertama adalah kejelasan alur. Siswa perlu mengetahui apa yang dipelajari, mengapa materi itu penting, bagaimana langkah mengerjakan tugas, dan bagaimana hasil kerjanya dinilai. Ketika alur ini jelas, siswa cenderung lebih siap mengikuti pembelajaran.',
+      'Faktor kedua adalah kualitas media. Media yang baik harus membantu siswa melihat konsep yang sulit dijelaskan hanya dengan kata-kata. Pada pembelajaran teknik, visualisasi contoh, tahapan kerja, dan perbandingan hasil sangat penting untuk mengurangi miskonsepsi.',
+      'Faktor ketiga adalah kualitas interaksi selama pembelajaran. Produk yang baik tetap membutuhkan guru yang aktif membaca respons siswa, memberi penguatan, dan memperbaiki arahan ketika siswa menunjukkan kesulitan. Produk bukan pengganti peran guru, tetapi penguat keputusan pedagogis guru.',
+      'Faktor keempat adalah kebermaknaan asesmen. Asesmen perlu memberi informasi tentang kemampuan siswa, bukan hanya menghasilkan skor. Informasi tersebut dapat digunakan untuk menentukan apakah materi perlu diulang, latihan perlu ditambah, atau bantuan perlu dibedakan.'
+    ],
+    impact: 'Produk dianggap berhasil ketika siswa dapat mengikuti pembelajaran dengan lebih mandiri, guru memiliki pegangan untuk membimbing, dan hasil asesmen dapat digunakan untuk memperbaiki proses. Keberhasilan produk terletak pada kemampuannya menghubungkan rencana, pelaksanaan, dan perbaikan pembelajaran berikutnya.'
   },
   {
+    marker: '04',
     accent: '#f59e0b',
     accentSoft: 'rgba(245, 158, 11, 0.15)',
-    title: 'Analisis Praktik Mengajar',
-    desc: 'Berdasarkan artefak yang sudah ada, praktik mengajar saya terlihat diarahkan pada aktivitas nyata menggambar, bukan hanya penyampaian materi. Siswa diberi media visual, lembar kerja, lalu hasilnya dibaca melalui instrumen asesmen. Ini menunjukkan praktik yang cukup konkret dan relevan dengan pembelajaran kejuruan. Hal yang perlu diperkuat adalah dokumentasi proses bimbingan, catatan kesulitan siswa, dan tindak lanjut setelah asesmen agar perkembangan praktik mengajar lebih terlihat.'
+    title: 'Penyesuaian untuk Kelas Berbeda',
+    lead: 'Produk pembelajaran perlu disiapkan agar dapat menyesuaikan kelas dengan karakter, fasilitas, budaya belajar, dan tingkat penguasaan siswa yang berbeda.',
+    diagnosis: 'Setiap kelas memiliki kondisi yang tidak sama. Ada kelas yang cepat memahami instruksi, ada yang membutuhkan contoh lebih banyak, ada yang fasilitasnya lengkap, dan ada pula yang harus menyesuaikan keterbatasan alat atau waktu. Karena itu, produk pembelajaran perlu memiliki ruang adaptasi.',
+    deepDive: [
+      'Penyesuaian pertama berkaitan dengan tingkat kesulitan. Tugas yang sama dapat dibuat dalam beberapa level, mulai dari latihan dasar, latihan sedang, hingga tantangan lanjutan. Dengan cara ini, siswa yang membutuhkan penguatan tetap bisa mengikuti, sementara siswa yang lebih siap tetap mendapat tantangan.',
+      'Penyesuaian kedua berkaitan dengan strategi kerja. Pada kelas yang besar, kerja kelompok dapat membantu pengelolaan waktu dan alat. Pada kelas yang membutuhkan pemantauan lebih detail, kerja individu atau berpasangan dapat memudahkan guru membaca kemampuan masing-masing siswa.',
+      'Penyesuaian ketiga berkaitan dengan media. Jika fasilitas digital tersedia, media dapat dibuat lebih interaktif. Jika fasilitas terbatas, guru tetap dapat menggunakan contoh cetak, papan tulis, atau demonstrasi manual. Intinya, konsep utama tetap tersampaikan meskipun medianya berubah.',
+      'Penyesuaian keempat berkaitan dengan asesmen. Rubrik dapat dibuat lebih ringkas untuk kelas dengan waktu terbatas, atau dibuat lebih detail untuk kelas yang membutuhkan umpan balik mendalam. Bentuk asesmen juga dapat disesuaikan dengan produk kerja, proses kerja, atau presentasi hasil.'
+    ],
+    impact: 'Penyesuaian ini membuat produk pembelajaran tidak bergantung pada satu kondisi ideal. Produk tetap dapat dipakai pada kelas yang berbeda karena memiliki komponen yang dapat diubah tanpa menghilangkan arah pembelajaran, tujuan kompetensi, dan kualitas asesmen.'
   }
 ];
 
-const cycleComparison = [
+const analysisSynthesis = [
   {
-    cycle: 'Siklus 1',
-    status: 'Artefak sudah masuk',
-    note: 'Data paling kuat saat ini karena RPP, media, LKM, dan asesmen sudah tersedia untuk materi gambar proyeksi.'
+    label: 'RPP',
+    text: 'RPP perlu menjadi peta pembelajaran yang jelas, tetapi tetap menyediakan ruang adaptasi. Bagian tujuan, kegiatan inti, asesmen, dan refleksi harus saling terhubung agar guru tidak hanya menjalankan langkah, tetapi memahami alasan pedagogis di balik setiap langkah.'
   },
   {
-    cycle: 'Siklus 2',
-    status: 'Menunggu artefak',
-    note: 'Analisis detail akan lebih akurat setelah RPP, media, LKM, asesmen, atau dokumentasi Siklus 2 ditambahkan.'
+    label: 'Media',
+    text: 'Media perlu memperjelas konsep inti, memancing perhatian, dan membantu siswa melihat contoh sebelum masuk ke praktik. Media yang baik tidak hanya menarik secara visual, tetapi juga mengurangi miskonsepsi dan mempercepat pemahaman awal.'
   },
   {
-    cycle: 'Siklus 3',
-    status: 'Menunggu artefak',
-    note: 'Siklus ini nanti bisa dipakai untuk membaca hasil akhir, perbaikan dari siklus sebelumnya, dan konsistensi peningkatan siswa.'
-  }
-];
-
-const generalEvaluation = {
-  strengths: [
-    'Artefak sudah saling nyambung: RPP memberi arah, media PPT menjelaskan konsep, LKM menjadi latihan, dan asesmen membaca hasil belajar.',
-    'Materi gambar proyeksi cocok dengan bentuk artefak yang dibuat karena membutuhkan visual, praktik manual, dan evaluasi produk gambar.',
-    'LKM per pertemuan membantu pembelajaran lebih runtut sehingga siswa tidak langsung diberi tugas besar tanpa tahapan.'
-  ],
-  weaknesses: [
-    'Diferensiasi untuk siswa yang cepat dan lambat memahami gambar proyeksi masih perlu dibuat lebih terlihat di RPP maupun LKM.',
-    'Rubrik penilaian sebaiknya dipadatkan agar mudah dipakai saat praktik, bukan hanya bagus sebagai dokumen.',
-    'Bukti perkembangan antar siklus belum lengkap karena artefak Siklus 2 dan 3 belum masuk, jadi analisis komparatif masih bersifat awal.'
-  ]
-};
-
-const theoryConnections = [
-  {
-    theory: 'Konstruktivisme',
-    relation: 'Artefak saya mendukung konstruktivisme karena siswa membangun pemahaman gambar proyeksi lewat latihan membaca bentuk dan menggambar tampak, bukan hanya menerima penjelasan.'
+    label: 'LKM',
+    text: 'LKM perlu memandu langkah kerja secara bertahap agar siswa dapat belajar mandiri sambil tetap memiliki arah yang jelas. Petunjuk, contoh, ruang jawaban, dan urutan tugas harus membantu siswa berpikir, bukan sekadar mengisi lembar kerja.'
   },
   {
-    theory: 'Experiential Learning',
-    relation: 'LKM dan praktik menggambar menunjukkan pengalaman langsung. Siswa belajar dari proses mencoba, menemukan kesalahan, lalu memperbaiki hasil gambar.'
-  },
-  {
-    theory: 'Scaffolding',
-    relation: 'Media PPT, contoh proyeksi, dan LKM bertahap bisa menjadi bantuan awal sebelum siswa menggambar lebih mandiri.'
-  },
-  {
-    theory: 'Assessment for Learning',
-    relation: 'Instrumen asesmen saya dapat dipakai untuk membaca kesulitan siswa pada setiap pertemuan, lalu menjadi dasar perbaikan pembelajaran berikutnya.'
+    label: 'Asesmen',
+    text: 'Asesmen tidak hanya menilai hasil akhir, tetapi juga membaca proses, kesulitan, dan kebutuhan penguatan berikutnya. Hasil asesmen perlu menjadi dasar revisi media, perbaikan LKM, dan penguatan materi pada pertemuan berikutnya.'
   }
 ];
 
@@ -1689,6 +1693,7 @@ export default function App() {
   const [activeArtifactCategory, setActiveArtifactCategory] = useState<'semua' | ArtifactCategory>('semua');
   const [activeArtifactAnalysis, setActiveArtifactAnalysis] = useState<ArtifactItem | null>(null);
   const [activeCompetencyCategory, setActiveCompetencyCategory] = useState<CompetencyCategoryId>('pedagogik');
+  const [expandedAnalysisCard, setExpandedAnalysisCard] = useState<string | null>(null);
   const [activeCertificate, setActiveCertificate] = useState<CertificateAchievement | null>(null);
   const [isVideoSoundEnabled, setIsVideoSoundEnabled] = useState(false);
   const [isVideoInView, setIsVideoInView] = useState(false);
@@ -2662,101 +2667,121 @@ export default function App() {
 
           <Reveal direction="up" className="relative z-10 mx-auto max-w-4xl text-center" parallax={-18}>
             <SectionKicker>Analisis & Evaluasi</SectionKicker>
-            <h2 className="analysis-section__title text-gradient mt-3">Analisis Artefak Pembelajaran</h2>
+            <h2 className="analysis-section__title text-gradient mt-3">Analisis Produk Pembelajaran</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/58 md:text-base">
+              Refleksi terhadap proses penyusunan, dasar pedagogis, faktor penerapan, dan penyesuaian produk pembelajaran untuk kebutuhan kelas yang berbeda.
+            </p>
           </Reveal>
 
           <Reveal direction="up" className="relative z-10 mt-10">
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-              {evaluationHighlights.map((item) => (
-                <motion.article
-                  key={item.title}
-                  whileHover={{ y: -8 }}
-                  style={{
-                    '--analysis-accent': item.accent,
-                    '--analysis-accent-soft': item.accentSoft
-                  } as React.CSSProperties}
-                  className="analysis-card rounded-[1.6rem] border border-white/10 bg-[#111827]/78 p-6 shadow-[0_20px_70px_rgba(0,0,0,0.28)] backdrop-blur-xl transition-colors hover:border-accent/35"
-                >
-                  <div className="analysis-card__heading">
-                    <span />
-                    <h3 className="analysis-card__title font-black leading-snug">{item.title}</h3>
-                  </div>
-                  <p className="analysis-card__body mt-5 text-sm leading-relaxed text-white/60">{item.desc}</p>
-                </motion.article>
-              ))}
+              {evaluationHighlights.map((item) => {
+                const isExpanded = expandedAnalysisCard === item.title;
+
+                return (
+                  <motion.article
+                    key={item.title}
+                    layout
+                    whileHover={{ y: -6 }}
+                    style={{
+                      '--analysis-accent': item.accent,
+                      '--analysis-accent-soft': item.accentSoft
+                    } as React.CSSProperties}
+                    className={`analysis-card rounded-[1.35rem] border border-white/10 bg-[#111827]/78 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.28)] backdrop-blur-xl transition-colors hover:border-accent/35 md:p-5 ${
+                      isExpanded ? 'analysis-card--expanded md:col-span-2 xl:col-span-4' : ''
+                    }`}
+                  >
+                    <div className="analysis-card__heading">
+                      <div className="analysis-card__marker">{item.marker}</div>
+                      <div>
+                        <span />
+                        <h3 className="analysis-card__title mt-3 font-black leading-snug">{item.title}</h3>
+                      </div>
+                    </div>
+                    <div className="analysis-card__body mt-4">
+                      <p className={`analysis-card__lead text-sm leading-relaxed text-white/70 ${isExpanded ? '' : 'line-clamp-3'}`}>
+                        {item.lead}
+                      </p>
+
+                      <button
+                        type="button"
+                        onClick={() => setExpandedAnalysisCard((current) => (current === item.title ? null : item.title))}
+                        className="analysis-card__toggle mt-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-4 py-2 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-white/54 transition-all hover:border-accent/32 hover:text-accent"
+                        aria-expanded={isExpanded}
+                      >
+                        {isExpanded ? 'Ringkas' : 'Buka Analisis'}
+                        <ChevronRight size={13} className={`transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                      </button>
+
+                      <AnimatePresence initial={false}>
+                        {isExpanded && (
+                          <motion.div
+                            key="analysis-detail"
+                            initial={{ opacity: 0, height: 0, y: -8 }}
+                            animate={{ opacity: 1, height: 'auto', y: 0 }}
+                            exit={{ opacity: 0, height: 0, y: -8 }}
+                            transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+                            className="overflow-hidden"
+                          >
+                            <div className="analysis-card__diagnosis mt-5 rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+                              <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[color:var(--analysis-accent)]">
+                                Diagnosis
+                              </p>
+                              <p className="mt-2 text-sm leading-relaxed text-white/66">{item.diagnosis}</p>
+                            </div>
+
+                            <div className="analysis-card__deep mt-5">
+                              <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-white/42">
+                                Analisis Mendalam
+                              </p>
+                              <div className="mt-3 space-y-3">
+                                {item.deepDive.map((paragraph) => (
+                                  <p key={paragraph} className="text-sm leading-relaxed text-white/62">
+                                    {paragraph}
+                                  </p>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="analysis-card__impact mt-5 rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+                              <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[color:var(--analysis-accent)]">
+                                Implikasi
+                              </p>
+                              <p className="mt-2 text-sm leading-relaxed text-white/66">{item.impact}</p>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </motion.article>
+                );
+              })}
             </div>
           </Reveal>
 
           <Reveal direction="up" className="relative z-10 mt-8">
-            <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl md:p-7">
-              <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div className="analysis-synthesis overflow-hidden rounded-[2rem] border border-accent/18 bg-accent/[0.045] p-6 backdrop-blur-xl md:p-7">
+              <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
                 <div>
-                  <SectionKicker>Catatan Siklus</SectionKicker>
-                  <h3 className="mt-2 text-2xl font-black text-white md:text-3xl">Status Artefak per Siklus</h3>
+                  <SectionKicker>Sintesis</SectionKicker>
+                  <h3 className="text-2xl font-black leading-tight text-white md:text-3xl">
+                    Arah Perbaikan Produk Pembelajaran
+                  </h3>
+                  <p className="mt-4 text-sm leading-relaxed text-white/62">
+                    Analisis ini menunjukkan bahwa produk pembelajaran perlu kuat secara rancangan, mudah dijalankan, dan cukup lentur untuk menyesuaikan kelas yang berbeda.
+                  </p>
                 </div>
-              </div>
 
-              <div className="grid gap-4 md:grid-cols-3">
-                {cycleComparison.map((item) => (
-                  <div key={item.cycle} className="rounded-2xl border border-white/10 bg-brand-night/36 p-5">
-                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-accent">{item.status}</p>
-                    <h4 className="mt-2 text-lg font-black text-white">{item.cycle}</h4>
-                    <p className="mt-3 text-sm leading-relaxed text-white/62">{item.note}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Reveal>
-
-          <Reveal direction="up" className="relative z-10 mt-8">
-            <div className="rounded-[1.6rem] border border-white/10 bg-white/[0.035] p-6 backdrop-blur-xl md:p-7">
-              <h3 className="text-2xl font-black text-white md:text-3xl">Kelebihan dan Kekurangan Umum</h3>
-              <div className="mt-6 grid gap-6 md:grid-cols-2">
-                <div>
-                  <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-accent">Kelebihan</p>
-                  <ul className="mt-4 space-y-4">
-                    {generalEvaluation.strengths.map((item) => (
-                      <li key={item} className="flex gap-3 text-sm leading-relaxed text-white/62">
-                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {analysisSynthesis.map((item) => (
+                    <div key={item.label} className="analysis-synthesis__item rounded-2xl border border-white/10 bg-brand-night/34 p-4">
+                      <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-accent">
+                        {item.label}
+                      </p>
+                      <p className="mt-2 text-sm leading-relaxed text-white/64">{item.text}</p>
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-white/38">Kekurangan</p>
-                  <ul className="mt-4 space-y-4">
-                    {generalEvaluation.weaknesses.map((item) => (
-                      <li key={item} className="flex gap-3 text-sm leading-relaxed text-white/62">
-                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white/34" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-
-          <Reveal direction="up" className="relative z-10 mt-8">
-            <div className="overflow-hidden rounded-[2rem] border border-accent/20 bg-accent/[0.055] p-6 backdrop-blur-xl md:p-7">
-              <div className="mb-6 flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent text-brand-night">
-                  <BookOpen size={21} />
-                </div>
-                <div>
-                  <SectionKicker>Landasan Teori</SectionKicker>
-                  <h3 className="text-2xl font-black text-white md:text-3xl">Keterikatan dengan Teori Pendidikan</h3>
-                </div>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                {theoryConnections.map((item) => (
-                  <div key={item.theory} className="rounded-2xl border border-white/10 bg-brand-night/34 p-5">
-                    <h4 className="font-black text-accent">{item.theory}</h4>
-                    <p className="mt-2 text-sm leading-relaxed text-white/62">{item.relation}</p>
-                  </div>
-                ))}
               </div>
             </div>
           </Reveal>
