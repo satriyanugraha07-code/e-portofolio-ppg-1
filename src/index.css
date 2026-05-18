@@ -692,11 +692,6 @@ body::before {
   color: var(--analysis-accent);
 }
 
-.analysis-card--expanded {
-  border-color: color-mix(in srgb, var(--analysis-accent) 34%, transparent);
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
-}
-
 .analysis-card__lead {
   font-weight: 700;
 }
@@ -704,6 +699,78 @@ body::before {
 .analysis-card__toggle:focus-visible {
   outline: 2px solid var(--analysis-accent);
   outline-offset: 3px;
+}
+
+.analysis-detail-modal__copy {
+  font-size: 0.95rem;
+  line-height: 1.56;
+}
+
+.analysis-detail-modal__title {
+  font-size: clamp(1.7rem, 2.5vw, 2.45rem) !important;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.analysis-detail-modal__grid {
+  align-items: stretch;
+}
+
+.analysis-detail-modal__block {
+  position: relative;
+  overflow: hidden;
+}
+
+.analysis-detail-modal__block::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, var(--analysis-accent-soft), transparent 46%);
+  opacity: 0.22;
+}
+
+.analysis-detail-modal__block > * {
+  position: relative;
+  z-index: 1;
+}
+
+.analysis-detail-modal__block--featured {
+  border-color: color-mix(in srgb, var(--analysis-accent) 24%, transparent);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+@media (max-height: 760px) {
+  .analysis-detail-modal__block {
+    padding: 0.72rem;
+  }
+
+  .analysis-detail-modal__copy {
+    font-size: 0.88rem;
+    line-height: 1.44;
+  }
+
+  .analysis-detail-modal__title {
+    font-size: 1.55rem !important;
+  }
+
+  .analysis-detail-modal .analysis-card__marker {
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: 0.75rem;
+    font-size: 0.66rem;
+  }
+}
+
+@media (max-height: 640px) {
+  .analysis-detail-modal__copy {
+    font-size: 0.82rem;
+    line-height: 1.34;
+  }
+
+  .analysis-detail-modal__block {
+    padding: 0.55rem;
+  }
 }
 
 .analysis-card__diagnosis,

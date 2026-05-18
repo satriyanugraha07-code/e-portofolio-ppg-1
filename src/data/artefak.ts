@@ -22,6 +22,7 @@ export type ArtifactItem = {
     tujuan: string[];
     kelebihan: string[];
     kekurangan: string[];
+    kajianTeori: string;
   };
   cover: {
     kicker: string;
@@ -78,7 +79,8 @@ export const artifactItems: ArtifactItem[] = [
         'Bagian media atau contoh visual proyeksi masih perlu diperkuat agar siswa lebih cepat memahami perbedaan tampak.',
         'Diferensiasi aktivitas untuk siswa yang lambat dan cepat menangkap materi masih bisa dibuat lebih eksplisit.',
         'Ruang refleksi hasil tiap pertemuan dapat dibuat lebih operasional agar mudah dievaluasi setelah pembelajaran.'
-      ]
+      ],
+      kajianTeori: 'Melalui kajian teori yang dipelajari pada mata kuliah PPG, RPP ini dapat dibaca dengan prinsip constructive alignment, yaitu keselarasan antara tujuan, aktivitas belajar, dan asesmen. RPP juga sejalan dengan pembelajaran berdiferensiasi karena rancangan ideal perlu memberi ruang bantuan, variasi contoh, dan penguatan sesuai kesiapan belajar peserta didik. Dalam konteks gambar teknik, perencanaan yang baik harus menghubungkan konsep, praktik, dan refleksi agar pembelajaran tidak berhenti pada penyampaian materi.'
     },
     cover: {
       kicker: 'Perangkat Pembelajaran',
@@ -116,7 +118,8 @@ export const artifactItems: ArtifactItem[] = [
         'Rubrik penilaian masih perlu dibuat sangat ringkas agar mudah dipakai cepat saat praktik di kelas.',
         'Indikator kesalahan umum siswa dapat ditambah supaya guru lebih cepat memberi umpan balik.',
         'Format rekap nilai bisa dibuat lebih visual agar perkembangan tiap pertemuan mudah dibaca.'
-      ]
+      ],
+      kajianTeori: 'Berdasarkan kajian teori asesmen dalam mata kuliah PPG, instrumen ini menunjukkan penerapan assessment for learning karena hasil penilaian dapat digunakan untuk membaca pemahaman siswa dan menentukan bantuan berikutnya. Adanya asesmen diagnostik, observasi proses, penilaian produk, dan refleksi membuat penilaian tidak hanya berfungsi sebagai skor akhir. Instrumen ini akan lebih kuat apabila rubrik dan indikator kesalahan dibuat operasional agar umpan balik lebih cepat, jelas, dan mendukung perbaikan belajar siswa.'
     },
     cover: {
       kicker: 'Instrumen Asesmen',
@@ -154,7 +157,8 @@ export const artifactItems: ArtifactItem[] = [
         'Contoh hasil akhir atau kriteria kualitas gambar bisa ditambahkan agar standar kerja siswa lebih jelas.',
         'Bagian refleksi singkat setelah menggambar belum terlihat kuat.',
         'Ruang bimbingan untuk siswa yang kesulitan membaca bentuk benda masih bisa ditambah.'
-      ]
+      ],
+      kajianTeori: 'LKM pertemuan 1 relevan dengan teori konstruktivisme dan scaffolding yang dipelajari dalam PPG. Siswa tidak hanya menerima penjelasan, tetapi membangun pemahaman proyeksi melalui pengamatan benda dan praktik menggambar. Petunjuk kerja berperan sebagai bantuan awal agar siswa dapat mengikuti langkah secara bertahap. Agar lebih kuat secara pedagogis, LKM perlu memberi contoh standar hasil dan ruang refleksi supaya siswa dapat menilai kembali proses serta kualitas gambarnya.'
     },
     cover: {
       kicker: 'Lembar Kerja Murid',
@@ -192,7 +196,8 @@ export const artifactItems: ArtifactItem[] = [
         'Perbandingan eksplisit antara Proyeksi Eropa dan Amerika masih dapat diperjelas di lembar kerja.',
         'Nomor petunjuk kerja perlu dirapikan agar konsisten dengan struktur dokumen.',
         'Indikator keberhasilan per langkah bisa ditambahkan agar siswa bisa mengecek pekerjaannya sendiri.'
-      ]
+      ],
+      kajianTeori: 'Kajian teori PPG menunjukkan bahwa LKM pertemuan 2 mendukung pembelajaran bermakna karena siswa membandingkan konsep baru, yaitu Proyeksi Amerika, dengan konsep yang telah dipelajari sebelumnya. Pendekatan ini membantu transfer belajar dan memperkuat pemahaman melalui perbedaan posisi tampak. Dari sisi scaffolding, lembar kerja sudah menjadi panduan praktik, tetapi akan lebih efektif jika dilengkapi indikator cek mandiri agar siswa dapat memonitor ketepatan pekerjaannya.'
     },
     cover: {
       kicker: 'Lembar Kerja Murid',
@@ -230,7 +235,8 @@ export const artifactItems: ArtifactItem[] = [
         'Judul pertemuan pada dokumen perlu dicek ulang agar tidak tertukar dengan pertemuan lain.',
         'Instruksi dapat diperjelas dengan contoh area yang harus dilengkapi.',
         'Bagian umpan balik atau penilaian mandiri siswa masih bisa ditambahkan.'
-      ]
+      ],
+      kajianTeori: 'LKM pertemuan 3 dapat dianalisis melalui teori experiential learning dan mastery learning yang dipelajari dalam PPG. Siswa diberi kesempatan memperkuat keterampilan melalui latihan lanjutan, koreksi, dan penyempurnaan gambar. Tugas melengkapi gambar mendorong siswa membaca bentuk, mengambil keputusan, dan memperbaiki hasil kerja. Supaya proses belajarnya lebih terlihat, LKM perlu menambahkan umpan balik atau penilaian mandiri agar siswa mengetahui bagian mana yang sudah tepat dan bagian mana yang perlu diperbaiki.'
     },
     cover: {
       kicker: 'Lembar Kerja Murid',
@@ -268,7 +274,8 @@ export const artifactItems: ArtifactItem[] = [
         'Perlu dipastikan setiap slide memiliki contoh gambar yang cukup besar agar terbaca dari belakang kelas.',
         'Akan lebih kuat jika ditambah aktivitas tanya jawab atau cek pemahaman di tengah presentasi.',
         'File PPT perlu disandingkan dengan LKM agar siswa tidak hanya menerima materi secara pasif.'
-      ]
+      ],
+      kajianTeori: 'Media presentasi ini sesuai dengan kajian teori multimedia learning dalam PPG karena materi gambar teknik sangat membutuhkan dukungan visual. Kombinasi teks, gambar, dan contoh proyeksi dapat membantu siswa membangun representasi konsep yang lebih jelas. Namun, media perlu tetap menjaga beban kognitif agar informasi tidak terlalu padat dalam satu slide. Media juga sebaiknya dipadukan dengan pertanyaan pemantik dan LKM supaya siswa tidak hanya melihat, tetapi aktif memproses konsep yang sedang dipelajari.'
     },
     cover: {
       kicker: 'Media Gambar Teknik',

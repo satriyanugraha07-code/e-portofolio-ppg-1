@@ -1693,7 +1693,7 @@ export default function App() {
   const [activeArtifactCategory, setActiveArtifactCategory] = useState<'semua' | ArtifactCategory>('semua');
   const [activeArtifactAnalysis, setActiveArtifactAnalysis] = useState<ArtifactItem | null>(null);
   const [activeCompetencyCategory, setActiveCompetencyCategory] = useState<CompetencyCategoryId>('pedagogik');
-  const [expandedAnalysisCard, setExpandedAnalysisCard] = useState<string | null>(null);
+  const [activeAnalysisHighlight, setActiveAnalysisHighlight] = useState<(typeof evaluationHighlights)[number] | null>(null);
   const [activeCertificate, setActiveCertificate] = useState<CertificateAchievement | null>(null);
   const [isVideoSoundEnabled, setIsVideoSoundEnabled] = useState(false);
   const [isVideoInView, setIsVideoInView] = useState(false);
@@ -1964,8 +1964,21 @@ export default function App() {
   }, [activeSection, hasVideoEntered, isLoading]);
 
   useEffect(() => {
-    document.body.style.overflow = isLoading || openDocGallery !== null || activeArtifactAnalysis !== null || activeCertificate !== null ? 'hidden' : 'unset';
-  }, [activeArtifactAnalysis, activeCertificate, isLoading, openDocGallery]);
+    document.body.style.overflow = isLoading || openDocGallery !== null || activeArtifactAnalysis !== null || activeAnalysisHighlight !== null || activeCertificate !== null ? 'hidden' : 'unset';
+  }, [activeAnalysisHighlight, activeArtifactAnalysis, activeCertificate, isLoading, openDocGallery]);
+
+  useEffect(() => {
+    if (activeAnalysisHighlight === null) return;
+
+    const handleAnalysisHighlightKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setActiveAnalysisHighlight(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleAnalysisHighlightKeydown);
+    return () => window.removeEventListener('keydown', handleAnalysisHighlightKeydown);
+  }, [activeAnalysisHighlight]);
 
   useEffect(() => {
     if (activeCertificate === null) return;
@@ -2675,87 +2688,40 @@ export default function App() {
 
           <Reveal direction="up" className="relative z-10 mt-10">
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-              {evaluationHighlights.map((item) => {
-                const isExpanded = expandedAnalysisCard === item.title;
-
-                return (
-                  <motion.article
-                    key={item.title}
-                    layout
-                    whileHover={{ y: -6 }}
-                    style={{
-                      '--analysis-accent': item.accent,
-                      '--analysis-accent-soft': item.accentSoft
-                    } as React.CSSProperties}
-                    className={`analysis-card rounded-[1.35rem] border border-white/10 bg-[#111827]/78 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.28)] backdrop-blur-xl transition-colors hover:border-accent/35 md:p-5 ${
-                      isExpanded ? 'analysis-card--expanded md:col-span-2 xl:col-span-4' : ''
-                    }`}
-                  >
-                    <div className="analysis-card__heading">
-                      <div className="analysis-card__marker">{item.marker}</div>
-                      <div>
-                        <span />
-                        <h3 className="analysis-card__title mt-3 font-black leading-snug">{item.title}</h3>
-                      </div>
+              {evaluationHighlights.map((item) => (
+                <motion.article
+                  key={item.title}
+                  whileHover={{ y: -6 }}
+                  style={{
+                    '--analysis-accent': item.accent,
+                    '--analysis-accent-soft': item.accentSoft
+                  } as React.CSSProperties}
+                  className="analysis-card rounded-[1.35rem] border border-white/10 bg-[#111827]/78 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.28)] backdrop-blur-xl transition-colors hover:border-accent/35 md:p-5"
+                >
+                  <div className="analysis-card__heading">
+                    <div className="analysis-card__marker">{item.marker}</div>
+                    <div>
+                      <span />
+                      <h3 className="analysis-card__title mt-3 font-black leading-snug">{item.title}</h3>
                     </div>
-                    <div className="analysis-card__body mt-4">
-                      <p className={`analysis-card__lead text-sm leading-relaxed text-white/70 ${isExpanded ? '' : 'line-clamp-3'}`}>
-                        {item.lead}
-                      </p>
+                  </div>
+                  <div className="analysis-card__body mt-4">
+                    <p className="analysis-card__lead line-clamp-3 text-sm leading-relaxed text-white/70">
+                      {item.lead}
+                    </p>
 
-                      <button
-                        type="button"
-                        onClick={() => setExpandedAnalysisCard((current) => (current === item.title ? null : item.title))}
-                        className="analysis-card__toggle mt-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-4 py-2 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-white/54 transition-all hover:border-accent/32 hover:text-accent"
-                        aria-expanded={isExpanded}
-                      >
-                        {isExpanded ? 'Ringkas' : 'Buka Analisis'}
-                        <ChevronRight size={13} className={`transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
-                      </button>
-
-                      <AnimatePresence initial={false}>
-                        {isExpanded && (
-                          <motion.div
-                            key="analysis-detail"
-                            initial={{ opacity: 0, height: 0, y: -8 }}
-                            animate={{ opacity: 1, height: 'auto', y: 0 }}
-                            exit={{ opacity: 0, height: 0, y: -8 }}
-                            transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-                            className="overflow-hidden"
-                          >
-                            <div className="analysis-card__diagnosis mt-5 rounded-2xl border border-white/10 bg-white/[0.035] p-4">
-                              <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[color:var(--analysis-accent)]">
-                                Diagnosis
-                              </p>
-                              <p className="mt-2 text-sm leading-relaxed text-white/66">{item.diagnosis}</p>
-                            </div>
-
-                            <div className="analysis-card__deep mt-5">
-                              <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-white/42">
-                                Analisis Mendalam
-                              </p>
-                              <div className="mt-3 space-y-3">
-                                {item.deepDive.map((paragraph) => (
-                                  <p key={paragraph} className="text-sm leading-relaxed text-white/62">
-                                    {paragraph}
-                                  </p>
-                                ))}
-                              </div>
-                            </div>
-
-                            <div className="analysis-card__impact mt-5 rounded-2xl border border-white/10 bg-white/[0.035] p-4">
-                              <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[color:var(--analysis-accent)]">
-                                Implikasi
-                              </p>
-                              <p className="mt-2 text-sm leading-relaxed text-white/66">{item.impact}</p>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </motion.article>
-                );
-              })}
+                    <button
+                      type="button"
+                      onClick={() => setActiveAnalysisHighlight(item)}
+                      className="analysis-card__toggle mt-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-4 py-2 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-white/54 transition-all hover:border-accent/32 hover:text-accent"
+                      aria-haspopup="dialog"
+                    >
+                      Buka Analisis
+                      <ChevronRight size={13} />
+                    </button>
+                  </div>
+                </motion.article>
+              ))}
             </div>
           </Reveal>
 
@@ -3374,7 +3340,7 @@ export default function App() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setActiveCertificate(null)}
-              className="fixed inset-0 z-[104] flex items-center justify-center bg-brand-night/84 p-4 backdrop-blur-md"
+              className="fixed inset-0 z-[104] flex items-center justify-center bg-brand-night/84 p-2 backdrop-blur-md md:p-3"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.94, y: 22 }}
@@ -3452,6 +3418,94 @@ export default function App() {
                   >
                     Buka PDF <ExternalLink size={16} />
                   </a>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Analysis Detail Modal */}
+        <AnimatePresence>
+          {activeAnalysisHighlight && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActiveAnalysisHighlight(null)}
+              className="fixed inset-0 z-[104] flex items-center justify-center bg-brand-night/84 p-2 backdrop-blur-md md:p-3"
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94, y: 22 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.94, y: 22 }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                onClick={(event) => event.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-label={`Detail ${activeAnalysisHighlight.title}`}
+                style={{
+                  '--analysis-accent': activeAnalysisHighlight.accent,
+                  '--analysis-accent-soft': activeAnalysisHighlight.accentSoft
+                } as React.CSSProperties}
+                className="analysis-detail-modal relative max-h-[calc(100vh-0.75rem)] w-full max-w-[min(96vw,1220px)] overflow-hidden rounded-[1.45rem] border border-white/10 bg-[#0d1220] shadow-[0_28px_90px_rgba(0,0,0,0.5)]"
+              >
+                <button
+                  type="button"
+                  onClick={() => setActiveAnalysisHighlight(null)}
+                  className="absolute right-3 top-3 z-30 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/55 transition-colors hover:border-accent/40 hover:text-accent"
+                  aria-label="Tutup detail analisis"
+                >
+                  <X size={20} />
+                </button>
+
+                <div className="relative overflow-hidden bg-white/[0.025] p-4 lg:p-5">
+                  <div
+                    className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full blur-[90px]"
+                    style={{ background: activeAnalysisHighlight.accentSoft }}
+                  />
+                  <div className="relative flex gap-4 pr-11">
+                    <div className="analysis-card__marker">{activeAnalysisHighlight.marker}</div>
+                    <div>
+                      <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[color:var(--analysis-accent)]">
+                        Analisis Produk
+                      </p>
+                      <h2 className="analysis-detail-modal__title mt-1.5 font-black text-white">
+                        {activeAnalysisHighlight.title}
+                      </h2>
+                      <p className="analysis-detail-modal__copy mt-2 max-w-5xl text-white/64">
+                        {activeAnalysisHighlight.lead}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="analysis-detail-modal__grid relative mt-4 grid gap-3 lg:grid-cols-2">
+                    <article className="analysis-detail-modal__block analysis-detail-modal__block--featured rounded-2xl border border-white/10 bg-white/[0.032] p-3.5">
+                      <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[color:var(--analysis-accent)]">
+                        Diagnosis
+                      </p>
+                      <p className="analysis-detail-modal__copy mt-2 text-white/66">
+                        {activeAnalysisHighlight.diagnosis}
+                      </p>
+                    </article>
+
+                    <article className="analysis-detail-modal__block analysis-detail-modal__block--featured rounded-2xl border border-white/10 bg-white/[0.032] p-3.5">
+                      <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[color:var(--analysis-accent)]">
+                        Implikasi
+                      </p>
+                      <p className="analysis-detail-modal__copy mt-2 text-white/66">
+                        {activeAnalysisHighlight.impact}
+                      </p>
+                    </article>
+
+                    <article className="analysis-detail-modal__block analysis-detail-modal__block--analysis rounded-2xl border border-white/10 bg-white/[0.032] p-3.5 lg:col-span-2">
+                      <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-[color:var(--analysis-accent)]">
+                        Analisis Mendalam
+                      </p>
+                      <p className="analysis-detail-modal__copy mt-2 text-white/66">
+                        {activeAnalysisHighlight.deepDive.join(' ')}
+                      </p>
+                    </article>
+                  </div>
                 </div>
               </motion.div>
             </motion.div>
@@ -3644,6 +3698,15 @@ export default function App() {
                           </ul>
                         </div>
                       ))}
+                    </div>
+
+                    <div className="mt-4 rounded-2xl border border-accent/18 bg-accent/[0.045] p-5">
+                      <p className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-accent">
+                        Kajian Teori PPG
+                      </p>
+                      <p className="mt-3 text-sm leading-relaxed text-white/66">
+                        {activeArtifactAnalysis.analysis.kajianTeori}
+                      </p>
                     </div>
                   </div>
                 </div>
