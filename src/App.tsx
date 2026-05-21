@@ -1371,6 +1371,10 @@ const analysisSynthesis = [
     text: 'Media perlu memperjelas konsep inti, memancing perhatian, dan membantu siswa melihat contoh sebelum masuk ke praktik. Media yang baik tidak hanya menarik secara visual, tetapi juga mengurangi miskonsepsi dan mempercepat pemahaman awal.'
   },
   {
+    label: 'Materi',
+    text: 'Materi atau bahan ajar perlu menjadi pijakan konseptual yang rapi sebelum siswa masuk ke praktik. Isi materi harus cukup kuat secara teori, tetapi tetap disederhanakan melalui contoh, rangkuman, dan cek pemahaman agar dapat dipelajari secara mandiri.'
+  },
+  {
     label: 'LKM',
     text: 'LKM perlu memandu langkah kerja secara bertahap agar siswa dapat belajar mandiri sambil tetap memiliki arah yang jelas. Petunjuk, contoh, ruang jawaban, dan urutan tugas harus membantu siswa berpikir, bukan sekadar mengisi lembar kerja.'
   },
