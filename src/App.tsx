@@ -567,21 +567,21 @@ const CoolLoader = ({ onComplete }: { onComplete: () => void, key?: any }) => {
       });
     };
 
+    const assetPromises = assets.map((asset) => (
+      preloadLoaderImage(asset.src).then(() => markAssetReady(asset.label))
+    ));
+
     const preparePage = async () => {
       setLoaderStatus('Menyiapkan font dan layout');
 
-      if ('fonts' in document) {
-        await document.fonts.ready.catch(() => undefined);
-      }
+      const fontReady = 'fonts' in document
+        ? document.fonts.ready.catch(() => undefined)
+        : Promise.resolve();
 
       setLoaderProgress(10);
       setLoaderStatus('Memuat gambar utama');
 
-      await Promise.all(
-        assets.map((asset) => (
-          preloadLoaderImage(asset.src).then(() => markAssetReady(asset.label))
-        ))
-      );
+      await Promise.all([fontReady, ...assetPromises]);
 
       if (!isMounted) return;
 
@@ -650,15 +650,20 @@ const CoolLoader = ({ onComplete }: { onComplete: () => void, key?: any }) => {
       exit={{ opacity: 0, y: "-100%", scale: 1.04, filter: "blur(16px)" }}
       transition={{ duration: 1.05, ease: [0.76, 0, 0.24, 1] }}
       className="cinematic-loader fixed inset-0 z-[100] overflow-hidden bg-brand-night text-white"
+      style={{
+        '--cinematic-loader-bg': `url("${publicAsset('loader-cinematic.png')}")`
+      } as React.CSSProperties}
     >
       <motion.img
         src={publicAsset('loader-cinematic.png')}
         alt=""
-        initial={{ scale: 1.1, opacity: 0 }}
+        initial={{ scale: 1.055, opacity: 1 }}
         animate={{ scale: isReady ? 1.02 : 1.055, opacity: 1 }}
-        transition={{ duration: 3.8, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         className="cinematic-loader__image absolute inset-0 h-full w-full object-cover"
         draggable={false}
+        fetchPriority="high"
+        decoding="async"
       />
 
       <div className="cinematic-loader__shade absolute inset-0" />
@@ -771,6 +776,7 @@ type LoaderAssetEntry = {
   label: string;
 };
 
+const loaderAssetTimeoutMs = 30000;
 const loaderImageCache = new Map<string, Promise<void>>();
 
 const preloadLoaderImage = (src: string) => {
@@ -797,7 +803,7 @@ const preloadLoaderImage = (src: string) => {
       finish();
     };
 
-    const timeoutId = window.setTimeout(finish, 9000);
+    const timeoutId = window.setTimeout(finish, loaderAssetTimeoutMs);
 
     img.decoding = 'async';
     img.loading = 'eager';
@@ -836,6 +842,12 @@ const createLoaderAssetEntries = (): LoaderAssetEntry[] => {
       .map((item) => ({
         src: publicAsset(item.preview),
         label: 'Menyiapkan preview artefak'
+      })),
+    ...certificateAchievements
+      .filter((item) => Boolean(item.preview))
+      .map((item) => ({
+        src: publicAsset(item.preview),
+        label: 'Menyiapkan preview sertifikat'
       }))
   ];
 
@@ -1146,7 +1158,8 @@ const ArtifactCover = ({ item }: { item: ArtifactItem }) => (
         src={publicAsset(item.preview)}
         alt={`Preview ${item.title}`}
         className="artifact-cover__preview"
-        loading="lazy"
+        loading="eager"
+        decoding="async"
       />
     )}
     <div className="artifact-cover__badge">{item.badge}</div>
@@ -3252,7 +3265,8 @@ export default function App() {
                         src={publicAsset(item.preview)}
                         alt=""
                         className="certificate-card__image"
-                        loading="lazy"
+                        loading="eager"
+                        decoding="async"
                       />
                     ) : (
                       <div className="certificate-card__paper">
@@ -3483,6 +3497,8 @@ export default function App() {
                       src={publicAsset(activeCertificate.preview)}
                       alt={`Sertifikat ${activeCertificate.title}`}
                       className="max-h-[72vh] w-full object-contain"
+                      loading="eager"
+                      decoding="async"
                     />
                   </div>
                 </div>
@@ -3759,6 +3775,8 @@ export default function App() {
                             src={publicAsset(activeArtifactAnalysis.preview)}
                             alt={`Preview ${activeArtifactAnalysis.title}`}
                             className="max-h-[360px] w-full object-cover object-top"
+                            loading="eager"
+                            decoding="async"
                           />
                         ) : (
                           <ArtifactCover item={activeArtifactAnalysis} />

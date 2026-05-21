@@ -63,6 +63,12 @@ body::before {
 
 .cinematic-loader {
   isolation: isolate;
+  background-color: var(--bg-deep);
+  background-image:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.08), transparent 42%, rgba(0, 0, 0, 0.12)),
+    var(--cinematic-loader-bg);
+  background-position: center;
+  background-size: cover;
 }
 
 .cinematic-loader__image {
