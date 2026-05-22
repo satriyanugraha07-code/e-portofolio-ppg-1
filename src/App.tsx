@@ -2271,7 +2271,7 @@ export default function App() {
                 className="bg-accent/10 border border-accent/20 px-3 py-1 rounded-lg inline-flex items-center mb-4 md:mb-6"
               >
                 <p className="text-accent font-bold text-[10px] md:text-xs font-mono tracking-wider flex items-center gap-2">
-                  <Fingerprint size={12} /> NIM 3542325
+                  <Fingerprint size={12} /> NIM 20250843830
                 </p>
               </motion.div>
               
