@@ -1711,10 +1711,1118 @@ type ContactFormFields = {
   message: string;
 };
 
+type PortfolioContentMode = 'one' | 'two';
+type PortfolioMode = 'selector' | PortfolioContentMode;
+
+const portfolioChoices: Array<{
+  id: PortfolioContentMode;
+  label: string;
+  kicker: string;
+  title: string;
+  summary: string;
+  bullets: string[];
+  icon: React.ReactNode;
+  accent: string;
+}> = [
+  {
+    id: 'one',
+    label: 'E-Portofolio 1',
+    kicker: 'Artefak Pembelajaran',
+    title: 'Portfolio utama PPG',
+    summary: 'Berisi profil, dokumentasi kegiatan, artefak pembelajaran, penilaian, video, sertifikat, dan kontak.',
+    bullets: ['Profil dan dokumentasi', 'RPP, materi, media, LKM, asesmen', 'Sertifikat dan penilaian'],
+    icon: <Layers className="h-7 w-7" />,
+    accent: '#cbff9c'
+  },
+  {
+    id: 'two',
+    label: 'E-Portofolio 2',
+    kicker: 'Refleksi PPL Terbimbing',
+    title: 'Refleksi PPL Terbimbing',
+    summary: 'Berisi pembelajaran, tantangan, umpan balik, dan filosofi mengajar selama PPL Terbimbing.',
+    bullets: ['Pembelajaran', 'Tantangan', 'Umpan balik', 'Filosofi mengajar'],
+    icon: <BookOpen className="h-7 w-7" />,
+    accent: '#8effe7'
+  }
+];
+
+const reflectionNavigationItems = [
+  { id: 'beranda-eporto2', label: 'Beranda', icon: <Layout size={18} /> },
+  { id: 'pembelajaran', label: 'Pembelajaran', icon: <GraduationCap size={18} /> },
+  { id: 'tantangan', label: 'Tantangan', icon: <Target size={18} /> },
+  { id: 'umpan-balik', label: 'Umpan Balik', icon: <MessageCircle size={18} /> },
+  { id: 'filosofi-mengajar', label: 'Filosofi', icon: <BookOpen size={18} /> }
+];
+
+type ReflectionPoint = {
+  label: string;
+  text: string;
+};
+
+type ReflectionTextSection = {
+  title: string;
+  paragraphs: string[];
+};
+
+type ReflectionDetail = {
+  id: string;
+  sectionId: string;
+  eyebrow: string;
+  title: string;
+  summary: string;
+  accent: string;
+  paragraphs: string[];
+  sections?: ReflectionTextSection[];
+  points?: ReflectionPoint[];
+  bullets?: string[];
+};
+
+type ReflectionSection = {
+  id: string;
+  marker: string;
+  kicker: string;
+  title: string;
+  lead: string;
+  accent: string;
+  detailIds: string[];
+  closing?: string;
+};
+
+type TeachingPhilosophyArticle = {
+  number: string;
+  title: string;
+  paragraphs: string[];
+  bullets: string[];
+};
+
+const reflectionDetails: ReflectionDetail[] = [
+  {
+    id: 'peran-guru-profesional',
+    sectionId: 'pembelajaran',
+    eyebrow: 'Pembelajaran',
+    title: 'Peran Guru Profesional',
+    summary: 'Saya belajar bahwa guru perlu membaca situasi kelas, mengatur alur pembelajaran, memastikan instruksi dipahami, dan mendampingi siswa yang mengalami kesulitan.',
+    accent: '#8effe7',
+    paragraphs: [
+      'Selama PPL Terbimbing, saya mulai memahami bahwa menjadi guru bukan hanya soal bisa menjelaskan materi. Di kelas, guru harus siap membaca situasi, mengatur alur pembelajaran, memastikan siswa paham instruksi, dan tetap mendampingi ketika siswa mulai mengalami kesulitan.',
+      'Hal yang paling terasa bagi saya adalah guru harus punya banyak peran dalam satu waktu. Saat pembelajaran Gambar Teknik berlangsung, guru tidak hanya menjelaskan, tetapi juga mengamati proses kerja siswa, mengecek kerapian, memberi arahan, dan membantu siswa memperbaiki kesalahan.',
+      'Dari situ saya belajar bahwa profesionalitas guru terlihat dari kesiapan, kesabaran, dan kemampuan menyesuaikan diri dengan kondisi nyata di kelas.'
+    ]
+  },
+  {
+    id: 'observasi-dan-sit-in',
+    sectionId: 'pembelajaran',
+    eyebrow: 'Pembelajaran',
+    title: 'Belajar dari Observasi',
+    summary: 'Observasi dan sit in membantu saya memahami medan kelas sebelum mengajar, terutama cara Guru Pamong membuka pembelajaran, memberi instruksi, dan menjaga fokus siswa.',
+    accent: '#cbff9c',
+    paragraphs: [
+      'Observasi dan sit in menjadi tahap yang membuat saya lebih paham "medan" sebelum mengajar. Saya melihat langsung bagaimana Guru Pamong membuka pembelajaran, memberi instruksi, mengatur kelas, dan menjaga siswa tetap fokus.',
+      'Dari kegiatan ini, saya sadar bahwa pembelajaran di SMK tidak bisa terlalu banyak teori. Siswa lebih mudah mengikuti ketika guru memberi contoh visual, menunjukkan langkah kerja, dan mengaitkan materi dengan benda atau pekerjaan nyata di bidang teknik mesin.',
+      'Yang saya pelajari dari observasi:'
+    ],
+    bullets: [
+      'Cara guru membangun komunikasi dengan siswa.',
+      'Cara memberi instruksi agar tidak membingungkan.',
+      'Pentingnya contoh nyata dalam pembelajaran praktik.',
+      'Pentingnya memahami karakter kelas sebelum mulai mengajar.'
+    ]
+  },
+  {
+    id: 'produk-pembelajaran',
+    sectionId: 'pembelajaran',
+    eyebrow: 'Pembelajaran',
+    title: 'Belajar Membuat Produk Pembelajaran',
+    summary: 'Saya belajar bahwa RPP, LKM/LKPD, job sheet, media, bahan ajar, dan asesmen harus saling terhubung dan benar-benar membantu jalannya pembelajaran.',
+    accent: '#facc15',
+    paragraphs: [
+      'Pada tahap penyusunan produk pembelajaran, saya belajar bahwa RPP, LKM/LKPD, job sheet, media, bahan ajar, dan asesmen tidak boleh dibuat asal lengkap saja. Semua perangkat itu harus benar-benar membantu jalannya pembelajaran.',
+      'Dalam pengalaman saya, bagian ini cukup menantang karena produk pembelajaran harus saling nyambung. Tujuan pembelajaran harus sesuai dengan kegiatan siswa, langkah kerja harus jelas, media harus membantu pemahaman, dan asesmen harus menilai kemampuan yang memang dilatih. Apalagi pada mata pelajaran Gambar Teknik, siswa membutuhkan panduan yang runtut agar tidak bingung saat menggambar.',
+      'Dari proses ini, saya jadi lebih sadar bahwa pembelajaran yang baik dimulai sebelum guru masuk kelas. Kalau perangkatnya rapi dan jelas, pembelajaran akan lebih mudah diarahkan.'
+    ]
+  },
+  {
+    id: 'belajar-asistensi-mengajar',
+    sectionId: 'pembelajaran',
+    eyebrow: 'Pembelajaran',
+    title: 'Belajar Asistensi (Mengajar Langsung)',
+    summary: 'Saat ikut terlibat langsung dalam pembelajaran, saya belajar bahwa mengajar menuntut kesiapan membaca kondisi siswa dan menyesuaikan arahan di kelas.',
+    accent: '#a78bfa',
+    paragraphs: [
+      'Bagian paling terasa selama PPL adalah ketika mulai ikut terlibat langsung dalam pembelajaran. Saat hanya mengamati, semuanya terlihat lebih mudah. Namun ketika sudah berada di depan siswa dan ikut mendampingi mereka, saya baru merasakan bahwa mengajar membutuhkan kesiapan yang lebih besar.',
+      'Ada siswa yang cepat paham, ada yang perlu dijelaskan ulang, ada yang diam saja padahal belum paham, dan ada juga yang harus didekati secara langsung agar kembali fokus. Dari situ saya belajar untuk tidak terlalu kaku pada rencana. RPP memang menjadi pedoman, tetapi kondisi kelas tetap harus dibaca secara langsung.',
+      'Pengalaman asistensi membuat saya lebih berani memberi arahan, menjawab pertanyaan siswa, dan menyesuaikan cara menjelaskan. Saya juga belajar bahwa instruksi yang menurut guru sudah jelas, belum tentu langsung dipahami siswa. Jadi, guru perlu mengecek kembali apakah siswa benar-benar memahami apa yang harus dikerjakan.'
+    ]
+  },
+  {
+    id: 'pembelajaran-kontekstual-smk',
+    sectionId: 'pembelajaran',
+    eyebrow: 'Pembelajaran',
+    title: 'Membuat Pembelajaran Relevan dengan Industri',
+    summary: 'Saya semakin memahami bahwa Gambar Teknik perlu dikaitkan dengan gambar kerja, ketelitian ukuran, standar garis, simbol teknik, dan proses produksi.',
+    accent: '#22d3ee',
+    paragraphs: [
+      'Selama PPL di SMK, saya semakin paham bahwa materi harus punya hubungan dengan dunia kerja. Gambar Teknik bukan sekadar tugas menggambar garis, ukuran, atau simbol. Di dunia teknik mesin, gambar adalah bahasa kerja.',
+      'Karena itu, pembelajaran perlu dikaitkan dengan hal-hal yang dekat dengan industri, seperti gambar kerja, ketelitian ukuran, standar garis, simbol teknik, dan proses produksi. Ketika siswa tahu bahwa kesalahan kecil dalam gambar bisa berpengaruh pada hasil kerja di bengkel atau industri, mereka lebih mudah memahami kenapa ketelitian itu penting.',
+      'Bagi saya, ini menjadi pelajaran penting sebagai calon guru SMK: siswa perlu tahu manfaat nyata dari materi yang dipelajari, bukan hanya menyelesaikan tugas untuk mendapatkan nilai.'
+    ]
+  },
+  {
+    id: 'asesmen-formatif',
+    sectionId: 'pembelajaran',
+    eyebrow: 'Pembelajaran',
+    title: 'Melaksanakan Asesmen Formatif',
+    summary: 'Saya belajar bahwa asesmen formatif perlu dilakukan selama proses belajar agar kesalahan siswa bisa diketahui dan diperbaiki lebih awal.',
+    accent: '#f472b6',
+    paragraphs: [
+      'Dari pengalaman PPL, saya belajar bahwa asesmen tidak harus menunggu akhir pembelajaran. Dalam Gambar Teknik, proses siswa saat mengerjakan justru sangat penting untuk diamati.',
+      'Saya mulai memahami pentingnya mengecek pekerjaan siswa saat proses berlangsung. Misalnya melihat apakah garis sudah sesuai, ukuran sudah tepat, instruksi sudah dipahami, atau siswa masih salah langkah. Kalau kesalahan diketahui lebih awal, siswa bisa langsung memperbaiki sebelum hasil akhirnya terlalu jauh dari yang diharapkan.',
+      'Hal ini juga terasa penting karena waktu pendampingan saya selama PPL tidak selalu penuh sampai akhir pembelajaran. Karena setelah kegiatan PPL masih ada perkuliahan, saya tidak selalu bisa mendampingi siswa sampai seluruh pekerjaan selesai. Dari pengalaman itu, saya belajar bahwa umpan balik harus diberikan sedini mungkin. Tidak harus menunggu akhir, yang penting siswa mendapat arahan ketika proses belajar masih berjalan.'
+    ]
+  },
+  {
+    id: 'heterogenitas-kemampuan-siswa',
+    sectionId: 'tantangan',
+    eyebrow: 'Tantangan',
+    title: 'Heterogenitas Kemampuan Siswa',
+    summary: 'Perbedaan kemampuan siswa terlihat saat memahami instruksi, mengikuti langkah kerja, membaca ukuran, dan menjaga kerapian gambar.',
+    accent: '#facc15',
+    paragraphs: [],
+    sections: [
+      {
+        title: 'Tantangan',
+        paragraphs: [
+          'Selama PPL Terbimbing, salah satu tantangan yang paling terasa adalah perbedaan kemampuan siswa dalam memahami materi dan mengikuti langkah kerja. Dalam satu kelas, ada siswa yang cepat menangkap instruksi, tetapi ada juga yang masih membutuhkan penjelasan ulang secara lebih pelan dan rinci.',
+          'Pada pembelajaran Gambar Teknik, perbedaan ini cukup terlihat. Ada siswa yang langsung bisa mengikuti contoh gambar, memahami ukuran, dan mengerjakan tugas dengan mandiri. Namun, ada juga siswa yang masih bingung pada tahap dasar, seperti membaca instruksi, menentukan langkah awal, menjaga kerapian garis, atau memahami ukuran pada gambar kerja.'
+        ]
+      },
+      {
+        title: 'Dampak',
+        paragraphs: [
+          'Perbedaan kemampuan ini membuat ritme pembelajaran tidak selalu berjalan sama untuk semua siswa. Siswa yang cepat memahami materi kadang sudah siap melanjutkan pekerjaan, sedangkan siswa lain masih membutuhkan pendampingan. Jika tidak dikelola dengan baik, siswa yang tertinggal bisa semakin bingung, sementara siswa yang sudah paham bisa kehilangan fokus karena terlalu lama menunggu.',
+          'Kondisi ini juga berdampak pada proses pemberian arahan. Guru harus membagi perhatian agar siswa yang membutuhkan bantuan tetap terlayani, tetapi pembelajaran secara keseluruhan tetap berjalan sesuai alur.'
+        ]
+      },
+      {
+        title: 'Solusi & Tindak Lanjut',
+        paragraphs: [
+          'Solusi yang saya lakukan adalah menyederhanakan instruksi dan membagi langkah kerja menjadi beberapa bagian kecil. Instruksi tidak langsung diberikan terlalu panjang, tetapi dijelaskan secara bertahap agar lebih mudah diikuti siswa.',
+          'Saya juga menggunakan contoh visual dan demonstrasi singkat sebelum siswa mulai mengerjakan. Siswa yang sudah lebih cepat memahami materi diarahkan untuk mengecek ulang pekerjaannya, memperbaiki kerapian, atau melanjutkan bagian berikutnya. Sementara itu, siswa yang masih kesulitan diberikan pendampingan lebih dekat pada bagian yang belum dipahami.',
+          'Sebagai tindak lanjut menuju PPL Mandiri, saya perlu menyiapkan panduan kerja yang lebih bertingkat. Misalnya, ada instruksi dasar untuk semua siswa, contoh tambahan untuk siswa yang masih kesulitan, dan tugas pengayaan sederhana untuk siswa yang sudah lebih cepat selesai.'
+        ]
+      },
+      {
+        title: 'Kesimpulan',
+        paragraphs: [
+          'Dari tantangan ini, saya belajar bahwa kemampuan siswa dalam satu kelas tidak bisa disamaratakan. Guru perlu lebih peka membaca kebutuhan siswa dan menyiapkan strategi pembelajaran yang fleksibel. Heterogenitas kemampuan bukan menjadi hambatan, tetapi menjadi pengingat bahwa pembelajaran harus memberi ruang bagi setiap siswa untuk berkembang sesuai kemampuannya.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'kejenuhan-siswa',
+    sectionId: 'tantangan',
+    eyebrow: 'Tantangan',
+    title: 'Kejenuhan Siswa',
+    summary: 'Materi Gambar Teknik membutuhkan ketelitian dan fokus cukup lama, sehingga aktivitas yang monoton dapat membuat siswa cepat jenuh.',
+    accent: '#22d3ee',
+    paragraphs: [],
+    sections: [
+      {
+        title: 'Tantangan',
+        paragraphs: [
+          'Tantangan berikutnya adalah kejenuhan siswa selama proses pembelajaran. Materi Gambar Teknik membutuhkan ketelitian, fokus, dan waktu pengerjaan yang cukup lama. Jika kegiatan pembelajaran berjalan terlalu monoton, siswa mudah merasa bosan dan fokusnya mulai menurun.',
+          'Kejenuhan ini biasanya muncul ketika penjelasan terlalu panjang, aktivitas hanya berpusat pada satu pola, atau siswa terlalu lama mengerjakan tugas tanpa variasi kegiatan. Dalam kondisi seperti itu, beberapa siswa terlihat kurang responsif, mulai kurang memperhatikan, atau mengerjakan tugas dengan semangat yang menurun.'
+        ]
+      },
+      {
+        title: 'Dampak',
+        paragraphs: [
+          'Kejenuhan berdampak langsung pada keterlibatan siswa dalam pembelajaran. Siswa yang mulai jenuh cenderung kurang aktif bertanya, lambat merespons instruksi, dan kurang teliti dalam mengerjakan tugas. Pada pembelajaran Gambar Teknik, hal ini cukup berpengaruh karena ketelitian menjadi bagian penting dari hasil kerja siswa.',
+          'Jika kejenuhan dibiarkan, kualitas pekerjaan siswa dapat menurun. Kesalahan kecil seperti garis kurang rapi, ukuran kurang tepat, atau instruksi yang terlewat bisa muncul karena siswa tidak lagi fokus penuh pada proses pengerjaan.'
+        ]
+      },
+      {
+        title: 'Solusi & Tindak Lanjut',
+        paragraphs: [
+          'Untuk mengatasi kejenuhan, saya berusaha membuat pembelajaran lebih bervariasi. Penjelasan materi dibuat lebih singkat dan langsung diarahkan pada contoh. Setelah itu, siswa diajak melihat contoh visual, mengikuti demonstrasi, mencoba langkah kerja, dan mendiskusikan hasilnya.',
+          'Saya juga belajar bahwa apersepsi sangat penting untuk menarik perhatian siswa sejak awal. Materi Gambar Teknik perlu dikaitkan dengan dunia nyata, seperti bengkel, gambar kerja, proses produksi, dan kebutuhan industri. Dengan begitu, siswa tidak hanya merasa sedang mengerjakan tugas, tetapi memahami bahwa keterampilan tersebut memang berguna dalam bidang teknik mesin.',
+          'Sebagai tindak lanjut, pada PPL Mandiri saya perlu menyiapkan variasi aktivitas yang lebih terencana. Misalnya, pembelajaran diawali dengan contoh kasus sederhana dari dunia kerja, dilanjutkan demonstrasi singkat, latihan bertahap, pengecekan hasil sementara, lalu refleksi ringan agar siswa tidak merasa pembelajaran berjalan datar.'
+        ]
+      },
+      {
+        title: 'Kesimpulan',
+        paragraphs: [
+          'Dari pengalaman ini, saya belajar bahwa menjaga fokus siswa adalah bagian penting dari tugas guru. Pembelajaran yang baik tidak hanya harus benar secara materi, tetapi juga perlu hidup dan dekat dengan pengalaman siswa. Kejenuhan dapat dikurangi ketika guru mampu membuat pembelajaran lebih variatif, jelas, dan relevan dengan kehidupan nyata siswa SMK.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'keterbatasan-pendampingan',
+    sectionId: 'tantangan',
+    eyebrow: 'Tantangan',
+    title: 'Keterbatasan Pendampingan',
+    summary: 'Waktu PPL yang dilanjutkan dengan perkuliahan membuat pendampingan siswa tidak selalu bisa dilakukan sampai akhir pembelajaran.',
+    accent: '#f472b6',
+    paragraphs: [],
+    sections: [
+      {
+        title: 'Tantangan',
+        paragraphs: [
+          'Tantangan ketiga yang saya alami adalah keterbatasan waktu pendampingan selama PPL Terbimbing. Kegiatan PPL berlangsung dari pagi sampai sekitar pukul 12.00, kemudian saya harus melanjutkan kegiatan perkuliahan. Kondisi ini membuat saya tidak selalu bisa mendampingi siswa sampai akhir seluruh rangkaian pembelajaran.',
+          'Dalam pembelajaran praktik seperti Gambar Teknik, pendampingan sampai akhir sebenarnya sangat penting. Siswa sering membutuhkan arahan ketika proses pengerjaan berlangsung, terutama saat mulai menemukan kesulitan atau ketika hasil kerjanya perlu diperbaiki.'
+        ]
+      },
+      {
+        title: 'Dampak',
+        paragraphs: [
+          'Keterbatasan pendampingan berdampak pada pemberian umpan balik kepada siswa. Ada kalanya hasil pekerjaan siswa belum bisa langsung saya lihat secara menyeluruh pada hari yang sama. Akibatnya, beberapa kesalahan siswa tidak selalu dapat langsung diperbaiki saat itu juga.',
+          'Padahal dalam pembelajaran praktik, umpan balik yang cepat sangat membantu siswa. Jika siswa segera mengetahui bagian yang kurang tepat, mereka dapat langsung memperbaiki pekerjaannya sebelum kesalahan tersebut berlanjut. Ketika umpan balik tertunda, proses perbaikan siswa juga menjadi kurang maksimal.'
+        ]
+      },
+      {
+        title: 'Solusi & Tindak Lanjut',
+        paragraphs: [
+          'Solusi yang saya lakukan adalah memberikan umpan balik sejak proses pembelajaran berlangsung, bukan menunggu pekerjaan benar-benar selesai. Ketika siswa sedang mengerjakan, saya mencoba mengecek bagian-bagian penting seperti pemahaman instruksi, ketepatan langkah, kerapian garis, dan kesesuaian ukuran.',
+          'Saya juga perlu menggunakan alat bantu yang lebih efisien, seperti rubrik sederhana, lembar cek proses, dan dokumentasi hasil kerja siswa. Dengan cara ini, perkembangan siswa tetap bisa dipantau meskipun waktu pendampingan terbatas. Koordinasi dengan Guru Pamong juga menjadi bagian penting agar pekerjaan siswa tetap mendapat tindak lanjut setelah saya harus melanjutkan kegiatan perkuliahan.',
+          'Sebagai tindak lanjut menuju PPL Mandiri, saya perlu membuat sistem umpan balik yang lebih terstruktur. Misalnya, memberikan catatan singkat pada hasil kerja siswa, membuat daftar kesalahan umum yang perlu diperbaiki, atau menggunakan hasil pekerjaan sebelumnya sebagai bahan refleksi di awal pertemuan berikutnya.'
+        ]
+      },
+      {
+        title: 'Kesimpulan',
+        paragraphs: [
+          'Dari tantangan ini, saya belajar bahwa keterbatasan waktu bukan alasan untuk mengabaikan pendampingan. Guru perlu mencari cara agar umpan balik tetap bisa diberikan secara efektif, meskipun waktu tidak selalu ideal. Pengalaman ini membuat saya sadar bahwa pendampingan yang baik tidak selalu harus panjang, tetapi harus tepat sasaran dan membantu siswa memperbaiki proses belajarnya.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'tujuan-pembelajaran-lebih-jelas',
+    sectionId: 'umpan-balik',
+    eyebrow: 'Umpan Balik',
+    title: 'Tujuan Pembelajaran Lebih Jelas',
+    summary: 'Tujuan pembelajaran perlu diperjelas sejak awal agar siswa memahami arah kegiatan, standar hasil, dan kriteria keberhasilan.',
+    accent: '#8effe7',
+    paragraphs: [
+      'Masukan dari Guru Pamong dan Dosen Pembimbing Lapangan menegaskan pentingnya menyampaikan tujuan pembelajaran dengan bahasa yang mudah dipahami. Siswa perlu tahu apa yang akan dikerjakan, mengapa kegiatan itu penting, dan seperti apa hasil kerja yang diharapkan.'
+    ]
+  },
+  {
+    id: 'instruksi-lebih-sederhana',
+    sectionId: 'umpan-balik',
+    eyebrow: 'Umpan Balik',
+    title: 'Instruksi Lebih Sederhana',
+    summary: 'Instruksi perlu dibuat singkat, runtut, dan mudah diikuti, terutama ketika siswa masuk pada kegiatan praktik.',
+    accent: '#cbff9c',
+    paragraphs: [
+      'Dalam pembelajaran praktik, instruksi yang terlalu panjang dapat membuat siswa bingung. Saya perlu membagi arahan menjadi langkah kecil, memperjelas contoh, dan memastikan siswa memahami urutan kerja sebelum mulai berlatih.'
+    ]
+  },
+  {
+    id: 'apersepsi-lebih-kontekstual',
+    sectionId: 'umpan-balik',
+    eyebrow: 'Umpan Balik',
+    title: 'Apersepsi Lebih Kontekstual',
+    summary: 'Apersepsi perlu dikaitkan dengan pengalaman siswa, praktik bengkel, dan kebutuhan dunia kerja agar materi terasa dekat.',
+    accent: '#facc15',
+    paragraphs: [
+      'Saya perlu memperkuat jembatan antara materi Gambar Teknik dengan pengalaman siswa. Contoh dari bengkel, benda kerja, atau standar dunia industri dapat membantu siswa melihat manfaat materi sebelum masuk ke latihan.'
+    ]
+  },
+  {
+    id: 'pengelolaan-waktu-lebih-efektif',
+    sectionId: 'umpan-balik',
+    eyebrow: 'Umpan Balik',
+    title: 'Pengelolaan Waktu Lebih Efektif',
+    summary: 'Waktu pembelajaran perlu dikelola agar apersepsi, demonstrasi, latihan, umpan balik, dan refleksi tetap terlaksana.',
+    accent: '#22d3ee',
+    paragraphs: [
+      'Masukan ini membantu saya melihat pentingnya membuat prioritas kegiatan. Setiap tahap pembelajaran perlu mendapat porsi yang cukup, tetapi tetap fleksibel ketika kondisi kelas membutuhkan penyesuaian.'
+    ]
+  },
+  {
+    id: 'diferensiasi-dan-pendampingan',
+    sectionId: 'umpan-balik',
+    eyebrow: 'Umpan Balik',
+    title: 'Diferensiasi dan Pendampingan',
+    summary: 'Pembelajaran diferensiatif perlu diterapkan karena kemampuan, kecepatan belajar, dan kebutuhan bantuan siswa beragam.',
+    accent: '#a78bfa',
+    paragraphs: [
+      'Saya perlu menyiapkan bantuan yang berbeda sesuai kebutuhan siswa. Siswa yang cepat memahami instruksi dapat diberi tantangan lanjutan, sedangkan siswa yang masih kesulitan perlu contoh tambahan, pertanyaan penuntun, atau pendampingan lebih dekat.'
+    ]
+  },
+  {
+    id: 'umpan-balik-lebih-terstruktur',
+    sectionId: 'umpan-balik',
+    eyebrow: 'Umpan Balik',
+    title: 'Umpan Balik Lebih Terstruktur',
+    summary: 'Mekanisme umpan balik perlu diperkuat melalui catatan pada lembar kerja, ceklis proses, komentar singkat, dokumentasi, dan refleksi awal pada pertemuan berikutnya.',
+    accent: '#f472b6',
+    paragraphs: [
+      'Saya belajar bahwa umpan balik yang terstruktur membantu siswa mengetahui bagian yang sudah tepat dan bagian yang perlu diperbaiki. Catatan singkat, ceklis proses, komentar terhadap hasil gambar, dokumentasi, dan tindak lanjut pada pertemuan berikutnya menjadi cara yang dapat saya perkuat menuju PPL Mandiri.',
+      'Masukan dari Guru Pamong dan Dosen Pembimbing Lapangan menjadi pengingat agar saya terus menjadi guru yang reflektif, terbuka terhadap masukan, dan berani memperbaiki proses pembelajaran.'
+    ]
+  }
+];
+
+const teachingPhilosophyArticles: TeachingPhilosophyArticle[] = [
+  {
+    number: '01',
+    title: 'Ki Hadjar Dewantara - Menuntun Kodrat Anak',
+    paragraphs: [
+      'Konsep utama Ki Hadjar Dewantara yang paling dekat dengan pengalaman saya adalah bahwa pendidikan merupakan proses menuntun segala kekuatan kodrat yang ada pada anak agar mereka mencapai keselamatan dan kebahagiaan setinggi-tingginya.',
+      'Dalam pengalaman PPL, konsep ini terasa ketika saya menghadapi siswa dengan kemampuan yang berbeda-beda. Saya tidak bisa menuntut semua siswa memahami materi dengan kecepatan yang sama. Tugas guru adalah menuntun mereka sesuai kondisi masing-masing. Siswa yang cepat memahami materi tetap perlu diarahkan agar berkembang, sedangkan siswa yang masih kesulitan perlu didampingi dengan cara yang lebih sederhana dan bertahap.',
+      'Dalam konteks saya, filosofi ini muncul dalam bentuk:'
+    ],
+    bullets: [
+      'Memberi arahan tanpa mematikan keberanian siswa.',
+      'Mendampingi siswa yang masih kesulitan.',
+      'Memberi ruang kepada siswa untuk mencoba dan memperbaiki.',
+      'Memahami bahwa setiap siswa memiliki proses belajar yang berbeda.'
+    ]
+  },
+  {
+    number: '02',
+    title: 'Ki Hadjar Dewantara - Ing Ngarsa, Ing Madya, Tut Wuri Handayani',
+    paragraphs: [
+      'Prinsip Ing Ngarsa Sung Tuladha, Ing Madya Mangun Karsa, Tut Wuri Handayani juga menjadi dasar penting dalam filosofi mengajar saya.',
+      'Dalam pembelajaran Gambar Teknik, guru perlu memberi contoh terlebih dahulu. Saat siswa belum memahami langkah kerja, guru berada di depan sebagai teladan melalui demonstrasi dan contoh visual. Ketika siswa mulai mengerjakan, guru berada di tengah untuk membangun semangat, memberi arahan, dan menjaga fokus kelas. Setelah siswa mulai mampu bekerja mandiri, guru memberi dorongan dari belakang agar mereka percaya diri menyelesaikan tugasnya.',
+      'Penerapannya dalam pengalaman PPL saya adalah:'
+    ],
+    bullets: [
+      'Ing Ngarsa Sung Tuladha: guru memberi contoh gambar, langkah kerja, dan sikap teliti.',
+      'Ing Madya Mangun Karsa: guru mendampingi siswa saat proses praktik berlangsung.',
+      'Tut Wuri Handayani: guru memberi kepercayaan kepada siswa untuk menyelesaikan pekerjaan secara mandiri dengan tetap diberi arahan.'
+    ]
+  },
+  {
+    number: '03',
+    title: 'John Dewey - Learning by Doing',
+    paragraphs: [
+      'Konsep learning by doing dari John Dewey sangat sesuai dengan pembelajaran di SMK. Siswa tidak cukup hanya mendengar penjelasan, tetapi perlu mengalami, mencoba, dan mengerjakan secara langsung.',
+      'Dalam PPL Terbimbing, saya melihat bahwa siswa lebih mudah memahami Gambar Teknik ketika mereka langsung melihat contoh, mengikuti langkah kerja, lalu mencoba menggambar sendiri. Penjelasan teori tetap penting, tetapi tidak boleh berdiri sendiri. Teori perlu dibuktikan melalui praktik agar siswa benar-benar memahami fungsi dan manfaatnya.',
+      'Penerapannya dalam pembelajaran saya:'
+    ],
+    bullets: [
+      'Materi dijelaskan secara singkat.',
+      'Siswa diberi contoh visual.',
+      'Siswa mencoba mengerjakan secara bertahap.',
+      'Guru memberi arahan saat proses berlangsung.',
+      'Hasil kerja siswa dijadikan bahan refleksi dan perbaikan.'
+    ]
+  },
+  {
+    number: '04',
+    title: 'Vygotsky - Zona Perkembangan Proksimal dan Scaffolding',
+    paragraphs: [
+      'Teori Vygotsky tentang Zone of Proximal Development menjelaskan bahwa siswa dapat mencapai kemampuan yang lebih tinggi ketika mendapatkan bantuan atau pendampingan yang tepat. Bantuan ini sering disebut scaffolding.',
+      'Dalam pengalaman PPL, teori ini terlihat ketika saya mendampingi siswa yang belum mampu mengerjakan tugas secara mandiri. Ada siswa yang sebenarnya bisa memahami materi, tetapi membutuhkan contoh tambahan, pertanyaan pemantik, atau arahan langkah demi langkah. Setelah mendapat bantuan, mereka mulai bisa melanjutkan pekerjaan sendiri.',
+      'Dalam pembelajaran Gambar Teknik, scaffolding dapat dilakukan melalui:'
+    ],
+    bullets: [
+      'Memberi contoh pengerjaan.',
+      'Membagi tugas menjadi langkah-langkah kecil.',
+      'Memberi pertanyaan pengarah.',
+      'Mengecek hasil sementara.',
+      'Mengurangi bantuan secara bertahap ketika siswa mulai mampu mandiri.'
+    ]
+  },
+  {
+    number: '05',
+    title: 'Pembelajaran Diferensiatif - Menyesuaikan dengan Kebutuhan Siswa',
+    paragraphs: [
+      'Pembelajaran diferensiatif menekankan bahwa guru perlu menyesuaikan pembelajaran dengan kesiapan, minat, dan kebutuhan siswa. Ini sangat sesuai dengan tantangan heterogenitas kemampuan siswa yang saya temui selama PPL.',
+      'Dalam satu kelas, tidak semua siswa membutuhkan bantuan yang sama. Siswa yang cepat paham bisa diberi tugas lanjutan atau diminta mengecek ulang hasil pekerjaannya. Siswa yang masih kesulitan perlu diberi panduan lebih sederhana. Dengan cara ini, pembelajaran tidak hanya berjalan untuk siswa yang cepat, tetapi juga memberi ruang bagi siswa yang membutuhkan pendampingan lebih.',
+      'Penerapannya dalam pengalaman saya:'
+    ],
+    bullets: [
+      'Instruksi dibuat bertahap.',
+      'Contoh visual diperjelas.',
+      'Siswa yang cepat diberi pengayaan sederhana.',
+      'Siswa yang kesulitan mendapat pendampingan lebih dekat.',
+      'Asesmen dilakukan selama proses, bukan hanya di akhir.'
+    ]
+  },
+  {
+    number: '06',
+    title: 'Asesmen Formatif - Umpan Balik untuk Perbaikan',
+    paragraphs: [
+      'Asesmen formatif menjadi salah satu prinsip penting dalam filosofi mengajar saya. Dalam pembelajaran praktik, guru tidak bisa hanya menilai hasil akhir. Proses siswa saat bekerja justru perlu diamati agar kesalahan bisa diperbaiki lebih awal.',
+      'Selama PPL, saya belajar bahwa umpan balik yang cepat sangat membantu siswa. Misalnya ketika siswa salah memahami ukuran, kurang rapi membuat garis, atau belum mengikuti instruksi dengan tepat, guru perlu segera memberi arahan. Dengan begitu, siswa masih punya kesempatan memperbaiki pekerjaannya.',
+      'Bagi saya, asesmen formatif bukan sekadar alat menilai, tetapi bagian dari proses mendampingi siswa. Guru tidak hanya bertanya "berapa nilainya?", tetapi juga "bagian mana yang bisa diperbaiki agar siswa berkembang?"'
+    ],
+    bullets: []
+  }
+];
+
+const reflectionSections: ReflectionSection[] = [
+  {
+    id: 'pembelajaran',
+    marker: '01',
+    kicker: 'Perjalanan belajar',
+    title: 'Pembelajaran Selama PPL',
+    lead: 'PPL Terbimbing pada pembelajaran Gambar Teknik di SMK Negeri 2 Depok Sleman memberi saya enam pelajaran utama tentang peran guru, observasi, produk pembelajaran, asistensi mengajar, relevansi industri, dan asesmen formatif.',
+    accent: '#8effe7',
+    detailIds: [
+      'peran-guru-profesional',
+      'observasi-dan-sit-in',
+      'produk-pembelajaran',
+      'belajar-asistensi-mengajar',
+      'pembelajaran-kontekstual-smk',
+      'asesmen-formatif'
+    ]
+  },
+  {
+    id: 'tantangan',
+    marker: '02',
+    kicker: 'Masalah dan respons',
+    title: 'Tantangan yang Dihadapi',
+    lead: 'Selama PPL Terbimbing, saya belajar bahwa tantangan di kelas perlu dibaca secara jernih: apa situasinya, apa dampaknya bagi belajar siswa, dan strategi apa yang paling mungkin dilakukan.',
+    accent: '#facc15',
+    detailIds: ['heterogenitas-kemampuan-siswa', 'kejenuhan-siswa', 'keterbatasan-pendampingan']
+  },
+  {
+    id: 'umpan-balik',
+    marker: '03',
+    kicker: 'Menuju PPL Mandiri',
+    title: 'Umpan Balik',
+    lead: 'Umpan balik dari Guru Pamong dan Dosen Pembimbing Lapangan menjadi dasar perbaikan agar praktik mengajar berikutnya lebih jelas, terarah, dan berpihak pada kebutuhan peserta didik.',
+    accent: '#f472b6',
+    detailIds: [
+      'tujuan-pembelajaran-lebih-jelas',
+      'instruksi-lebih-sederhana',
+      'apersepsi-lebih-kontekstual',
+      'pengelolaan-waktu-lebih-efektif',
+      'diferensiasi-dan-pendampingan',
+      'umpan-balik-lebih-terstruktur'
+    ],
+    closing: 'Melalui umpan balik tersebut, saya merasa lebih siap memasuki PPL Mandiri sebagai calon guru Teknik Mesin yang reflektif, terbuka terhadap masukan, dan terus berupaya memperbaiki proses pembelajaran.'
+  },
+  {
+    id: 'filosofi-mengajar',
+    marker: '04',
+    kicker: 'Landasan mengajar',
+    title: 'Filosofi Mengajar',
+    lead: 'Filosofi mengajar saya dibangun dari pengalaman PPL Terbimbing, pemikiran pendidikan, dan kebutuhan nyata pembelajaran Gambar Teknik di SMK.',
+    accent: '#cbff9c',
+    detailIds: []
+  }
+];
+
+const PortfolioSelector = ({ onSelect }: { onSelect: (mode: PortfolioContentMode) => void }) => (
+  <motion.div
+    key="portfolio-selector"
+    initial={{ opacity: 0, y: 28 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -22 }}
+    transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
+    className="relative z-10 h-dvh w-full overflow-hidden px-4 py-4 text-white md:px-6 md:py-5"
+  >
+    <div className="mx-auto flex h-full max-w-5xl flex-col justify-center">
+      <div className="mb-4 flex items-center justify-center gap-2.5 md:mb-5">
+        <img
+          src={publicAsset('logo.png')}
+          alt="Satriya Nugraha"
+          className="h-8 w-8 object-contain drop-shadow-[0_0_18px_rgba(203,255,156,0.2)] md:h-9 md:w-9"
+          referrerPolicy="no-referrer"
+        />
+        <div>
+          <p className="font-mono text-[8px] font-black uppercase tracking-[0.2em] text-accent md:text-[9px]">PPG Prajabatan 2026</p>
+          <p className="text-xs font-black text-white/78 md:text-sm">Satriya Nugraha</p>
+        </div>
+      </div>
+
+      <div className="text-center">
+        <SectionKicker>Pilih Halaman</SectionKicker>
+        <h1 className="mx-auto max-w-xl !text-[1.55rem] font-black !leading-tight tracking-[-0.025em] text-white sm:!text-3xl md:!text-4xl">
+          Pilih e-portofolio yang ingin dibuka
+        </h1>
+      </div>
+
+      <div className="mx-auto mt-5 grid w-full max-w-4xl gap-3 sm:grid-cols-2 md:mt-6 md:gap-4">
+        {portfolioChoices.map((item, index) => (
+          <motion.button
+            key={item.id}
+            type="button"
+            onClick={() => onSelect(item.id)}
+            initial={{ opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.12 + index * 0.1, duration: 0.62, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={{ y: -8 }}
+            whileTap={{ scale: 0.98 }}
+            className="group relative overflow-hidden rounded-[1.15rem] border border-white/10 bg-white/[0.045] p-4 text-left shadow-[0_18px_52px_rgba(0,0,0,0.28)] backdrop-blur-xl transition-colors hover:border-accent/28 md:rounded-[1.35rem] md:p-5"
+            style={{ '--portfolio-accent': item.accent } as React.CSSProperties}
+          >
+            <div
+              className="pointer-events-none absolute -right-14 -top-14 h-44 w-44 rounded-full blur-[70px] transition-opacity group-hover:opacity-80"
+              style={{ background: `${item.accent}24` }}
+            />
+            <div className="relative z-10">
+              <div className="mb-3 flex items-center justify-between gap-3 md:mb-4">
+                <div
+                  className="grid h-9 w-9 place-items-center rounded-xl border text-brand-night shadow-[0_10px_26px_rgba(0,0,0,0.2)] md:h-10 md:w-10"
+                  style={{ background: item.accent, borderColor: `${item.accent}66` }}
+                >
+                  {item.icon}
+                </div>
+                <span className="rounded-full border border-white/10 bg-white/[0.045] px-2.5 py-1 font-mono text-[8px] font-black uppercase tracking-[0.14em] text-white/52 md:text-[9px]">
+                  {item.label}
+                </span>
+              </div>
+              <p className="font-mono text-[8px] font-black uppercase tracking-[0.18em] md:text-[9px]" style={{ color: item.accent }}>
+                {item.kicker}
+              </p>
+              <h2 className="mt-1.5 !text-[1.2rem] font-black !leading-tight tracking-[-0.025em] text-white md:!text-2xl">
+                {item.title}
+              </h2>
+              <p className="mt-2.5 hidden max-w-xl text-xs leading-relaxed text-white/62 sm:block md:text-sm">
+                {item.summary}
+              </p>
+              <div className="mt-3 hidden gap-2 sm:grid md:mt-4">
+                {item.bullets.map((bullet) => (
+                  <div key={bullet} className="flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/[0.035] px-3 py-2 text-[11px] font-semibold leading-tight text-white/68 md:text-xs">
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: item.accent }} />
+                    {bullet}
+                  </div>
+                ))}
+              </div>
+              <p className="mt-2 text-[11px] font-semibold leading-relaxed text-white/58 sm:hidden">
+                {item.bullets.join(' / ')}
+              </p>
+              <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-accent px-3.5 py-2 text-[11px] font-black text-brand-night transition-transform group-hover:translate-x-1 md:mt-5 md:text-xs">
+                Buka {item.label}
+                <ArrowRight size={14} />
+              </div>
+            </div>
+          </motion.button>
+        ))}
+      </div>
+    </div>
+  </motion.div>
+);
+
+const ReflectionPortfolio = ({
+  activeSection,
+  onBack,
+  onNavigate
+}: {
+  activeSection: string;
+  onBack: () => void;
+  onNavigate: (sectionId: string) => void;
+}) => {
+  const [activeReflectionDetail, setActiveReflectionDetail] = useState<ReflectionDetail | null>(null);
+
+  useEffect(() => {
+    if (!activeReflectionDetail) return;
+
+    const handleKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setActiveReflectionDetail(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeydown);
+    return () => window.removeEventListener('keydown', handleKeydown);
+  }, [activeReflectionDetail]);
+
+  return (
+  <motion.div
+    key="portfolio-two"
+    initial="hidden"
+    animate="visible"
+    exit={{ opacity: 0, y: -20 }}
+    variants={{
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: { staggerChildren: 0.14, delayChildren: 0.16 }
+      }
+    }}
+    className="relative z-10 w-full text-white"
+  >
+    <motion.header
+      variants={{
+        hidden: { opacity: 0, y: -24 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: 'easeOut' } }
+      }}
+      className="fixed left-0 right-0 top-0 z-50 px-4 py-2 md:px-6"
+    >
+      <div className="mx-auto max-w-7xl">
+        <div className="relative flex items-center justify-between gap-3 overflow-hidden rounded-full border border-accent/10 bg-brand-night/78 px-3 py-1.5 shadow-[0_10px_34px_rgba(0,0,0,0.34)] backdrop-blur-2xl md:px-4">
+          <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
+          <a
+            href="#beranda-eporto2"
+            onClick={() => onNavigate('beranda-eporto2')}
+            className="relative z-10 flex shrink-0 items-center gap-3"
+          >
+            <img
+              src={publicAsset('logo.png')}
+              alt="Satriya Nugraha"
+              className="h-9 w-9 object-contain"
+              referrerPolicy="no-referrer"
+            />
+            <div className="hidden flex-col text-left sm:flex">
+              <span className="text-xs font-black leading-tight text-white">E-Portofolio 2</span>
+              <span className="text-[10px] font-bold leading-tight text-accent/80">Refleksi PPL Terbimbing</span>
+            </div>
+          </a>
+
+          <nav className="relative z-10 hidden flex-1 items-center justify-end gap-1 lg:flex">
+            {reflectionNavigationItems.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                onClick={() => onNavigate(item.id)}
+                className={`relative inline-flex items-center gap-1.5 rounded-full px-2.5 py-2 text-[11px] font-black transition-colors xl:gap-2 xl:px-3 ${
+                  activeSection === item.id ? 'bg-accent text-brand-night' : 'text-white/62 hover:text-white'
+                }`}
+              >
+                {item.icon}
+                {item.label}
+              </a>
+            ))}
+          </nav>
+
+          <button
+            type="button"
+            onClick={onBack}
+            className="relative z-10 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/10 px-3 py-2 text-[11px] font-black text-accent transition-all hover:bg-accent hover:text-brand-night md:px-4"
+          >
+            <ChevronLeft size={15} />
+            <span className="hidden sm:inline">Pilih Portfolio</span>
+          </button>
+        </div>
+      </div>
+    </motion.header>
+
+    <motion.main
+      variants={{
+        hidden: { opacity: 0, y: 24 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: 'easeOut' } }
+      }}
+      className="mx-auto max-w-6xl space-y-16 px-4 pb-28 pt-24 md:px-6 md:pt-28 lg:space-y-24"
+    >
+      <section id="beranda-eporto2" className="relative flex min-h-[calc(100vh-7rem)] scroll-mt-24 flex-col justify-center overflow-visible py-6 lg:grid lg:grid-cols-[0.95fr_1.05fr] lg:gap-10">
+        <div className="pointer-events-none absolute -left-24 top-12 h-72 w-72 rounded-full bg-accent/12 blur-[100px]" />
+        <div className="pointer-events-none absolute -right-24 bottom-8 h-80 w-80 rounded-full bg-accent-strong/10 blur-[110px]" />
+
+        <Reveal direction="right" className="relative z-10 flex flex-col justify-center">
+          <div className="mb-5 flex items-center gap-4 lg:hidden">
+            <div className="grid h-20 w-20 shrink-0 place-items-end overflow-hidden rounded-2xl border border-accent/18 bg-white/[0.04]">
+              <img
+                src={publicAsset('profile.svg')}
+                alt="Satriya Nugraha"
+                className="h-full w-full object-contain object-bottom"
+              />
+            </div>
+            <div>
+              <p className="font-mono text-[9px] font-black uppercase tracking-[0.18em] text-accent">Tempat PPL</p>
+              <p className="mt-1 text-sm font-black leading-tight text-white">SMK Negeri 2 Depok Sleman</p>
+            </div>
+          </div>
+          <SectionKicker>Beranda E-Portofolio 2</SectionKicker>
+          <h1 className="max-w-xl !text-4xl font-black !leading-[0.95] tracking-[-0.05em] text-white md:!text-6xl">
+            Satriya Nugraha
+          </h1>
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/64 md:text-base">
+            Calon guru Teknik Mesin PPG Prajabatan 2026 yang menjalani PPL Terbimbing di SMK Negeri 2 Depok Sleman. Halaman ini menjadi ruang refleksi perjalanan belajar, praktik mengajar, dan pengembangan diri menuju guru profesional.
+          </p>
+
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            {[
+              { label: 'LinkedIn', href: 'https://www.linkedin.com/in/satriya-nugraha/', icon: <Linkedin size={18} /> },
+              { label: 'Instagram', href: 'https://www.instagram.com/_satriyanugraha/', icon: <Instagram size={18} /> },
+              { label: 'YouTube', href: youtubeChannelUrl, icon: <Youtube size={18} /> },
+              { label: 'WhatsApp', href: whatsappUrl, icon: <MessageCircle size={18} /> },
+              { label: 'Email', href: `mailto:${contactEmail}`, icon: <Mail size={18} /> }
+            ].map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                target={item.href.startsWith('mailto:') ? undefined : '_blank'}
+                rel={item.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
+                aria-label={item.label}
+                className="grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-white/[0.045] text-white/72 transition-all hover:-translate-y-1 hover:border-accent/28 hover:bg-accent hover:text-brand-night"
+              >
+                {item.icon}
+              </a>
+            ))}
+          </div>
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            {[
+              { label: 'Bidang', value: 'Teknik Mesin', icon: <Wrench size={16} /> },
+              { label: 'Tempat PPL', value: 'SMK Negeri 2 Depok Sleman', icon: <MapPin size={16} /> }
+            ].map((item) => (
+              <div key={item.label} className="rounded-2xl border border-white/10 bg-brand-night/32 p-4">
+                <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-accent text-brand-night">
+                  {item.icon}
+                </div>
+                <p className="font-mono text-[9px] font-black uppercase tracking-[0.18em] text-accent/80">{item.label}</p>
+                <p className="mt-1 text-sm font-black leading-tight text-white/82">{item.value}</p>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+
+        <Reveal direction="left" className="relative z-10 mt-9 hidden items-center justify-center lg:mt-0 lg:flex">
+          <div className="relative w-full max-w-[430px]">
+            <div className="absolute -inset-5 rounded-[2rem] bg-accent/12 blur-3xl" />
+            <div className="relative overflow-hidden rounded-[1.8rem] border border-white/12 bg-brand-night/38 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
+              <div className="relative overflow-hidden rounded-[1.3rem] border border-white/10 bg-white/[0.035]">
+                <img
+                  src={publicAsset('profile.svg')}
+                  alt="Satriya Nugraha"
+                  className="aspect-[4/5] w-full object-contain object-bottom drop-shadow-[0_22px_55px_rgba(0,0,0,0.38)]"
+                />
+                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-brand-night/92 to-transparent" />
+              </div>
+              <div className="mt-5 flex items-center justify-between gap-4">
+                <div>
+                  <p className="font-mono text-[9px] font-black uppercase tracking-[0.18em] text-accent">Lokasi PPL</p>
+                  <p className="mt-1 text-lg font-black leading-tight text-white">SMK Negeri 2 Depok Sleman</p>
+                </div>
+                <MapPin className="shrink-0 text-accent" size={24} />
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
+      {reflectionSections.map((section) => {
+        const details = section.detailIds
+          .map((detailId) => reflectionDetails.find((detail) => detail.id === detailId))
+          .filter((detail): detail is ReflectionDetail => Boolean(detail));
+
+        return (
+          <section key={section.id} id={section.id} className="relative scroll-mt-24 py-10 md:py-16">
+            <Reveal direction="up">
+              <div>
+                <div className="mx-auto mb-8 max-w-3xl text-center md:mb-10">
+                  <div className="mb-5 flex items-center justify-center gap-4">
+                    <span
+                      className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl font-mono text-sm font-black text-brand-night shadow-[0_18px_45px_rgba(0,0,0,0.2)]"
+                      style={{ background: section.accent }}
+                    >
+                      {section.marker}
+                    </span>
+                    <div>
+                      <p className="font-mono text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: section.accent }}>
+                        {section.kicker}
+                      </p>
+                      <p className="mt-1 h-px w-24" style={{ background: section.accent }} />
+                    </div>
+                  </div>
+                  <h2 className="!text-3xl font-black !leading-tight tracking-[-0.035em] text-white md:!text-5xl">
+                    {section.title}
+                  </h2>
+                  <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/64 md:text-base md:leading-8">
+                    {section.lead}
+                  </p>
+                </div>
+
+                {section.id === 'filosofi-mengajar' ? (
+                <article className="relative overflow-hidden rounded-[1.4rem] border border-white/14 bg-[#f4f1e8] p-5 text-brand-night shadow-[0_26px_90px_rgba(0,0,0,0.25)] md:p-8">
+                  <div className="mb-6 border-b-2 border-brand-night/80 pb-4 text-center">
+                    <p className="font-mono text-[10px] font-black uppercase tracking-[0.28em] text-brand-night/58">
+                      Edisi Refleksi PPL Terbimbing
+                    </p>
+                    <h3 className="mt-2 font-serif text-3xl font-black leading-none tracking-[-0.035em] text-brand-night md:text-5xl">
+                      Catatan Filosofi Mengajar
+                    </h3>
+                    <p className="mx-auto mt-3 max-w-3xl text-sm font-semibold leading-7 text-brand-night/68 md:text-base">
+                      Enam gagasan yang menjadi pegangan saya dalam memahami peran guru, proses belajar siswa, dan pembelajaran kejuruan yang relevan.
+                    </p>
+                  </div>
+
+                  <div className="grid gap-5 lg:grid-cols-3">
+                    {teachingPhilosophyArticles.map((article, index) => (
+                      <section
+                        key={article.number}
+                        className={`border-brand-night/18 pb-5 ${
+                          index < teachingPhilosophyArticles.length - 1 ? 'border-b lg:border-b-0 lg:border-r lg:pr-5' : ''
+                        } ${index === 2 ? 'lg:border-r-0 lg:pr-0' : ''} ${index >= 3 ? 'lg:pt-2' : ''}`}
+                      >
+                        <div className="mb-3 flex items-start gap-3">
+                          <span className="mt-1 grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 border-brand-night bg-brand-night font-mono text-[11px] font-black text-[#f4f1e8]">
+                            {article.number}
+                          </span>
+                          <h4 className="font-serif text-xl font-black leading-tight tracking-[-0.02em] text-brand-night md:text-2xl">
+                            {article.title}
+                          </h4>
+                        </div>
+
+                        <div className="space-y-3">
+                          {article.paragraphs.map((paragraph, paragraphIndex) => (
+                            <p
+                              key={paragraph.slice(0, 36)}
+                              className={`text-justify text-sm leading-7 text-brand-night/76 ${
+                                index === 0 && paragraphIndex === 0 ? 'first-letter:float-left first-letter:mr-2 first-letter:font-serif first-letter:text-5xl first-letter:font-black first-letter:leading-[0.86]' : ''
+                              }`}
+                            >
+                              {paragraph}
+                            </p>
+                          ))}
+                        </div>
+
+                        {article.bullets.length > 0 && (
+                          <ul className="mt-4 grid gap-2 border-t border-brand-night/16 pt-4">
+                            {article.bullets.map((bullet) => (
+                              <li key={bullet} className="flex gap-2 text-sm font-semibold leading-6 text-brand-night/72">
+                                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-night" />
+                                <span>{bullet}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </section>
+                    ))}
+                  </div>
+                </article>
+                ) : (
+                <article className="relative">
+                  <div className="pointer-events-none absolute inset-x-6 -top-4 h-px opacity-70" style={{ background: `linear-gradient(90deg, transparent, ${section.accent}, transparent)` }} />
+                  <div
+                    className={`grid gap-4 ${
+                      section.id === 'tantangan'
+                        ? 'lg:grid-cols-3'
+                        : section.id === 'pembelajaran'
+                          ? 'sm:grid-cols-2 xl:grid-cols-3'
+                          : 'sm:grid-cols-2 xl:grid-cols-3'
+                    }`}
+                  >
+                    {details.map((detail, index) => (
+                      <div key={detail.id} className="group relative">
+                        <button
+                          type="button"
+                          onClick={() => setActiveReflectionDetail(detail)}
+                          className={`h-full w-full rounded-[1.25rem] border border-white/10 bg-white/[0.045] text-left shadow-[0_18px_55px_rgba(0,0,0,0.16)] transition-all hover:-translate-y-1 hover:border-accent/28 hover:bg-white/[0.07] ${
+                            section.id === 'tantangan' ? 'min-h-[280px] p-6' : 'p-5'
+                          }`}
+                        >
+                          <div className="mb-4 flex items-center justify-between gap-3">
+                            <span className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-white/38">
+                              {String(index + 1).padStart(2, '0')} / {detail.eyebrow}
+                            </span>
+                            <span
+                              className="h-2.5 w-2.5 shrink-0 rounded-full shadow-[0_0_20px_currentColor]"
+                              style={{ background: detail.accent, color: detail.accent }}
+                            />
+                          </div>
+                          <h3 className="!text-lg font-black !leading-tight tracking-[-0.02em] text-white transition-colors group-hover:text-accent md:!text-xl">
+                            {detail.title}
+                          </h3>
+                          <p className="mt-3 text-sm leading-7 text-white/68">
+                            {detail.summary}
+                          </p>
+
+                          {section.id === 'tantangan' && detail.sections && (
+                            <div className="mt-5 grid gap-2">
+                              {detail.sections.slice(0, 3).map((sectionBlock) => (
+                                <div key={sectionBlock.title} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-brand-night/18 px-4 py-3">
+                                  <span
+                                    className="h-1.5 w-1.5 shrink-0 rounded-full"
+                                    style={{ background: detail.accent }}
+                                  />
+                                  <p className="text-xs font-black uppercase tracking-[0.12em] text-white/58">
+                                    {sectionBlock.title}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {detail.points && (
+                            <div className="mt-5 grid gap-4">
+                              {detail.points.map((point) => (
+                                <div key={point.label} className="border-l-2 pl-4" style={{ borderColor: detail.accent }}>
+                                  <p className="font-mono text-[9px] font-black uppercase tracking-[0.16em]" style={{ color: detail.accent }}>
+                                    {point.label}
+                                  </p>
+                                  <p className="mt-2 text-sm leading-7 text-white/68">{point.text}</p>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          <span className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-black text-accent transition-all group-hover:border-accent/30 group-hover:bg-accent group-hover:text-brand-night">
+                            Lihat refleksi
+                            <ArrowRight size={14} />
+                          </span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  {section.closing && (
+                    <div className="mt-5 flex gap-3 rounded-[1.25rem] border border-accent/20 bg-accent/10 p-5 text-sm leading-7 text-white/76">
+                      <Sparkles className="mt-1 shrink-0 text-accent" size={18} />
+                      <p>{section.closing}</p>
+                    </div>
+                  )}
+                </article>
+                )}
+              </div>
+            </Reveal>
+          </section>
+        );
+      })}
+    </motion.main>
+
+    <AnimatePresence>
+      {activeReflectionDetail && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setActiveReflectionDetail(null)}
+          className="fixed inset-0 z-[115] flex items-center justify-center overflow-y-auto bg-brand-night/22 px-4 py-6 backdrop-blur-[3px] md:py-10"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 18, scale: 0.94 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 12, scale: 0.96 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            onClick={(event) => event.stopPropagation()}
+            className={`relative mx-auto w-full overflow-hidden rounded-[1.35rem] border border-white/18 bg-[#12343d]/88 shadow-[0_26px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl ${
+              activeReflectionDetail.sectionId === 'tantangan' ? 'max-w-4xl' : 'max-w-2xl'
+            }`}
+          >
+            <div className="absolute inset-x-0 top-0 h-1" style={{ background: activeReflectionDetail.accent }} />
+            <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full blur-[70px]" style={{ background: `${activeReflectionDetail.accent}28` }} />
+            <button
+              type="button"
+              onClick={() => setActiveReflectionDetail(null)}
+              className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full border border-white/14 bg-white/[0.08] text-white/72 shadow-[0_14px_35px_rgba(0,0,0,0.22)] transition-colors hover:border-accent/35 hover:bg-white/[0.12] hover:text-accent"
+              aria-label="Tutup detail refleksi"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="relative border-b border-white/10 px-5 pb-5 pt-6 pr-16 md:px-8 md:pb-6 md:pt-7">
+              <div className="flex items-center gap-3">
+                <span
+                  className="h-2.5 w-2.5 rounded-full shadow-[0_0_22px_currentColor]"
+                  style={{ background: activeReflectionDetail.accent, color: activeReflectionDetail.accent }}
+                />
+                <p className="font-mono text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: activeReflectionDetail.accent }}>
+                  {activeReflectionDetail.eyebrow}
+                </p>
+              </div>
+              <h2 className="mt-3 !text-2xl font-black !leading-tight tracking-[-0.03em] text-white md:!text-4xl">
+                {activeReflectionDetail.title}
+              </h2>
+            </div>
+
+            <div
+              className={`relative overflow-y-auto px-5 py-5 md:px-8 md:py-7 ${
+                activeReflectionDetail.sectionId === 'tantangan' ? 'max-h-[72vh]' : 'max-h-[62vh]'
+              }`}
+            >
+              {activeReflectionDetail.points && (
+                <div className="mb-6 grid gap-4">
+                  {activeReflectionDetail.points.map((point) => (
+                    <div key={point.label} className="rounded-2xl border border-white/10 bg-white/[0.045] p-4">
+                      <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em]" style={{ color: activeReflectionDetail.accent }}>
+                        {point.label}
+                      </p>
+                      <p className="mt-2 text-sm leading-7 text-white/72 md:text-[15px]">{point.text}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {activeReflectionDetail.sections && (
+                <div className="grid gap-4">
+                  {activeReflectionDetail.sections.map((sectionBlock) => (
+                    <section key={sectionBlock.title} className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 md:p-6">
+                      <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em]" style={{ color: activeReflectionDetail.accent }}>
+                        {sectionBlock.title}
+                      </p>
+                      <div className="mt-3 space-y-3">
+                        {sectionBlock.paragraphs.map((paragraph) => (
+                          <p key={paragraph.slice(0, 34)} className="text-[15px] leading-8 text-white/76 md:text-[17px] md:leading-9">
+                            {paragraph}
+                          </p>
+                        ))}
+                      </div>
+                    </section>
+                  ))}
+                </div>
+              )}
+
+              {activeReflectionDetail.paragraphs.length > 0 && (
+                <div className="space-y-4">
+                  {activeReflectionDetail.paragraphs.map((paragraph) => (
+                    <p key={paragraph.slice(0, 34)} className="text-[15px] leading-8 text-white/76 md:text-base md:leading-8">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              )}
+
+              {activeReflectionDetail.bullets && (
+                <div className="mt-6 grid gap-3">
+                  {activeReflectionDetail.bullets.map((bullet) => (
+                    <div key={bullet} className="flex gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm leading-relaxed text-white/72">
+                      <span
+                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
+                        style={{ background: activeReflectionDetail.accent }}
+                      />
+                      <span>{bullet}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+
+    <div className="fixed bottom-6 left-4 right-4 z-[100] flex justify-center md:hidden">
+      <nav className="flex max-w-full items-center gap-1 overflow-x-auto rounded-2xl border border-white/10 bg-brand-night/82 p-2 shadow-2xl backdrop-blur-2xl" style={{ scrollbarWidth: 'none' }}>
+        {reflectionNavigationItems.map((item) => (
+          <a
+            key={item.id}
+            href={`#${item.id}`}
+            onClick={() => onNavigate(item.id)}
+            className={`relative shrink-0 rounded-xl p-2.5 transition-colors ${
+              activeSection === item.id ? 'bg-accent text-brand-night' : 'text-white/44 hover:text-white'
+            }`}
+            aria-label={item.label}
+          >
+            {item.icon}
+          </a>
+        ))}
+      </nav>
+    </div>
+
+    <footer className="relative z-10 mt-4 border-t border-white/8 bg-brand-night/60 px-4 pb-28 pt-12 md:px-6 md:pb-12">
+      <div className="mx-auto flex max-w-6xl flex-col gap-5 text-center md:flex-row md:items-center md:justify-between md:text-left">
+        <div>
+          <p className="font-mono text-[10px] font-black uppercase tracking-[0.2em] text-accent">E-Portofolio 2</p>
+          <p className="mt-2 text-sm font-semibold text-white/58">Refleksi Akhir Praktik Pengalaman Lapangan Terbimbing</p>
+        </div>
+        <button
+          type="button"
+          onClick={onBack}
+          className="mx-auto inline-flex items-center gap-2 rounded-full border border-accent/18 bg-accent/10 px-5 py-3 text-sm font-black text-accent transition-all hover:bg-accent hover:text-brand-night md:mx-0"
+        >
+          <ChevronLeft size={16} />
+          Kembali ke Pilihan
+        </button>
+      </div>
+    </footer>
+  </motion.div>
+  );
+};
+
 export default function App() {
   const [activeSection, setActiveSection] = useState('beranda');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [portfolioMode, setPortfolioMode] = useState<PortfolioMode>('selector');
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [activeShowcasePopup, setActiveShowcasePopup] = useState<number | null>(null);
   const [openDocGallery, setOpenDocGallery] = useState<number | null>(null);
@@ -1905,6 +3013,29 @@ export default function App() {
     sendYoutubeCommand('mute');
   };
 
+  const handleSectionNavigate = (sectionId: string) => {
+    setActiveSection(sectionId);
+    setIsMenuOpen(false);
+  };
+
+  const handlePortfolioSelect = (mode: PortfolioContentMode) => {
+    setPortfolioMode(mode);
+    setIsMenuOpen(false);
+    setActiveSection(mode === 'one' ? 'beranda' : 'beranda-eporto2');
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  };
+
+  const handleBackToPortfolioSelector = () => {
+    setPortfolioMode('selector');
+    setIsMenuOpen(false);
+    setActiveSection('beranda');
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  };
+
   useEffect(() => {
     if (contactFormState.succeeded) {
       contactFormRef.current?.reset();
@@ -1914,7 +3045,12 @@ export default function App() {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => setCursorPos({ x: e.clientX, y: e.clientY });
     const handleScroll = () => {
-      const sections = ['beranda', 'profil', 'dokumentasi', 'artefak', 'analisis-evaluasi', 'penilaian', 'model-guru', 'video', 'sertifikat', 'kontak'];
+      const sections = portfolioMode === 'two'
+        ? ['beranda-eporto2', 'pembelajaran', 'tantangan', 'umpan-balik', 'filosofi-mengajar']
+        : portfolioMode === 'one'
+          ? ['beranda', 'profil', 'dokumentasi', 'artefak', 'analisis-evaluasi', 'penilaian', 'model-guru', 'video', 'sertifikat', 'kontak']
+          : [];
+      if (!sections.length) return;
       const marker = window.innerHeight * 0.36;
       let current = sections[0];
 
@@ -1940,10 +3076,10 @@ export default function App() {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
     };
-  }, []);
+  }, [portfolioMode]);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || portfolioMode !== 'one') return;
 
     const videoSection = document.getElementById('video');
     if (!videoSection) return;
@@ -1975,10 +3111,13 @@ export default function App() {
       observer.disconnect();
       sendYoutubeCommand('pauseVideo');
     };
-  }, [isLoading]);
+  }, [isLoading, portfolioMode]);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || portfolioMode !== 'one') {
+      sendYoutubeCommand('pauseVideo');
+      return;
+    }
 
     if (activeSection === 'video') {
       setHasVideoEntered(true);
@@ -1999,7 +3138,7 @@ export default function App() {
       setIsVideoInView(false);
       sendYoutubeCommand('pauseVideo');
     }
-  }, [activeSection, hasVideoEntered, isLoading]);
+  }, [activeSection, hasVideoEntered, isLoading, portfolioMode]);
 
   useEffect(() => {
     document.body.style.overflow = isLoading || openDocGallery !== null || activeArtifactAnalysis !== null || activeAnalysisHighlight !== null || activeCertificate !== null ? 'hidden' : 'unset';
@@ -2087,9 +3226,17 @@ export default function App() {
       <AnimatePresence mode="wait">
         {isLoading ? (
           <CoolLoader onComplete={() => setIsLoading(false)} key="cool-loader" />
+        ) : portfolioMode === 'selector' ? (
+          <PortfolioSelector onSelect={handlePortfolioSelect} />
+        ) : portfolioMode === 'two' ? (
+          <ReflectionPortfolio
+            activeSection={activeSection}
+            onBack={handleBackToPortfolioSelector}
+            onNavigate={handleSectionNavigate}
+          />
         ) : (
           <motion.div 
-            key="main-content"
+            key="portfolio-one"
             initial="hidden"
             animate="visible"
             variants={{
@@ -2194,6 +3341,15 @@ export default function App() {
               ))}
             </nav>
 
+            <button
+              type="button"
+              onClick={handleBackToPortfolioSelector}
+              className="relative z-10 hidden shrink-0 items-center gap-2 rounded-full border border-accent/18 bg-accent/10 px-3 py-2 text-[11px] font-black text-accent transition-all hover:bg-accent hover:text-brand-night md:inline-flex"
+            >
+              <Layers size={14} />
+              Pilih
+            </button>
+
             <button 
               className="relative z-10 p-2 text-white glass-card border-accent/20 bg-accent/10 rounded-xl lg:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -2212,6 +3368,14 @@ export default function App() {
               exit={{ opacity: 0, y: -20 }}
               className="absolute top-full left-4 right-4 mt-2 p-4 grid gap-2 rounded-3xl border border-white/12 bg-brand-night/95 backdrop-blur-xl shadow-2xl lg:hidden"
             >
+              <button
+                type="button"
+                onClick={handleBackToPortfolioSelector}
+                className="flex items-center justify-center gap-2 rounded-2xl border border-accent/18 bg-accent/10 px-4 py-3 text-sm font-black text-accent"
+              >
+                <Layers size={16} />
+                Pilih E-Portofolio
+              </button>
               {navigationItems.map((item) => (
                 <a 
                   key={item.id} 
